@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton", "Triton\Triton.csproj", "{0A0F4DF3-A3ED-4AFC-89C0-1AA8A2887171}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{08AE9E4E-0134-4E21-902A-09399CDA2DA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TritonTests", "Tests\TritonTests\TritonTests.csproj", "{ED4F5FC3-C35A-4537-BB2F-C3355CB12916}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3642B9A3-3B05-4451-BD8D-94F798EC4407}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Core", "Core\Triton.Core\Triton.Core.csproj", "{82F5522F-0950-42FE-A3B6-90FFA13FB42E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{909432C2-54F9-4F7C-8EC1-F6293E4D3CDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton", "Platforms\Triton\Triton.csproj", "{BAB22ED0-D7F7-419C-B8A2-97C4464FD421}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,20 +21,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0A0F4DF3-A3ED-4AFC-89C0-1AA8A2887171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A0F4DF3-A3ED-4AFC-89C0-1AA8A2887171}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A0F4DF3-A3ED-4AFC-89C0-1AA8A2887171}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A0F4DF3-A3ED-4AFC-89C0-1AA8A2887171}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED4F5FC3-C35A-4537-BB2F-C3355CB12916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED4F5FC3-C35A-4537-BB2F-C3355CB12916}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED4F5FC3-C35A-4537-BB2F-C3355CB12916}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED4F5FC3-C35A-4537-BB2F-C3355CB12916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82F5522F-0950-42FE-A3B6-90FFA13FB42E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F5522F-0950-42FE-A3B6-90FFA13FB42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F5522F-0950-42FE-A3B6-90FFA13FB42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F5522F-0950-42FE-A3B6-90FFA13FB42E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAB22ED0-D7F7-419C-B8A2-97C4464FD421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB22ED0-D7F7-419C-B8A2-97C4464FD421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB22ED0-D7F7-419C-B8A2-97C4464FD421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB22ED0-D7F7-419C-B8A2-97C4464FD421}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{ED4F5FC3-C35A-4537-BB2F-C3355CB12916} = {08AE9E4E-0134-4E21-902A-09399CDA2DA7}
+		{82F5522F-0950-42FE-A3B6-90FFA13FB42E} = {3642B9A3-3B05-4451-BD8D-94F798EC4407}
+		{BAB22ED0-D7F7-419C-B8A2-97C4464FD421} = {909432C2-54F9-4F7C-8EC1-F6293E4D3CDC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F6A8FA7-8EE9-4351-B9EE-FB2AC1E507FC}
