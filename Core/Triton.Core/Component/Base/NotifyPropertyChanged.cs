@@ -25,7 +25,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using TheXDS.Triton.Core.Annotations;
 
-namespace TheXDS.Triton.Core.Component
+namespace TheXDS.Triton.Core.Component.Base
 {
     /// <inheritdoc />
     /// <summary>

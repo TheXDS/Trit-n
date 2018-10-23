@@ -120,4 +120,7 @@
   <data name="Err_Invoking_OnPropertyChanged" xml:space="preserve">
     <value>Ha ocurrido un error notificando a la app el cambio en la propiedad '{0}'.</value>
   </data>
+  <data name="Service_Friendly_Name" xml:space="preserve">
+    <value>Servicio de {0}</value>
+  </data>
 </root>

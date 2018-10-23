@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using TheXDS.Triton.Core.Annotations;
 using TheXDS.Triton.Core.Component;
+using TheXDS.Triton.Core.Component.Base;
 
 namespace TheXDS.Triton.Core.Models.Base
 {
