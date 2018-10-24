@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -20,21 +21,21 @@ namespace TheXDS.Triton.ViewModel
     {        
         /// <summary>
         ///     Construye un nuevo ViewModel sin ninguna clase que herede
-        ///     <see cref="ViewModelBase{TModel,TKey}"/> como base.
+        ///     <see cref="ViewModel{TModel,TKey}"/> como base.
         /// </summary>
         /// <returns>
         ///     Un nuevo ViewModel con las propiedades originales del modelo
         ///     implementadas como llamadas con notificación de cambio de
         ///     propiedades.
         /// </returns>
-        public static ViewModelBase<TModel, TKey> New()
+        public static ViewModel<TModel, TKey> New()
         {
-            return Build().New<ViewModelBase<TModel, TKey>>();
+            return Build().New<ViewModel<TModel, TKey>>();
         }
         
         /// <summary>
         ///     Construye un nuevo ViewModel utilizando una clase base que
-        ///     hereda de <see cref="ViewModelBase{TModel,TKey}"/> como base.
+        ///     hereda de <see cref="ViewModel{TModel,TKey}"/> como base.
         /// </summary>
         /// <typeparam name="TViewModel">
         ///     Clase de ViewModel a utilizar como tipo base.
@@ -44,30 +45,33 @@ namespace TheXDS.Triton.ViewModel
         ///     implementadas como llamadas con notificación de cambio de
         ///     propiedades.
         /// </returns>
-        public static TViewModel New<TViewModel>() where TViewModel : ViewModelBase<TModel,TKey>
+        public static TViewModel New<TViewModel>() where TViewModel : ViewModel<TModel,TKey>
         {
             return Activator.CreateInstance(Build<TViewModel>()) as TViewModel;
         }
         
         /// <summary>
         ///     Construye un tipo de ViewModel sin ninguna clase que herede
-        ///     <see cref="ViewModelBase{TModel,TKey}"/> como base.
+        ///     <see cref="ViewModel{TModel,TKey}"/> como base.
         /// </summary>
         /// <returns></returns>
-        public static Type Build() => Build<ViewModelBase<TModel, TKey>>();
+        public static Type Build() => Build<ViewModel<TModel, TKey>>();
         
         /// <summary>
         ///     Construye un tipo de ViewModel utilizando una clase base que
-        ///     hereda de <see cref="ViewModelBase{TModel,TKey}"/> como base.
+        ///     hereda de <see cref="ViewModel{TModel,TKey}"/> como base.
         /// </summary>
         /// <typeparam name="TViewModel">
         ///     Clase de ViewModel a utilizar como tipo base.
         /// </typeparam>
         /// <returns></returns>
-        public static Type Build<TViewModel>() where TViewModel : ViewModelBase<TModel,TKey>
+        public static Type Build<TViewModel>() where TViewModel : ViewModel<TModel,TKey>
         {
+            if (Builders.BuiltTypes.ContainsKey(typeof(TViewModel)))
+                return Builders.BuiltTypes[typeof(TViewModel)];
+
             var tb = Builders.MBuilder.DefineType(
-                $"{typeof(TModel).Name}ViewModel",
+                $"{typeof(TModel).Name}ViewModel_{Guid.NewGuid()}",
                 TypeAttributes.Public,
                 typeof(TViewModel)
             );
@@ -81,21 +85,25 @@ namespace TheXDS.Triton.ViewModel
             ctorIl.Emit(OpCodes.Call, typeof(TViewModel).GetConstructor(Type.EmptyTypes) ?? throw new InvalidOperationException());
             ctorIl.Emit(OpCodes.Ret);
 
+            var addedProps = new HashSet<string>();
 
             foreach (var j in typeof(TModel)
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.CanWrite && tb.DeclaredProperties.All(q => q.Name != p.Name)))
+                .Where(p => p.CanRead && p.CanWrite && addedProps.All(q=>q!=p.Name)))
             {
+                addedProps.Add(j.Name);
                 AddProp(tb, j);
             }
 
-            return tb.CreateType();
+            var retVal = tb.CreateType();
+            Builders.BuiltTypes.Add(typeof(TViewModel), retVal);
+            return retVal;
         }
 
         private static void AddProp([NotNull]TypeBuilder tb,[NotNull] PropertyInfo property) 
         {
             const MethodAttributes gsArgs = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
-            var t = typeof(ViewModelBase<TModel, TKey>);
+            var t = typeof(ViewModel<TModel, TKey>);
             var entity = t.GetProperty("Entity", BindingFlags.NonPublic|BindingFlags.Instance)?.GetMethod ?? throw new TamperException();
 
             var prop = tb.DefineProperty(
@@ -148,5 +156,6 @@ namespace TheXDS.Triton.ViewModel
             setIl.Emit(OpCodes.Ret);
             prop.SetSetMethod(setM);
         }
+
     }
 }

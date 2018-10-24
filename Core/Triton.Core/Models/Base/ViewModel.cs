@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using TheXDS.Triton.Core.Annotations;
@@ -8,12 +10,12 @@ using TheXDS.Triton.Core.Component.Base;
 
 namespace TheXDS.Triton.Core.Models.Base
 {
-    public abstract class ViewModelBase<TModel, TKey> : NotifyPropertyChanged
+    public abstract class ViewModel<TModel, TKey> : NotifyPropertyChanged
         where TModel : ModelBase<TKey>, new()
         where TKey : struct, IComparable<TKey>
     {
         private static readonly HashSet<PropertyInfo> ModelProperties = new HashSet<PropertyInfo>();
-        static ViewModelBase()
+        static ViewModel()
         {
             foreach (var j in typeof(TModel)
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -40,7 +42,7 @@ namespace TheXDS.Triton.Core.Models.Base
             Refresh();
         }
 
-        public ViewModelBase()
+        public ViewModel()
         {
             New();
         }
@@ -72,5 +74,23 @@ namespace TheXDS.Triton.Core.Models.Base
         ///     eliminado por completo de la base de datos.
         /// </summary>
         public virtual bool CanBePurged => (Entity as ISoftDeletable)?.IsDeleted ?? true;
+    }
+
+    public abstract class LocalizableViewModel<TModel, TKey> : ViewModel<TModel, TKey>
+        where TModel : ModelBase<TKey>, new()
+        where TKey : struct, IComparable<TKey>
+    {
+        private CultureInfo _culture;
+
+        public CultureInfo Culture
+        {
+            get => _culture;
+            set
+            {
+                if (_culture.Equals(value)) return;
+                _culture = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

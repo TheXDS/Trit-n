@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -12,5 +13,7 @@ namespace TheXDS.Triton.ViewModel
                     new AssemblyName(Namespace), 
                     AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(Namespace);
+
+        public static readonly Dictionary<Type,Type> BuiltTypes = new Dictionary<Type, Type>();
     }
 }

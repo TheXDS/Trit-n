@@ -37,8 +37,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TheXDS.MCART.NetStandard, Version=0.8.9.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TheXDS.MCART.NetStandard.0.8.9.5\lib\netstandard2.0\TheXDS.MCART.NetStandard.dll</HintPath>
+    <Reference Include="TheXDS.MCART.NetStandard, Version=0.8.9.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\TheXDS.MCART.NetStandard.0.8.9.7\lib\netstandard2.0\TheXDS.MCART.NetStandard.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
