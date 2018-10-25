@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.Core.Annotations;
-using TheXDS.Triton.Core.Models.Base;
+using TheXDS.Triton.Annotations;
+using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.ViewModel
 {

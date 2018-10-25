@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TheXDS.Triton.Core.Annotations
+namespace TheXDS.Triton.Annotations
 {
     /// <summary>
     ///     Establece un nombre alternativo para una propiedad de la clase base

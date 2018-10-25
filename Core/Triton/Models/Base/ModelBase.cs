@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace TheXDS.Triton.Core.Models.Base
+namespace TheXDS.Triton.Models.Base
 {
     public abstract class ModelBase<T> where T : struct, IComparable<T>
     {

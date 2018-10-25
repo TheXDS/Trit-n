@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using TheXDS.Triton.Core.Annotations;
-using TheXDS.Triton.Core.Component;
-using TheXDS.Triton.Core.Component.Base;
+using TheXDS.Triton.Annotations;
+using TheXDS.Triton.Component.Base;
 
-namespace TheXDS.Triton.Core.Models.Base
+namespace TheXDS.Triton.Models.Base
 {
     public abstract class ViewModel<TModel, TKey> : NotifyPropertyChanged
         where TModel : ModelBase<TKey>, new()

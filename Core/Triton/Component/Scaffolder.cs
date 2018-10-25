@@ -1,4 +1,4 @@
-﻿namespace TheXDS.Triton.Core.Component
+﻿namespace TheXDS.Triton.Component
 {
     public class Scaffolder
     {

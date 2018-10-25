@@ -47,13 +47,13 @@
     <Compile Include="ViewModel\ViewModelBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Triton.Core\Triton.Core.csproj">
-      <Project>{82f5522f-0950-42fe-a3b6-90ffa13fb42e}</Project>
-      <Name>Triton.Core</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\Core\Triton\Triton.csproj">
+      <Project>{52925c81-e9d0-40f6-98fb-08c2ea1d1721}</Project>
+      <Name>Triton</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

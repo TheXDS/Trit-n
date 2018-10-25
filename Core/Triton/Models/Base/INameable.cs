@@ -1,4 +1,4 @@
-﻿namespace TheXDS.Triton.Core.Models.Base
+﻿namespace TheXDS.Triton.Models.Base
 {
     /// <summary>
     ///     Define una serie de propiedades a implementar por modelos que

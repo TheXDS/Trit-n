@@ -8,10 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TheXDS.Triton.Core.Resources {
-    using System;
-    
-    
+namespace TheXDS.Triton.Resources {
     /// <summary>
     ///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
     /// </summary>

@@ -23,9 +23,10 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using TheXDS.Triton.Core.Annotations;
+using TheXDS.Triton.Annotations;
+using TheXDS.Triton.Resources;
 
-namespace TheXDS.Triton.Core.Component.Base
+namespace TheXDS.Triton.Component.Base
 {
     /// <inheritdoc />
     /// <summary>
@@ -59,7 +60,7 @@ namespace TheXDS.Triton.Core.Component.Base
             catch
             {
 #if DEBUG
-                System.Diagnostics.Debug.Print(Resources.Strings.Err_Invoking_OnPropertyChanged, propertyName);
+                System.Diagnostics.Debug.Print(Strings.Err_Invoking_OnPropertyChanged, propertyName);
 #endif
                 /* silenciar excepción */
             }
