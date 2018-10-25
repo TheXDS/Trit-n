@@ -11,4 +11,5 @@ namespace TheXDS.Triton.Models.Base
         [Key]
         public T Id { get; set; }
     }
+    public abstract class ModelBase:ModelBase<Guid> { }
 }

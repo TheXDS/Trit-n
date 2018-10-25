@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -10,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Annotations;
 using TheXDS.Triton.Models.Base;
 using Ee= TheXDS.MCART.Types.Extensions.EnumExtensions;
@@ -34,86 +37,24 @@ namespace TheXDS.Triton.Component
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class MethodCategoryAttribute : Attribute, IValueAttribute<FunctionRegistry.MethodCategory>
+    public sealed class MethodCategoryAttribute : Attribute, IValueAttribute<MethodCategory>
     {
-        public MethodCategoryAttribute(FunctionRegistry.MethodCategory value)
+        public MethodCategoryAttribute(MethodCategory value)
         {
             Value = value;
         }
 
         /// <inheritdoc />
         /// <summary>Obtiene el valor de este atributo.</summary>
-        public FunctionRegistry.MethodCategory Value { get; }
+        public MethodCategory Value { get; }
     }
     public static class FunctionRegistry
     {
         /// <summary>
-        ///     Describe la categoría a la cual un método pertenece.
+        ///     Diccionario de sólo lectura que contiene a todas las funciones
+        ///     registradas para participar el el mecanismo de seguridad junto
+        ///     a un valor que describe la categoría de la función.
         /// </summary>
-        [Flags]
-        public enum MethodCategory
-        {
-            /// <summary>
-            ///     Método cuya familia no ha sido especificada, o método de funcionalidad genérica.
-            /// </summary>
-            Unspecified,
-
-            /// <summary>
-            ///     Método de apertura de vista.
-            /// </summary>
-            Show,
-
-            /// <summary>
-            ///     Método de lectura de datos.
-            /// </summary>
-            View,
-
-            /// <summary>
-            ///     Método genérico de lectura.
-            /// </summary>
-            Read,
-
-            /// <summary>
-            ///     Método de creación.
-            /// </summary>
-            New,
-
-            /// <summary>
-            ///     Método de edición.
-            /// </summary>
-            Edit = 8,
-
-            /// <summary>
-            ///     Método de borrado.
-            /// </summary>
-            Delete = 16,
-
-            /// <summary>
-            ///     Método genérico de escritura.
-            /// </summary>
-            Write=New|Edit|Delete,
-
-            /// <summary>
-            ///     Método genérico de lectura/escritura.
-            /// </summary>
-            ReadWrite = Read | Write,
-
-            /// <summary>
-            ///     Método de función adicional (herramienta)
-            /// </summary>
-            Tool = 32,
-
-            /// <summary>
-            ///     Método de función administrativa.
-            /// </summary>
-            Admin = ReadWrite | Tool,
-
-            /// <summary>
-            ///     Método restringido a su invocación por superusuarios
-            /// </summary>
-            Root = -1
-        }
-
         public static IReadOnlyDictionary<MethodInfo, MethodCategory> Functions => Funcs;
 
         private static readonly HashSet<Type> RegisteredTypes = new HashSet<Type>();
@@ -147,6 +88,73 @@ namespace TheXDS.Triton.Component
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     Describe la categoría a la cual un método pertenece.
+    /// </summary>
+    [Flags]
+    public enum MethodCategory
+    {
+        /// <summary>
+        ///     Método cuya familia no ha sido especificada, o método de funcionalidad genérica.
+        /// </summary>
+        Unspecified,
+
+        /// <summary>
+        ///     Método de apertura de vista.
+        /// </summary>
+        Show,
+
+        /// <summary>
+        ///     Método de lectura de datos.
+        /// </summary>
+        View,
+
+        /// <summary>
+        ///     Método genérico de lectura.
+        /// </summary>
+        Read,
+
+        /// <summary>
+        ///     Método de creación.
+        /// </summary>
+        New,
+
+        /// <summary>
+        ///     Método de edición.
+        /// </summary>
+        Edit = 8,
+
+        /// <summary>
+        ///     Método de borrado.
+        /// </summary>
+        Delete = 16,
+
+        /// <summary>
+        ///     Método genérico de escritura.
+        /// </summary>
+        Write = New | Edit | Delete,
+
+        /// <summary>
+        ///     Método genérico de lectura/escritura.
+        /// </summary>
+        ReadWrite = Read | Write,
+
+        /// <summary>
+        ///     Método de función adicional (herramienta)
+        /// </summary>
+        Tool = 32,
+
+        /// <summary>
+        ///     Método de función administrativa.
+        /// </summary>
+        Admin = ReadWrite | Tool,
+
+        /// <summary>
+        ///     Método restringido a su invocación por superusuarios
+        /// </summary>
+        Root = -1
     }
 
     public abstract class Service
@@ -200,7 +208,7 @@ namespace TheXDS.Triton.Component
         /// <returns></returns>
         public static string FriendlyName<T>() where T : Service
         {
-            return string.Format(St.Service_Friendly_Name, MemberInfoExtensions.NameOf(typeof(T)));
+            return string.Format(St.Service_Friendly_Name, typeof(T).NameOf());
         }
 
         [NotNull] protected abstract DbContext Context { get; }
@@ -230,32 +238,32 @@ namespace TheXDS.Triton.Component
 
         #region Operaciones CRUD
 
-        [MethodCategory(FunctionRegistry.MethodCategory.New)]
+        [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> AddAsync<TModel>([NotNull] TModel newEntity) where TModel : class, new()
         {
             if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
             Set<TModel>().Add(newEntity);
             return SaveAsync();
         }
-        [MethodCategory(FunctionRegistry.MethodCategory.New)]
+        [MethodCategory(MethodCategory.New)]
         public OperationResult Add<TModel>([NotNull] TModel newEntity) where TModel : class, new()
         {
-            return TaskExtensions.Yield(AddAsync(newEntity));
+            return AddAsync(newEntity).Yield();
         }
-        [MethodCategory(FunctionRegistry.MethodCategory.New)]
+        [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> BulkAddAsync<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities) where TModel : class, new()
         {
             if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
             Context.AddRange(entities);
             return SaveAsync();
         }
-        [MethodCategory(FunctionRegistry.MethodCategory.New)]
+        [MethodCategory(MethodCategory.New)]
         public OperationResult BulkAdd<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities)
             where TModel : class, new()
         {
-            return TaskExtensions.Yield(BulkAddAsync(entities));
+            return BulkAddAsync(entities).Yield();
         }
-        [MethodCategory(FunctionRegistry.MethodCategory.New)]
+        [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> BulkAddAsync([NotNull] [ItemNotNull] IEnumerable<object> entities)
         {
             var ents = entities as object[] ?? entities.ToArray();
@@ -264,15 +272,22 @@ namespace TheXDS.Triton.Component
             foreach (var j in tpes)
                 if (PreChecksFail(out var fails,j)) return Task.FromResult(fails);
 
-            foreach (var j in tpes)
-                Context.AddRange(ents.Where(p => p.GetType() == j));
-
+            try
+            {
+                foreach (var j in tpes)
+                    Context.AddRange(ents.Where(p => p.GetType() == j));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult((OperationResult)Result.AppFault);
+            }
+            
             return SaveAsync();
         }
-        [MethodCategory(FunctionRegistry.MethodCategory.New)]
+        [MethodCategory(MethodCategory.New)]
         public OperationResult BulkAdd([NotNull] [ItemNotNull] IEnumerable<object> entities)
         {
-            return TaskExtensions.Yield(BulkAddAsync(entities));
+            return BulkAddAsync(entities).Yield();
         }
 
 
@@ -287,7 +302,7 @@ namespace TheXDS.Triton.Component
         }
         public virtual OperationResult Update<TModel>([NotNull] TModel entity) where TModel : class, new()
         {
-            return TaskExtensions.Yield(UpdateAsync(entity));
+            return UpdateAsync(entity).Yield();
         }
 
         public Task<OperationResult> DeleteAsync<TModel>([NotNull] TModel entity) where TModel : class, ISoftDeletable, new()
@@ -298,7 +313,7 @@ namespace TheXDS.Triton.Component
         }
         public virtual OperationResult Delete<TModel>([NotNull] TModel entity) where TModel : class, ISoftDeletable, new()
         {
-            return TaskExtensions.Yield(DeleteAsync(entity));
+            return DeleteAsync(entity).Yield();
         }
 
         public Task<OperationResult> PurgeAsync<TModel>([NotNull] TModel entity) where TModel : class, new()
@@ -311,7 +326,7 @@ namespace TheXDS.Triton.Component
 
         public virtual OperationResult Purge<TModel>([NotNull] TModel entity) where TModel : class, new()
         {
-            return TaskExtensions.Yield(PurgeAsync(entity));
+            return PurgeAsync(entity).Yield();
         }
 
         public Task<OperationResult> UndeleteAsync<TModel, TKey>(TKey id) 
@@ -330,10 +345,11 @@ namespace TheXDS.Triton.Component
             where TModel : ModelBase<TKey>, ISoftDeletable, new()
             where TKey : struct, IComparable<TKey>
         {
-            return TaskExtensions.Yield(UndeleteAsync<TModel,TKey>(id));
+            return UndeleteAsync<TModel,TKey>(id).Yield();
         }
 
         #endregion
+        
         public bool ChangesPending()
         {
             return Context.ChangeTracker.Entries().Any(p => p.State != EntityState.Unchanged);
@@ -384,29 +400,46 @@ namespace TheXDS.Triton.Component
         {
             return Context.Set<TModel>() ?? throw new InvalidOperationException(St.Service_doesnt_handle_model);
         }
-
-        public abstract IQueryable<TModel> All<TModel>() where TModel : class, new();
-        public abstract IQueryable All(Type model);
-
-        public Task<List<TModel>> AllAsync<TModel>() where TModel : class, new()
+        [NotNull]
+        private T Set<T>([NotNull]Type model) where T:class
         {
-            return All<TModel>().ToListAsync();
+            var t = typeof(DbSet<>).MakeGenericType(model);
+
+            var prop = Context.GetType().GetProperties().FirstOrDefault(p => p.PropertyType.Implements(t))
+                   ?? throw new InvalidOperationException(St.Service_doesnt_handle_model);
+            return (prop.GetMethod?.Invoke(Context, new object[0]) as T)
+                   ?? throw new InvalidOperationException(St.Service_doesnt_handle_model);
         }
-        public async Task<IList> AllAsync(Type model)
+        [DebuggerStepThrough]
+        public IQueryable<TModel> All<TModel>() where TModel : class, new()
         {
-            var l = new List<object>();
+            return Set<TModel>();
+        }
+        [DebuggerStepThrough]
+        public IQueryable All(Type model)
+        {
+            return Set<IQueryable>(model);
+        }
+        public IQueryable<TModel> AllBase<TModel>() where TModel : class
+        {
+            return Context.GetType().GetProperties().Where(p => p.PropertyType.Implements(typeof(DbSet<TModel>)))
+                .SelectMany(p => p.GetMethod.Invoke(Context, new object[0]) as IQueryable<TModel>) as IQueryable<TModel>;
 
+        }
+        public async Task<IQueryable<TModel>> AllAsync<TModel>() where TModel : class, new()
+        {
+            return (await All<TModel>().ToListAsync()).AsQueryable();
+        }
+        public async Task<IQueryable> AllAsync(Type model)
+        {
+            var l = new System.Collections.Generic.List<object>();
             void LoadToList()
             {
                 foreach (var j in All(model)) l.Add(j);
             }
-
             await Task.Run(LoadToList);
-            return l;
+            return l.AsQueryable();
         }
-
-        public abstract IQueryable<TModel> AllBase<TModel>() where TModel : class;
-
     }
 
 
@@ -452,7 +485,7 @@ namespace TheXDS.Triton.Component
                     msj = St.Service_Result_NoMatch;
                     break;
                 default:
-                    msj = string.Format(St.Service_Result_Unk, Ee.NameOf(result));
+                    msj = string.Format(St.Service_Result_Unk, result.NameOf());
                     break;
             }
             return new OperationResult(result,msj);
