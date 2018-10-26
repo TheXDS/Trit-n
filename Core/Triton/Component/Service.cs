@@ -245,11 +245,13 @@ namespace TheXDS.Triton.Component
             Set<TModel>().Add(newEntity);
             return SaveAsync();
         }
+
         [MethodCategory(MethodCategory.New)]
         public OperationResult Add<TModel>([NotNull] TModel newEntity) where TModel : class, new()
         {
             return AddAsync(newEntity).Yield();
         }
+
         [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> BulkAddAsync<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities) where TModel : class, new()
         {
@@ -257,20 +259,24 @@ namespace TheXDS.Triton.Component
             Context.AddRange(entities);
             return SaveAsync();
         }
+
         [MethodCategory(MethodCategory.New)]
         public OperationResult BulkAdd<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities)
             where TModel : class, new()
         {
             return BulkAddAsync(entities).Yield();
         }
+
         [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> BulkAddAsync([NotNull] [ItemNotNull] IEnumerable<object> entities)
         {
+            if (PreChecksFail(out var fails)) return Task.FromResult(fails);
+
             var ents = entities as object[] ?? entities.ToArray();
             var tpes = ents.ToTypes().Distinct().ToArray();
 
-            foreach (var j in tpes)
-                if (PreChecksFail(out var fails,j)) return Task.FromResult(fails);
+            if (tpes.Any(j => !Handles(j)))
+                return Task.FromResult((OperationResult) Result.ValidationFault);
 
             try
             {
@@ -279,11 +285,12 @@ namespace TheXDS.Triton.Component
             }
             catch (Exception e)
             {
-                return Task.FromResult((OperationResult)Result.AppFault);
+                return Task.FromResult(new OperationResult(Result.AppFault,e.Message));
             }
             
             return SaveAsync();
         }
+
         [MethodCategory(MethodCategory.New)]
         public OperationResult BulkAdd([NotNull] [ItemNotNull] IEnumerable<object> entities)
         {
@@ -305,6 +312,8 @@ namespace TheXDS.Triton.Component
             return UpdateAsync(entity).Yield();
         }
 
+
+
         public Task<OperationResult> DeleteAsync<TModel>([NotNull] TModel entity) where TModel : class, ISoftDeletable, new()
         {
             if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
@@ -315,6 +324,22 @@ namespace TheXDS.Triton.Component
         {
             return DeleteAsync(entity).Yield();
         }
+
+        public Task<OperationResult> BulkDeleteAsync<TModel>([NotNull] IEnumerable<TModel> entities)
+            where TModel : class, ISoftDeletable, new()
+        {
+            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
+            foreach (var j in entities)
+            {
+                j.IsDeleted = true;
+
+            }
+
+            return SaveAsync();
+        }
+
+
+
 
         public Task<OperationResult> PurgeAsync<TModel>([NotNull] TModel entity) where TModel : class, new()
         {
