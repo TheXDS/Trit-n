@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
-    <PackageReference Include="TheXDS.MCART.NetStandard" Version="0.8.9.7" />
+    <PackageReference Include="TheXDS.MCART.NetStandard" Version="0.9.1.1" />
   </ItemGroup>
 
   <ItemGroup>

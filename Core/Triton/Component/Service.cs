@@ -6,19 +6,20 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Types.Extensions;
+using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
+using static TheXDS.MCART.Types.Extensions.TaskExtensions;
 using TheXDS.Triton.Annotations;
 using TheXDS.Triton.Models.Base;
-using Ee= TheXDS.MCART.Types.Extensions.EnumExtensions;
-using MemberInfoExtensions = TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
+using static TheXDS.MCART.Types.Extensions.EnumExtensions;
+using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 using St = TheXDS.Triton.Resources.Strings;
-using TaskExtensions = TheXDS.MCART.Types.Extensions.TaskExtensions;
 
 namespace TheXDS.Triton.Component
 {
@@ -26,43 +27,111 @@ namespace TheXDS.Triton.Component
     {
         public static int ServerTimeout = 15000;
     }
+
+    /// <summary>
+    ///     Define una serie de miembros a implementar por una clase que
+    ///     permita el registro de información de bitácora sobre los cambios
+    ///     realizados en una base de datos.
+    /// </summary>
     public interface IDbLogger
     {
+        /// <summary>
+        ///     Escribe una nueva entrada de bitácora con la información sobre
+        ///     los cambios realizados en una base de datos desde el último
+        ///     guardado.
+        /// </summary>
+        /// <param name="changes">
+        ///     Objeto que contiene una colección de seguimiento de los cambios
+        ///     realizados en la base de datos.
+        /// </param>
         void Log(ChangeTracker changes);
+        /// <summary>
+        ///     Escribe de forma asíncrona una nueva entrada de bitácora con la
+        ///     información sobre los cambios realizados en una base de datos
+        ///     desde el último guardado.
+        /// </summary>
+        /// <param name="changes">
+        ///     Objeto que contiene una colección de seguimiento de los cambios
+        ///     realizados en la base de datos.
+        /// </param>
+        /// <returns>
+        ///     Una tarea que permite observar el estado de la operación.
+        /// </returns>
         Task LogAsync(ChangeTracker changes);
     }
+
+    /// <summary>
+    ///     Define una serie de miembros a implementar por una clase que pueda
+    ///     otorgar o denegar solicitudes de elevación de permisos para
+    ///     ejecutar un método específico.
+    /// </summary>
     public interface ISecurityElevator
     {
-        bool Elevate(MethodInfo method);
+        bool Elevate(MethodBase method);
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    ///     Atributo que anota un valor que describe la categoría a la que un
+    ///     método pertenece, permitiendo o denegando la ejecución del mismo.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class MethodCategoryAttribute : Attribute, IValueAttribute<MethodCategory>
     {
+        /// <inheritdoc />
+        /// <summary>
+        ///     Marca un método con el atributo de categoría de seguridad
+        ///     especificado.
+        /// </summary>
+        /// <param name="value">
+        ///     Categoría de seguridad a la que el método pertenece.
+        /// </param>
         public MethodCategoryAttribute(MethodCategory value)
         {
             Value = value;
         }
 
         /// <inheritdoc />
-        /// <summary>Obtiene el valor de este atributo.</summary>
+        /// <summary>
+        ///     Obtiene el valor de este atributo.
+        /// </summary>
         public MethodCategory Value { get; }
     }
+
+    /// <summary>
+    ///     Contiene un registro de los métodos con atributos de seguridad
+    ///     registrados por la aplicación.
+    /// </summary>
     public static class FunctionRegistry
     {
-        /// <summary>
-        ///     Diccionario de sólo lectura que contiene a todas las funciones
-        ///     registradas para participar el el mecanismo de seguridad junto
-        ///     a un valor que describe la categoría de la función.
-        /// </summary>
-        public static IReadOnlyDictionary<MethodInfo, MethodCategory> Functions => Funcs;
-
         private static readonly HashSet<Type> RegisteredTypes = new HashSet<Type>();
         private static readonly Dictionary<MethodInfo, MethodCategory> Funcs = new Dictionary<MethodInfo, MethodCategory>();
 
+        /// <summary>
+        ///     Diccionario de sólo lectura que contiene a todos los métodos
+        ///     registrados para participar el el mecanismo de seguridad junto
+        ///     a un valor que describe la categoría de seguridad del mismo.
+        /// </summary>
+        public static IReadOnlyDictionary<MethodInfo, MethodCategory> Functions => Funcs;
+        
+        /// <summary>
+        ///     Registra los métodos del tipo especificado para participar en
+        ///     el mecanismo de seguridad de <see cref="TheXDS.Triton"/>.
+        /// </summary>
+        /// <typeparam name="T">Tipo a registrar.</typeparam>
+        [Thunk]
         public static void Register<T>()
         {
-            var t = typeof(T);
+            Register(typeof(T));
+        }
+
+        /// <summary>
+        ///     Registra los métodos del tipo especificado para participar en
+        ///     el mecanismo de seguridad de <see cref="TheXDS.Triton"/>.
+        /// </summary>
+        /// <param name="t">Tipo a registrar.</param>
+        public static void Register(Type t)
+        {
             lock (RegisteredTypes)
             lock (Funcs)
             {
@@ -74,9 +143,25 @@ namespace TheXDS.Triton.Component
                 }
             }
         }
+
+        /// <summary>
+        ///     Quita del registro del mecanismo de seguridad a los métodos del
+        ///     tipo especificado.
+        /// </summary>
+        /// <typeparam name="T">Tipo a remover del registro.</typeparam>
+        [Thunk]
         public static void UnRegister<T>()
         {
-            var t = typeof(T);
+            UnRegister(typeof(T));
+        }
+
+        /// <summary>
+        ///     Quita del registro del mecanismo de seguridad a los métodos del
+        ///     tipo especificado.
+        /// </summary>
+        /// <param name="t">Tipo a remover del registro.</param>
+        public static void UnRegister(Type t)
+        {
             lock (RegisteredTypes)
             lock (Funcs)
             {
@@ -147,16 +232,29 @@ namespace TheXDS.Triton.Component
         Tool = 32,
 
         /// <summary>
-        ///     Método de función administrativa.
+        ///     Método de función de configuración.
         /// </summary>
-        Admin = ReadWrite | Tool,
+        Config = 64,
 
         /// <summary>
-        ///     Método restringido a su invocación por superusuarios
+        ///     Método de permisos de supervisor.
+        /// </summary>
+        Manager = ReadWrite | Tool,
+
+        /// <summary>
+        ///     Método de función administrativa.
+        /// </summary>
+        Admin = Manager | Config,
+        /// <summary>
+        ///     Método restringido a su invocación por super-usuarios
         /// </summary>
         Root = -1
     }
 
+    /// <summary>
+    ///     Clase base que provee de toda la funcionalidad de acceso a un
+    ///     contexto de base de datos.
+    /// </summary>
     public abstract class Service
     {
         /// <summary>
@@ -211,13 +309,45 @@ namespace TheXDS.Triton.Component
             return string.Format(St.Service_Friendly_Name, typeof(T).NameOf());
         }
 
-        [NotNull] protected abstract DbContext Context { get; }
-        protected abstract IDbLogger Logger { get; }
-        protected abstract ISecurityElevator Elevator { get; }
+        /// <summary>
+        ///     Contexto de datos asociado a esta instancia de la clase
+        ///     <see cref="Service"/>.
+        /// </summary>
+        [NotNull] protected DbContext Context { get; }
 
-        private bool PreChecksFail(out OperationResult failingResult, Type objType = null, [CallerMemberName] string caller = null)
+        /// <summary>
+        ///     Objeto de escritura de bitácora asociado a esta instancia.
+        /// </summary>
+        [CanBeNull] protected IDbLogger Logger { get; }
+
+        /// <summary>
+        ///     Objeto de elevación de seguridad asociado a esta instancia.
+        /// </summary>
+        [CanBeNull] protected ISecurityElevator Elevator { get; }
+
+        protected bool PreChecksFail(out OperationResult failingResult, Type objType = null, [CallerMemberName] string caller = null)
         {
-            if (!Elevator?.Elevate(GetType().GetMethods().FirstOrDefault(p=>p.Name==caller)) ?? false)
+            return PreChecksFail(out failingResult, objType, GetType().GetMethods().FirstOrDefault(p=>p.Name==caller));
+        }
+
+        protected bool PreChecksFail<TModel>(out OperationResult failingResult, [CallerMemberName] string caller = null)
+        {
+            return PreChecksFail(out failingResult, typeof(TModel), caller);
+        }
+
+        protected bool PreChecksFail<TModel>(out OperationResult failingResult, MethodBase caller)
+        {
+            return PreChecksFail(out failingResult, typeof(TModel), caller);
+        }
+
+        protected bool PreChecksFail(out OperationResult failingResult, MethodBase caller)
+        {
+            return PreChecksFail(out failingResult, null, caller);
+        }
+
+        protected bool PreChecksFail(out OperationResult failingResult, Type objType, MethodBase caller)
+        {
+            if (!Elevator?.Elevate(caller) ?? false)
             {
                 failingResult = Result.Forbidden;
                 return true;
@@ -231,38 +361,40 @@ namespace TheXDS.Triton.Component
             return false;
         }
 
-        private bool PreChecksFail<TModel>(out OperationResult failingResult, [CallerMemberName] string caller = null)
-        {
-            return PreChecksFail(out failingResult, typeof(TModel),caller);
-        }
-
         #region Operaciones CRUD
 
+        /// <summary>
+        ///     Permite agregar una nueva entidad al contexto de datos de forma
+        ///     asíncrona.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo del modelo de datos.</typeparam>
+        /// <param name="newEntity">Nueva entidad a añadir.</param>
+        /// <returns></returns>
         [MethodCategory(MethodCategory.New)]
-        public Task<OperationResult> AddAsync<TModel>([NotNull] TModel newEntity) where TModel : class, new()
+        public Task<OperationResult> AddAsync<TModel>([NotNull] TModel newEntity) where TModel : ModelBase, new()
         {
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return fails;
             Set<TModel>().Add(newEntity);
             return SaveAsync();
         }
 
         [MethodCategory(MethodCategory.New)]
-        public OperationResult Add<TModel>([NotNull] TModel newEntity) where TModel : class, new()
+        public OperationResult Add<TModel>([NotNull] TModel newEntity) where TModel : ModelBase, new()
         {
             return AddAsync(newEntity).Yield();
         }
 
         [MethodCategory(MethodCategory.New)]
-        public Task<OperationResult> BulkAddAsync<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities) where TModel : class, new()
+        public Task<OperationResult> BulkAddAsync<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities) where TModel : ModelBase, new()
         {
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return fails;
             Context.AddRange(entities);
             return SaveAsync();
         }
 
         [MethodCategory(MethodCategory.New)]
         public OperationResult BulkAdd<TModel>([NotNull] [ItemNotNull] IEnumerable<TModel> entities)
-            where TModel : class, new()
+            where TModel : ModelBase, new()
         {
             return BulkAddAsync(entities).Yield();
         }
@@ -270,25 +402,7 @@ namespace TheXDS.Triton.Component
         [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> BulkAddAsync([NotNull] [ItemNotNull] IEnumerable<object> entities)
         {
-            if (PreChecksFail(out var fails)) return Task.FromResult(fails);
-
-            var ents = entities as object[] ?? entities.ToArray();
-            var tpes = ents.ToTypes().Distinct().ToArray();
-
-            if (tpes.Any(j => !Handles(j)))
-                return Task.FromResult((OperationResult) Result.ValidationFault);
-
-            try
-            {
-                foreach (var j in tpes)
-                    Context.AddRange(ents.Where(p => p.GetType() == j));
-            }
-            catch (Exception e)
-            {
-                return Task.FromResult(new OperationResult(Result.AppFault,e.Message));
-            }
-            
-            return SaveAsync();
+            return BulkOp(entities, (c, e) => c.AddRange(e), MethodBase.GetCurrentMethod());
         }
 
         [MethodCategory(MethodCategory.New)]
@@ -297,75 +411,204 @@ namespace TheXDS.Triton.Component
             return BulkAddAsync(entities).Yield();
         }
 
-
-
-
-
-
-        public Task<OperationResult> UpdateAsync<TModel>([NotNull] TModel entity) where TModel : class, new()
+        [DebuggerStepThrough]
+        [MethodCategory(MethodCategory.View)]
+        public IQueryable<TModel> All<TModel>() where TModel : ModelBase, new()
         {
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
-            return !ChangesPending(entity) ? Task.FromResult((OperationResult) Result.NoMatch) : SaveAsync();
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+
+            var q = Set<TModel>() as IQueryable<TModel>;
+            if (typeof(TModel).Implements<ISoftDeletable>())
+            {
+                q = q.OfType<ISoftDeletable>().Where(p => !p.IsDeleted).OfType<TModel>();
+            }
+            return q;
         }
-        public virtual OperationResult Update<TModel>([NotNull] TModel entity) where TModel : class, new()
+
+        [DebuggerStepThrough]
+        [MethodCategory(MethodCategory.View)]
+        public IQueryable All(Type model)
         {
-            return UpdateAsync(entity).Yield();
+            if (PreChecksFail(out var fails, model, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            return Set<IQueryable>(model);
+        }
+
+        [MethodCategory(MethodCategory.View)]
+        public IQueryable<TModel> AllBase<TModel>() where TModel : class
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            return Context.GetType().GetProperties().Where(p => p.PropertyType.Implements(typeof(DbSet<TModel>)))
+                .SelectMany(p => p.GetMethod.Invoke(Context, new object[0]) as IQueryable<TModel>) as IQueryable<TModel>;
+        }
+
+        [MethodCategory(MethodCategory.View)]
+        public async Task<OperationResult<List<TModel>>> AllAsync<TModel>() where TModel : ModelBase, new()
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<List<TModel>>(fails);
+            return await All<TModel>().ToListAsync();
+        }
+
+        [MethodCategory(MethodCategory.View)]
+        public async Task<IQueryable> AllAsync(Type model)
+        {
+            if (PreChecksFail(out var fails, model, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            var l = new List<object>();
+            void LoadToList()
+            {
+                foreach (var j in All(model)) l.Add(j);
+            }
+            await Task.Run(LoadToList);
+            return l.AsQueryable();
+        }
+
+        [MethodCategory(MethodCategory.View)]
+        public async Task<OperationResult<TModel>> Get<TModel, TKey>(TKey id) 
+            where TModel : ModelBase<TKey>, new() 
+            where TKey : struct, IComparable<TKey>
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            var entity = await Context.FindAsync<TModel>(id);
+            if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<TModel>(Result.NoMatch);
+            return entity;
+        }
+        [MethodCategory(MethodCategory.View)]
+        public async Task<OperationResult<ModelBase<TKey>>> Get<TKey>(Type tModel, TKey id)
+            where TKey : struct, IComparable<TKey>
+        {
+            if (PreChecksFail(out var fails, tModel, MethodBase.GetCurrentMethod())) return new OperationResult<ModelBase<TKey>>(fails);
+
+
+            var entity = await Context.FindAsync<TModel>(id);
+            if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<TModel>(Result.NoMatch);
+            return entity;
         }
 
 
 
+
+
+
+        //public Task<OperationResult> UpdateAsync<TModel>([NotNull] TModel entity) where TModel : ModelBase, new()
+        //{
+        //    if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
+        //    return !ChangesPending(entity) ? Task.FromResult((OperationResult) Result.NoMatch) : SaveAsync();
+        //}
+        //public virtual OperationResult Update<TModel>([NotNull] TModel entity) where TModel : ModelBase, new()
+        //{
+        //    return UpdateAsync(entity).Yield();
+        //}
+
+        [MethodCategory(MethodCategory.Delete)]
         public Task<OperationResult> DeleteAsync<TModel>([NotNull] TModel entity) where TModel : class, ISoftDeletable, new()
         {
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return Task.FromResult(fails);
             entity.IsDeleted = true;
-            return UpdateAsync(entity);
+            return SaveAsync();
         }
+
+        [MethodCategory(MethodCategory.Delete)]
         public virtual OperationResult Delete<TModel>([NotNull] TModel entity) where TModel : class, ISoftDeletable, new()
         {
             return DeleteAsync(entity).Yield();
         }
 
+        [MethodCategory(MethodCategory.Delete)]
         public Task<OperationResult> BulkDeleteAsync<TModel>([NotNull] IEnumerable<TModel> entities)
             where TModel : class, ISoftDeletable, new()
         {
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return Task.FromResult(fails);
             foreach (var j in entities)
             {
                 j.IsDeleted = true;
+            }
+            return SaveAsync();
+        }
 
+        [MethodCategory(MethodCategory.Delete)]
+        public OperationResult BulkDelete<TModel>([NotNull] IEnumerable<TModel> entities) 
+            where TModel : class, ISoftDeletable, new()
+        {
+            return BulkDeleteAsync(entities).Yield();
+        }
+
+        [MethodCategory(MethodCategory.Delete)]
+        public Task<OperationResult> PurgeAsync<TModel>([NotNull] TModel entity) where TModel : ModelBase, new()
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return Task.FromResult(fails);
+            Set<TModel>().Remove(entity);
+            return SaveAsync();
+        }
+
+        [MethodCategory(MethodCategory.Delete)]
+        public virtual OperationResult Purge<TModel>([NotNull] TModel entity) where TModel : ModelBase, new()
+        {
+            return PurgeAsync(entity).Yield();
+        }
+
+        [MethodCategory(MethodCategory.Delete)]
+        public Task<OperationResult> BulkPurgeAsync<TModel>([NotNull] IEnumerable<TModel> entities)
+            where TModel : ModelBase, new()
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return fails;
+            Set<TModel>().RemoveRange(entities);
+            return SaveAsync();
+        }
+
+        [MethodCategory(MethodCategory.Delete)]
+        public OperationResult BulkPurge<TModel>([NotNull] IEnumerable<TModel> entities)
+            where TModel : ModelBase, new()
+        {
+            return BulkPurgeAsync(entities).Yield();
+        }
+
+        [MethodCategory(MethodCategory.Delete)]
+        public Task<OperationResult> BulkPurgeAsync([NotNull] IEnumerable<object> entities)
+        {
+            return BulkOp(entities, (c, e) => c.RemoveRange(e), MethodBase.GetCurrentMethod());
+        }
+
+        [MethodCategory(MethodCategory.Delete)]
+        public OperationResult BulkPurge([NotNull] IEnumerable<object> entities)
+        {
+            return BulkPurgeAsync(entities).Yield();
+        }
+
+        private Task<OperationResult> BulkOp(IEnumerable<object> entities, Action<DbContext,IEnumerable<object>> action, MethodBase callee)
+        {
+            if (PreChecksFail(out var fails, callee)) return fails;
+
+            var ents = entities as object[] ?? entities.ToArray();
+            var tpes = ents.ToTypes().Distinct().ToArray();
+
+            if (tpes.Any(j => !Handles(j)))
+                return (OperationResult) Result.ValidationFault;
+
+            try
+            {
+                foreach (var j in tpes)
+                    action(Context, ents.Where(p => p.GetType() == j));
+            }
+            catch (Exception e)
+            {
+                return new OperationResult(Result.AppFault, e.Message);
             }
 
             return SaveAsync();
         }
 
-
-
-
-        public Task<OperationResult> PurgeAsync<TModel>([NotNull] TModel entity) where TModel : class, new()
-        {
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
-            Set<TModel>().Remove(entity);
-            return SaveAsync();
-        }
-
-
-        public virtual OperationResult Purge<TModel>([NotNull] TModel entity) where TModel : class, new()
-        {
-            return PurgeAsync(entity).Yield();
-        }
-
+        [MethodCategory(MethodCategory.Admin)]
         public Task<OperationResult> UndeleteAsync<TModel, TKey>(TKey id) 
             where TModel : ModelBase<TKey>, ISoftDeletable, new()
             where TKey : struct, IComparable<TKey>
         {
-            TModel entity= null;
-
-            if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
-            if (entity is null) return Task.FromResult((OperationResult)Result.NoMatch);
-            if (!entity.IsDeleted) return Task.FromResult((OperationResult)Result.ValidationFault);
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return fails;
+            var entity = Context.Find<TModel>(id);
+            if (entity is null) return (OperationResult)Result.NoMatch;
+            if (!entity.IsDeleted) return (OperationResult)Result.ValidationFault;
             entity.IsDeleted = false;
-            return UpdateAsync(entity);
+            return SaveAsync();
         }
+        [MethodCategory(MethodCategory.Admin)]
         public virtual OperationResult Undelete<TModel, TKey>(TKey id)
             where TModel : ModelBase<TKey>, ISoftDeletable, new()
             where TKey : struct, IComparable<TKey>
@@ -373,13 +616,26 @@ namespace TheXDS.Triton.Component
             return UndeleteAsync<TModel,TKey>(id).Yield();
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
         #endregion
         
         public bool ChangesPending()
         {
             return Context.ChangeTracker.Entries().Any(p => p.State != EntityState.Unchanged);
         }
-        public bool ChangesPending<TModel>(TModel entity) where TModel : class, new()
+        public bool ChangesPending<TModel>(TModel entity) where TModel : ModelBase, new()
         {
             return Context.ChangeTracker.Entries().Any(p => p.Entity == entity && p.State != EntityState.Unchanged);
         }
@@ -421,7 +677,7 @@ namespace TheXDS.Triton.Component
         }
 
         [NotNull]
-        private DbSet<TModel> Set<TModel>() where TModel : class, new()
+        private DbSet<TModel> Set<TModel>() where TModel : ModelBase, new()
         {
             return Context.Set<TModel>() ?? throw new InvalidOperationException(St.Service_doesnt_handle_model);
         }
@@ -434,36 +690,6 @@ namespace TheXDS.Triton.Component
                    ?? throw new InvalidOperationException(St.Service_doesnt_handle_model);
             return (prop.GetMethod?.Invoke(Context, new object[0]) as T)
                    ?? throw new InvalidOperationException(St.Service_doesnt_handle_model);
-        }
-        [DebuggerStepThrough]
-        public IQueryable<TModel> All<TModel>() where TModel : class, new()
-        {
-            return Set<TModel>();
-        }
-        [DebuggerStepThrough]
-        public IQueryable All(Type model)
-        {
-            return Set<IQueryable>(model);
-        }
-        public IQueryable<TModel> AllBase<TModel>() where TModel : class
-        {
-            return Context.GetType().GetProperties().Where(p => p.PropertyType.Implements(typeof(DbSet<TModel>)))
-                .SelectMany(p => p.GetMethod.Invoke(Context, new object[0]) as IQueryable<TModel>) as IQueryable<TModel>;
-
-        }
-        public async Task<IQueryable<TModel>> AllAsync<TModel>() where TModel : class, new()
-        {
-            return (await All<TModel>().ToListAsync()).AsQueryable();
-        }
-        public async Task<IQueryable> AllAsync(Type model)
-        {
-            var l = new System.Collections.Generic.List<object>();
-            void LoadToList()
-            {
-                foreach (var j in All(model)) l.Add(j);
-            }
-            await Task.Run(LoadToList);
-            return l.AsQueryable();
         }
     }
 
@@ -518,6 +744,12 @@ namespace TheXDS.Triton.Component
 
         public static implicit operator Service.Result(OperationResult result) => result.Result;
 
+        public static implicit operator Task<OperationResult>(OperationResult result) => Task.FromResult(result);
+
+        public static implicit operator OperationResultException(OperationResult result) => new OperationResultException(result);
+
+        public static explicit operator OperationResult(OperationResultException result) => result.Result;
+
         /// <inheritdoc />
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
@@ -543,8 +775,74 @@ namespace TheXDS.Triton.Component
         }
     }
 
+
+
+
+
+    [Serializable]
+    public class OperationResultException : Exception
+    {
+        /// <summary>
+        ///     Resultado arrojado por la operación
+        /// </summary>
+        public OperationResult Result { get; }
+
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="OperationResultException"/>
+        /// </summary>
+        /// <param name="result">
+        ///     Resultado de la operación.
+        /// </param>
+        public OperationResultException(OperationResult result) : base(result.Message)
+        {
+            Result = result;
+        }
+
+        public OperationResultException(OperationResult result, Exception inner) : base(result.Message, inner)
+        {
+            Result = result;
+        }
+
+        public OperationResultException(Service.Result result) : this(result, result.NameOf())
+        {
+        }
+
+        public OperationResultException(Service.Result result, string message) : base(message)
+        {
+            Result = new OperationResult(result, message);
+        }
+
+        public OperationResultException(Service.Result result, string message, Exception inner) : base(message, inner)
+        {
+            Result = new OperationResult(result, message);
+        }
+
+        /// <inheritdoc />
+        protected OperationResultException(SerializationInfo info,StreamingContext context) : base(info, context)
+        {
+        }
+    }
+
     public class OperationResult<T> : OperationResult
     {
+        public OperationResult(OperationResult result) : this(result, default)
+        {
+        }
+
+        public OperationResult() : this(default(T))
+        {
+        }
+
+        public OperationResult(T relatedData) : this(Service.Result.Ok, relatedData)
+        {
+        }
+
+        public OperationResult(OperationResult result, T relatedData) : base(result.Result)
+        {
+            RelatedData = relatedData;
+        }
+
         public OperationResult(Service.Result result, T relatedData) : base(result)
         {
             RelatedData = relatedData;
@@ -576,5 +874,8 @@ namespace TheXDS.Triton.Component
         {
             return new OperationResult<T>(Service.Result.Ok, relatedData);
         }
+
+        public static implicit operator Task<OperationResult<T>>(OperationResult<T> result) => Task.FromResult(result);
+
     }
 }

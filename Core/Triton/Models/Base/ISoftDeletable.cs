@@ -12,5 +12,10 @@
         ///     borrado o no.
         /// </summary>
         bool IsDeleted { get; set; }
+
+        /// <summary>
+        ///     Obtiene un valor que indica si la entidad puede ser borrada.
+        /// </summary>
+        bool CanBeDeleted { get; }
     }
 }

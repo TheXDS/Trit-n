@@ -37,8 +37,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TheXDS.MCART.NetStandard, Version=0.8.9.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TheXDS.MCART.NetStandard.0.8.9.7\lib\netstandard2.0\TheXDS.MCART.NetStandard.dll</HintPath>
+    <Reference Include="TheXDS.MCART.NetStandard, Version=0.9.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\TheXDS.MCART.NetStandard.0.9.1.1\lib\netstandard2.0\TheXDS.MCART.NetStandard.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -47,13 +47,13 @@
     <Compile Include="ViewModel\ViewModelBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Core\Triton\Triton.csproj">
       <Project>{52925c81-e9d0-40f6-98fb-08c2ea1d1721}</Project>
       <Name>Triton</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
