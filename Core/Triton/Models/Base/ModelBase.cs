@@ -23,7 +23,7 @@ namespace TheXDS.Triton.Models.Base
 
     /// <summary>
     ///     Clase base para todos los modelos de datos administrables por
-    ///     <see cref="TheXDS.Triton"/>.
+    ///     <see cref="Triton"/>.
     /// </summary>
     public abstract class ModelBase
     {
@@ -45,6 +45,10 @@ namespace TheXDS.Triton.Models.Base
         private protected abstract Type KeyType { get; }
     }
 
+    /// <summary>
+    ///     Clase base para todos los modelos que soporten borrado suave.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class SoftDeletableModelBase<T> : ModelBase<T>, ISoftDeletable where T : struct, IComparable<T>
     {
         /// <inheritdoc />

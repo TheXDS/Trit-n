@@ -10,14 +10,13 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TheXDS.MCART;
-using TheXDS.MCART.Attributes;
-using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
-using static TheXDS.MCART.Types.Extensions.TaskExtensions;
 using TheXDS.Triton.Annotations;
 using TheXDS.Triton.Models.Base;
+using TheXDS.Triton.Component.Base;
 using static TheXDS.MCART.Types.Extensions.EnumExtensions;
+using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
+using static TheXDS.MCART.Types.Extensions.TaskExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 using St = TheXDS.Triton.Resources.Strings;
 
@@ -26,229 +25,6 @@ namespace TheXDS.Triton.Component
     public static class Configuration
     {
         public static int ServerTimeout = 15000;
-    }
-
-    /// <summary>
-    ///     Define una serie de miembros a implementar por una clase que
-    ///     permita el registro de información de bitácora sobre los cambios
-    ///     realizados en una base de datos.
-    /// </summary>
-    public interface IDbLogger
-    {
-        /// <summary>
-        ///     Escribe una nueva entrada de bitácora con la información sobre
-        ///     los cambios realizados en una base de datos desde el último
-        ///     guardado.
-        /// </summary>
-        /// <param name="changes">
-        ///     Objeto que contiene una colección de seguimiento de los cambios
-        ///     realizados en la base de datos.
-        /// </param>
-        void Log(ChangeTracker changes);
-        /// <summary>
-        ///     Escribe de forma asíncrona una nueva entrada de bitácora con la
-        ///     información sobre los cambios realizados en una base de datos
-        ///     desde el último guardado.
-        /// </summary>
-        /// <param name="changes">
-        ///     Objeto que contiene una colección de seguimiento de los cambios
-        ///     realizados en la base de datos.
-        /// </param>
-        /// <returns>
-        ///     Una tarea que permite observar el estado de la operación.
-        /// </returns>
-        Task LogAsync(ChangeTracker changes);
-    }
-
-    /// <summary>
-    ///     Define una serie de miembros a implementar por una clase que pueda
-    ///     otorgar o denegar solicitudes de elevación de permisos para
-    ///     ejecutar un método específico.
-    /// </summary>
-    public interface ISecurityElevator
-    {
-        bool Elevate(MethodBase method);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Atributo que anota un valor que describe la categoría a la que un
-    ///     método pertenece, permitiendo o denegando la ejecución del mismo.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
-    public sealed class MethodCategoryAttribute : Attribute, IValueAttribute<MethodCategory>
-    {
-        /// <inheritdoc />
-        /// <summary>
-        ///     Marca un método con el atributo de categoría de seguridad
-        ///     especificado.
-        /// </summary>
-        /// <param name="value">
-        ///     Categoría de seguridad a la que el método pertenece.
-        /// </param>
-        public MethodCategoryAttribute(MethodCategory value)
-        {
-            Value = value;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Obtiene el valor de este atributo.
-        /// </summary>
-        public MethodCategory Value { get; }
-    }
-
-    /// <summary>
-    ///     Contiene un registro de los métodos con atributos de seguridad
-    ///     registrados por la aplicación.
-    /// </summary>
-    public static class FunctionRegistry
-    {
-        private static readonly HashSet<Type> RegisteredTypes = new HashSet<Type>();
-        private static readonly Dictionary<MethodInfo, MethodCategory> Funcs = new Dictionary<MethodInfo, MethodCategory>();
-
-        /// <summary>
-        ///     Diccionario de sólo lectura que contiene a todos los métodos
-        ///     registrados para participar el el mecanismo de seguridad junto
-        ///     a un valor que describe la categoría de seguridad del mismo.
-        /// </summary>
-        public static IReadOnlyDictionary<MethodInfo, MethodCategory> Functions => Funcs;
-        
-        /// <summary>
-        ///     Registra los métodos del tipo especificado para participar en
-        ///     el mecanismo de seguridad de <see cref="TheXDS.Triton"/>.
-        /// </summary>
-        /// <typeparam name="T">Tipo a registrar.</typeparam>
-        [Thunk]
-        public static void Register<T>()
-        {
-            Register(typeof(T));
-        }
-
-        /// <summary>
-        ///     Registra los métodos del tipo especificado para participar en
-        ///     el mecanismo de seguridad de <see cref="TheXDS.Triton"/>.
-        /// </summary>
-        /// <param name="t">Tipo a registrar.</param>
-        public static void Register(Type t)
-        {
-            lock (RegisteredTypes)
-            lock (Funcs)
-            {
-                    if (RegisteredTypes.Contains(t)) return;
-                RegisteredTypes.Add(t);
-                foreach (var j in t.GetMethods())
-                {
-                    Funcs.Add(j,j.GetAttr<MethodCategoryAttribute>()?.Value ?? MethodCategory.Unspecified);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Quita del registro del mecanismo de seguridad a los métodos del
-        ///     tipo especificado.
-        /// </summary>
-        /// <typeparam name="T">Tipo a remover del registro.</typeparam>
-        [Thunk]
-        public static void UnRegister<T>()
-        {
-            UnRegister(typeof(T));
-        }
-
-        /// <summary>
-        ///     Quita del registro del mecanismo de seguridad a los métodos del
-        ///     tipo especificado.
-        /// </summary>
-        /// <param name="t">Tipo a remover del registro.</param>
-        public static void UnRegister(Type t)
-        {
-            lock (RegisteredTypes)
-            lock (Funcs)
-            {
-                if (!RegisteredTypes.Contains(t)) return;
-                RegisteredTypes.Remove(t);
-                foreach (var j in t.GetMethods())
-                {
-                    Funcs.Remove(j);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Describe la categoría a la cual un método pertenece.
-    /// </summary>
-    [Flags]
-    public enum MethodCategory
-    {
-        /// <summary>
-        ///     Método cuya familia no ha sido especificada, o método de funcionalidad genérica.
-        /// </summary>
-        Unspecified,
-
-        /// <summary>
-        ///     Método de apertura de vista.
-        /// </summary>
-        Show,
-
-        /// <summary>
-        ///     Método de lectura de datos.
-        /// </summary>
-        View,
-
-        /// <summary>
-        ///     Método genérico de lectura.
-        /// </summary>
-        Read,
-
-        /// <summary>
-        ///     Método de creación.
-        /// </summary>
-        New,
-
-        /// <summary>
-        ///     Método de edición.
-        /// </summary>
-        Edit = 8,
-
-        /// <summary>
-        ///     Método de borrado.
-        /// </summary>
-        Delete = 16,
-
-        /// <summary>
-        ///     Método genérico de escritura.
-        /// </summary>
-        Write = New | Edit | Delete,
-
-        /// <summary>
-        ///     Método genérico de lectura/escritura.
-        /// </summary>
-        ReadWrite = Read | Write,
-
-        /// <summary>
-        ///     Método de función adicional (herramienta)
-        /// </summary>
-        Tool = 32,
-
-        /// <summary>
-        ///     Método de función de configuración.
-        /// </summary>
-        Config = 64,
-
-        /// <summary>
-        ///     Método de permisos de supervisor.
-        /// </summary>
-        Manager = ReadWrite | Tool,
-
-        /// <summary>
-        ///     Método de función administrativa.
-        /// </summary>
-        Admin = Manager | Config,
-        /// <summary>
-        ///     Método restringido a su invocación por super-usuarios
-        /// </summary>
-        Root = -1
     }
 
     /// <summary>
@@ -325,26 +101,74 @@ namespace TheXDS.Triton.Component
         /// </summary>
         [CanBeNull] protected ISecurityElevator Elevator { get; }
 
-        protected bool PreChecksFail(out OperationResult failingResult, Type objType = null, [CallerMemberName] string caller = null)
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="objType">
+        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
+        ///     método no requiere manipular modelos de datos.
+        /// </param>
+        /// <param name="caller">
+        ///     Nombre del método que ha realizado la llamada. Se obtendrá un
+        ///     <see cref="MethodInfo"/> que representa al método especificado.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
+        protected bool PreChecksFail(out OperationResult failingResult, Type objType, [CallerMemberName] string caller = null)
         {
-            return PreChecksFail(out failingResult, objType, GetType().GetMethods().FirstOrDefault(p=>p.Name==caller));
+            return PreChecksFail(out failingResult, objType, GetType().GetMethods().FirstOrDefault(p => p.Name == caller));
         }
 
-        protected bool PreChecksFail<TModel>(out OperationResult failingResult, [CallerMemberName] string caller = null)
-        {
-            return PreChecksFail(out failingResult, typeof(TModel), caller);
-        }
-
-        protected bool PreChecksFail<TModel>(out OperationResult failingResult, MethodBase caller)
-        {
-            return PreChecksFail(out failingResult, typeof(TModel), caller);
-        }
-
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="caller">
+        ///     Nombre del método que ha realizado la llamada. Se obtendrá un
+        ///     <see cref="MethodInfo"/> que representa al método especificado.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
         protected bool PreChecksFail(out OperationResult failingResult, MethodBase caller)
         {
             return PreChecksFail(out failingResult, null, caller);
         }
 
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="objType">
+        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
+        ///     método no requiere manipular modelos de datos.
+        /// </param>
+        /// <param name="caller">
+        ///     Método que ha realizado la llamada.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
         protected bool PreChecksFail(out OperationResult failingResult, Type objType, MethodBase caller)
         {
             if (!Elevator?.Elevate(caller) ?? false)
@@ -361,6 +185,57 @@ namespace TheXDS.Triton.Component
             return false;
         }
 
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
+        ///     método no requiere manipular modelos de datos.
+        /// </typeparam>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="caller">
+        ///     Nombre del método que ha realizado la llamada. Se obtendrá un
+        ///     <see cref="MethodInfo"/> que representa al método especificado.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
+        protected bool PreChecksFail<TModel>(out OperationResult failingResult, [CallerMemberName] string caller = null)
+        {
+            return PreChecksFail(out failingResult, typeof(TModel), caller);
+        }
+
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
+        ///     método no requiere manipular modelos de datos.
+        /// </typeparam>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="caller">
+        ///     Método que ha realizado la llamada.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
+        protected bool PreChecksFail<TModel>(out OperationResult failingResult, MethodBase caller)
+        {
+            return PreChecksFail(out failingResult, typeof(TModel), caller);
+        }
+        
         #region Operaciones CRUD
 
         /// <summary>
@@ -369,7 +244,10 @@ namespace TheXDS.Triton.Component
         /// </summary>
         /// <typeparam name="TModel">Tipo del modelo de datos.</typeparam>
         /// <param name="newEntity">Nueva entidad a añadir.</param>
-        /// <returns></returns>
+        /// <returns>
+        ///     Una tarea que devuelve un <see cref="OperationResult"/> que
+        ///     indica el resultado de la operación.
+        /// </returns>
         [MethodCategory(MethodCategory.New)]
         public Task<OperationResult> AddAsync<TModel>([NotNull] TModel newEntity) where TModel : ModelBase, new()
         {
@@ -411,11 +289,15 @@ namespace TheXDS.Triton.Component
             return BulkAddAsync(entities).Yield();
         }
 
-        [DebuggerStepThrough]
+
+
+
+
+        [DebuggerStepThrough, CanBeNull]
         [MethodCategory(MethodCategory.View)]
-        public IQueryable<TModel> All<TModel>() where TModel : ModelBase, new()
+        public IQueryable<TModel> All<TModel>(out OperationResult fails) where TModel : ModelBase, new()
         {
-            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            if (PreChecksFail<TModel>(out fails, MethodBase.GetCurrentMethod())) return null;            
 
             var q = Set<TModel>() as IQueryable<TModel>;
             if (typeof(TModel).Implements<ISoftDeletable>())
@@ -425,23 +307,37 @@ namespace TheXDS.Triton.Component
             return q;
         }
 
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, CanBeNull]
         [MethodCategory(MethodCategory.View)]
-        public IQueryable All(Type model)
+        public IQueryable<TModel> All<TModel>() where TModel : ModelBase, new() => All<TModel>(out _);
+
+        [DebuggerStepThrough, CanBeNull]
+        [MethodCategory(MethodCategory.View)]
+        public IQueryable All(Type model, out OperationResult fails)
         {
-            if (PreChecksFail(out var fails, model, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            if (PreChecksFail(out fails, model, MethodBase.GetCurrentMethod()))
+            {
+                return null;
+            }
             return Set<IQueryable>(model);
         }
 
+        [DebuggerStepThrough, CanBeNull]
         [MethodCategory(MethodCategory.View)]
-        public IQueryable<TModel> AllBase<TModel>() where TModel : class
+        public IQueryable All(Type model) => All(model, out _);
+
+        [MethodCategory(MethodCategory.View), CanBeNull]
+        public IQueryable<TModel> AllBase<TModel>(out OperationResult fails) where TModel : class
         {
-            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            if (PreChecksFail<TModel>(out fails, MethodBase.GetCurrentMethod())) return null;
             return Context.GetType().GetProperties().Where(p => p.PropertyType.Implements(typeof(DbSet<TModel>)))
                 .SelectMany(p => p.GetMethod.Invoke(Context, new object[0]) as IQueryable<TModel>) as IQueryable<TModel>;
         }
 
-        [MethodCategory(MethodCategory.View)]
+        [MethodCategory(MethodCategory.View), CanBeNull]
+        public IQueryable<TModel> AllBase<TModel>() where TModel : class => AllBase<TModel>(out _);
+
+        [MethodCategory(MethodCategory.View), NotNull]
         public async Task<OperationResult<List<TModel>>> AllAsync<TModel>() where TModel : ModelBase, new()
         {
             if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<List<TModel>>(fails);
@@ -449,20 +345,20 @@ namespace TheXDS.Triton.Component
         }
 
         [MethodCategory(MethodCategory.View)]
-        public async Task<IQueryable> AllAsync(Type model)
+        public async Task<OperationResult<IQueryable>> AllAsync(Type model)
         {
-            if (PreChecksFail(out var fails, model, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            if (PreChecksFail(out var fails, model, MethodBase.GetCurrentMethod())) return new OperationResult<IQueryable>(fails);
             var l = new List<object>();
             void LoadToList()
             {
                 foreach (var j in All(model)) l.Add(j);
             }
             await Task.Run(LoadToList);
-            return l.AsQueryable();
+            return (OperationResult<IQueryable>) l.AsQueryable();
         }
 
         [MethodCategory(MethodCategory.View)]
-        public async Task<OperationResult<TModel>> Get<TModel, TKey>(TKey id) 
+        public async Task<OperationResult<TModel>> GetAsync<TModel, TKey>(TKey id) 
             where TModel : ModelBase<TKey>, new() 
             where TKey : struct, IComparable<TKey>
         {
@@ -471,15 +367,14 @@ namespace TheXDS.Triton.Component
             if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<TModel>(Result.NoMatch);
             return entity;
         }
+
         [MethodCategory(MethodCategory.View)]
-        public async Task<OperationResult<ModelBase<TKey>>> Get<TKey>(Type tModel, TKey id)
+        public async Task<OperationResult<ModelBase<TKey>>> GetAsync<TKey>(Type tModel, TKey id)
             where TKey : struct, IComparable<TKey>
         {
             if (PreChecksFail(out var fails, tModel, MethodBase.GetCurrentMethod())) return new OperationResult<ModelBase<TKey>>(fails);
-
-
-            var entity = await Context.FindAsync<TModel>(id);
-            if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<TModel>(Result.NoMatch);
+            var entity = await Context.FindAsync(tModel, id) as ModelBase<TKey>;
+            if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<ModelBase<TKey>>(Result.NoMatch);
             return entity;
         }
 
@@ -573,7 +468,7 @@ namespace TheXDS.Triton.Component
             return BulkPurgeAsync(entities).Yield();
         }
 
-        private Task<OperationResult> BulkOp(IEnumerable<object> entities, Action<DbContext,IEnumerable<object>> action, MethodBase callee)
+        private Task<OperationResult> BulkOp([NotNull, ItemNotNull] IEnumerable<object> entities, [NotNull] Action<DbContext,IEnumerable<object>> action, [NotNull] MethodBase callee)
         {
             if (PreChecksFail(out var fails, callee)) return fails;
 
