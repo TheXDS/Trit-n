@@ -5,8 +5,9 @@ using System.Linq;
 using System.Reflection;
 using TheXDS.Triton.Annotations;
 using TheXDS.Triton.Component.Base;
+using TheXDS.Triton.Models.Base;
 
-namespace TheXDS.Triton.Models.Base
+namespace TheXDS.Triton.ViewModel
 {
     public abstract class ViewModel<TModel, TKey> : NotifyPropertyChanged
         where TModel : ModelBase<TKey>, new()

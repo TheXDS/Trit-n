@@ -74,12 +74,13 @@ namespace TheXDS.Triton.Component
             /// </summary>
             NoMatch = 32
         }
-       
+
         /// <summary>
         ///     Obtiene un nombre amigable para un servicio.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [NotNull]
         public static string FriendlyName<T>() where T : Service
         {
             return string.Format(St.Service_Friendly_Name, typeof(T).NameOf());
@@ -105,6 +106,57 @@ namespace TheXDS.Triton.Component
         ///     Realiza comprobaciones estandar sobre las llamadas regulares a
         ///     las funciones de este servicio.
         /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
+        ///     método no requiere manipular modelos de datos.
+        /// </typeparam>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="caller">
+        ///     Nombre del método que ha realizado la llamada. Se obtendrá un
+        ///     <see cref="MethodInfo"/> que representa al método especificado.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
+        protected bool PreChecksFail<TModel>([CanBeNull] out OperationResult failingResult, [CallerMemberName] string caller = null)
+        {
+            return PreChecksFail(out failingResult, typeof(TModel), caller);
+        }
+
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
+        ///     método no requiere manipular modelos de datos.
+        /// </typeparam>
+        /// <param name="failingResult">
+        ///     Resultado fallido de la comprobación. Se establece en
+        ///     <see langword="null"/> si la comprobación finaliza
+        ///     correctamente.
+        /// </param>
+        /// <param name="caller">
+        ///     Método que ha realizado la llamada.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> si la comprobación ha fallado, 
+        ///     <see langword="false"/> en caso contrario. 
+        /// </returns>
+        protected bool PreChecksFail<TModel>([CanBeNull] out OperationResult failingResult, [NotNull] MethodBase caller)
+        {
+            return PreChecksFail(out failingResult, typeof(TModel), caller);
+        }
+
+        /// <summary>
+        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
+        ///     las funciones de este servicio.
+        /// </summary>
         /// <param name="failingResult">
         ///     Resultado fallido de la comprobación. Se establece en
         ///     <see langword="null"/> si la comprobación finaliza
@@ -122,7 +174,7 @@ namespace TheXDS.Triton.Component
         ///     <see langword="true"/> si la comprobación ha fallado, 
         ///     <see langword="false"/> en caso contrario. 
         /// </returns>
-        protected bool PreChecksFail(out OperationResult failingResult, Type objType, [CallerMemberName] string caller = null)
+        protected bool PreChecksFail([CanBeNull] out OperationResult failingResult, [CanBeNull] Type objType, [CallerMemberName] string caller = null)
         {
             return PreChecksFail(out failingResult, objType, GetType().GetMethods().FirstOrDefault(p => p.Name == caller));
         }
@@ -144,7 +196,7 @@ namespace TheXDS.Triton.Component
         ///     <see langword="true"/> si la comprobación ha fallado, 
         ///     <see langword="false"/> en caso contrario. 
         /// </returns>
-        protected bool PreChecksFail(out OperationResult failingResult, MethodBase caller)
+        protected bool PreChecksFail([CanBeNull] out OperationResult failingResult, [NotNull] MethodBase caller)
         {
             return PreChecksFail(out failingResult, null, caller);
         }
@@ -169,7 +221,7 @@ namespace TheXDS.Triton.Component
         ///     <see langword="true"/> si la comprobación ha fallado, 
         ///     <see langword="false"/> en caso contrario. 
         /// </returns>
-        protected bool PreChecksFail(out OperationResult failingResult, Type objType, MethodBase caller)
+        protected bool PreChecksFail([CanBeNull] out OperationResult failingResult, [CanBeNull] Type objType, [NotNull] MethodBase caller)
         {
             if (!Elevator?.Elevate(caller) ?? false)
             {
@@ -183,57 +235,6 @@ namespace TheXDS.Triton.Component
             }
             failingResult = null;
             return false;
-        }
-
-        /// <summary>
-        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
-        ///     las funciones de este servicio.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
-        ///     método no requiere manipular modelos de datos.
-        /// </typeparam>
-        /// <param name="failingResult">
-        ///     Resultado fallido de la comprobación. Se establece en
-        ///     <see langword="null"/> si la comprobación finaliza
-        ///     correctamente.
-        /// </param>
-        /// <param name="caller">
-        ///     Nombre del método que ha realizado la llamada. Se obtendrá un
-        ///     <see cref="MethodInfo"/> que representa al método especificado.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> si la comprobación ha fallado, 
-        ///     <see langword="false"/> en caso contrario. 
-        /// </returns>
-        protected bool PreChecksFail<TModel>(out OperationResult failingResult, [CallerMemberName] string caller = null)
-        {
-            return PreChecksFail(out failingResult, typeof(TModel), caller);
-        }
-
-        /// <summary>
-        ///     Realiza comprobaciones estandar sobre las llamadas regulares a
-        ///     las funciones de este servicio.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Tipo de entidad a manejar por el método. Puede omitirse si el
-        ///     método no requiere manipular modelos de datos.
-        /// </typeparam>
-        /// <param name="failingResult">
-        ///     Resultado fallido de la comprobación. Se establece en
-        ///     <see langword="null"/> si la comprobación finaliza
-        ///     correctamente.
-        /// </param>
-        /// <param name="caller">
-        ///     Método que ha realizado la llamada.
-        /// </param>
-        /// <returns>
-        ///     <see langword="true"/> si la comprobación ha fallado, 
-        ///     <see langword="false"/> en caso contrario. 
-        /// </returns>
-        protected bool PreChecksFail<TModel>(out OperationResult failingResult, MethodBase caller)
-        {
-            return PreChecksFail(out failingResult, typeof(TModel), caller);
         }
         
         #region Operaciones CRUD
@@ -288,10 +289,6 @@ namespace TheXDS.Triton.Component
         {
             return BulkAddAsync(entities).Yield();
         }
-
-
-
-
 
         [DebuggerStepThrough, CanBeNull]
         [MethodCategory(MethodCategory.View)]
@@ -369,6 +366,17 @@ namespace TheXDS.Triton.Component
         }
 
         [MethodCategory(MethodCategory.View)]
+        public OperationResult<TModel> Get<TModel, TKey>(in TKey id)
+            where TModel : ModelBase<TKey>, new()
+            where TKey : struct, IComparable<TKey>
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return new OperationResult<TModel>(fails);
+            var entity = Context.Find<TModel>(id);
+            if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<TModel>(Result.NoMatch);
+            return entity;
+        }
+
+        [MethodCategory(MethodCategory.View)]
         public async Task<OperationResult<ModelBase<TKey>>> GetAsync<TKey>(Type tModel, TKey id)
             where TKey : struct, IComparable<TKey>
         {
@@ -378,20 +386,15 @@ namespace TheXDS.Triton.Component
             return entity;
         }
 
-
-
-
-
-
-        //public Task<OperationResult> UpdateAsync<TModel>([NotNull] TModel entity) where TModel : ModelBase, new()
-        //{
-        //    if (PreChecksFail<TModel>(out var fails)) return Task.FromResult(fails);
-        //    return !ChangesPending(entity) ? Task.FromResult((OperationResult) Result.NoMatch) : SaveAsync();
-        //}
-        //public virtual OperationResult Update<TModel>([NotNull] TModel entity) where TModel : ModelBase, new()
-        //{
-        //    return UpdateAsync(entity).Yield();
-        //}
+        [MethodCategory(MethodCategory.View)]
+        public OperationResult<ModelBase<TKey>> Get<TKey>(Type tModel, in TKey id)
+            where TKey : struct, IComparable<TKey>
+        {
+            if (PreChecksFail(out var fails, tModel, MethodBase.GetCurrentMethod())) return new OperationResult<ModelBase<TKey>>(fails);
+            var entity = Context.Find(tModel, id) as ModelBase<TKey>;
+            if (entity is null || ((entity as ISoftDeletable)?.IsDeleted ?? false)) return new OperationResult<ModelBase<TKey>>(Result.NoMatch);
+            return entity;
+        }
 
         [MethodCategory(MethodCategory.Delete)]
         public Task<OperationResult> DeleteAsync<TModel>([NotNull] TModel entity) where TModel : class, ISoftDeletable, new()
@@ -468,7 +471,28 @@ namespace TheXDS.Triton.Component
             return BulkPurgeAsync(entities).Yield();
         }
 
-        private Task<OperationResult> BulkOp([NotNull, ItemNotNull] IEnumerable<object> entities, [NotNull] Action<DbContext,IEnumerable<object>> action, [NotNull] MethodBase callee)
+        [MethodCategory(MethodCategory.Admin)]
+        public Task<OperationResult> UndeleteAsync<TModel, TKey>(in TKey id) 
+            where TModel : ModelBase<TKey>, ISoftDeletable, new()
+            where TKey : struct, IComparable<TKey>
+        {
+            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return fails;
+            var entity = Context.Find<TModel>(id);
+            if (entity is null) return (OperationResult) Result.NoMatch;
+            if (!entity.IsDeleted) return (OperationResult) Result.ValidationFault;
+            entity.IsDeleted = false;
+            return SaveAsync();
+        }
+
+        [MethodCategory(MethodCategory.Admin)]
+        public virtual OperationResult Undelete<TModel, TKey>(in TKey id)
+            where TModel : ModelBase<TKey>, ISoftDeletable, new()
+            where TKey : struct, IComparable<TKey>
+        {
+            return UndeleteAsync<TModel,TKey>(id).Yield();
+        }
+
+        private Task<OperationResult> BulkOp([NotNull, ItemNotNull] IEnumerable<object> entities, [NotNull] Action<DbContext, IEnumerable<object>> action, [NotNull] MethodBase callee)
         {
             if (PreChecksFail(out var fails, callee)) return fails;
 
@@ -490,52 +514,19 @@ namespace TheXDS.Triton.Component
 
             return SaveAsync();
         }
-
-        [MethodCategory(MethodCategory.Admin)]
-        public Task<OperationResult> UndeleteAsync<TModel, TKey>(TKey id) 
-            where TModel : ModelBase<TKey>, ISoftDeletable, new()
-            where TKey : struct, IComparable<TKey>
-        {
-            if (PreChecksFail<TModel>(out var fails, MethodBase.GetCurrentMethod())) return fails;
-            var entity = Context.Find<TModel>(id);
-            if (entity is null) return (OperationResult)Result.NoMatch;
-            if (!entity.IsDeleted) return (OperationResult)Result.ValidationFault;
-            entity.IsDeleted = false;
-            return SaveAsync();
-        }
-        [MethodCategory(MethodCategory.Admin)]
-        public virtual OperationResult Undelete<TModel, TKey>(TKey id)
-            where TModel : ModelBase<TKey>, ISoftDeletable, new()
-            where TKey : struct, IComparable<TKey>
-        {
-            return UndeleteAsync<TModel,TKey>(id).Yield();
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
         #endregion
         
         public bool ChangesPending()
         {
             return Context.ChangeTracker.Entries().Any(p => p.State != EntityState.Unchanged);
         }
-        public bool ChangesPending<TModel>(TModel entity) where TModel : ModelBase, new()
+
+        public bool ChangesPending<TModel>([NotNull]TModel entity) where TModel : ModelBase, new()
         {
             return Context.ChangeTracker.Entries().Any(p => p.Entity == entity && p.State != EntityState.Unchanged);
         }
-
-
+        
         public async Task<OperationResult> SaveAsync()
         {
             var cs = new CancellationTokenSource(Configuration.ServerTimeout);
@@ -543,7 +534,6 @@ namespace TheXDS.Triton.Component
             {
                 if (!ChangesPending()) return Result.Ok;
                 await (Logger?.LogAsync(Context.ChangeTracker) ?? Task.CompletedTask);
-
                 await Context.SaveChangesAsync(cs.Token);
                 return !cs.IsCancellationRequested ? Result.Ok : Result.Unreachable;
             }
@@ -561,11 +551,12 @@ namespace TheXDS.Triton.Component
             }
         }
 
-        public bool Handles(Type tModel)
+        public bool Handles([NotNull]Type tModel)
         {
             var dbType = typeof(DbSet<>).MakeGenericType(tModel);
             return Context.GetType().GetProperties().Any(p => dbType.IsAssignableFrom(p.PropertyType));
         }
+
         public bool Handles<TModel>() where TModel : class
         {
             return Handles(typeof(TModel));
@@ -588,6 +579,51 @@ namespace TheXDS.Triton.Component
         }
     }
 
+    [Serializable]
+    public class OperationResultException : Exception
+    {
+        /// <summary>
+        ///     Resultado arrojado por la operación
+        /// </summary>
+        public OperationResult Result { get; }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="T:TheXDS.Triton.Component.OperationResultException" />
+        /// </summary>
+        /// <param name="result">
+        ///     Resultado de la operación.
+        /// </param>
+        public OperationResultException(OperationResult result) : base(result.Message)
+        {
+            Result = result;
+        }
+
+        public OperationResultException(OperationResult result, Exception inner) : base(result.Message, inner)
+        {
+            Result = result;
+        }
+
+        public OperationResultException(Service.Result result) : this(result, result.NameOf())
+        {
+        }
+
+        public OperationResultException(Service.Result result, string message) : base(message)
+        {
+            Result = new OperationResult(result, message);
+        }
+
+        public OperationResultException(Service.Result result, string message, Exception inner) : base(message, inner)
+        {
+            Result = new OperationResult(result, message);
+        }
+
+        /// <inheritdoc />
+        protected OperationResultException(SerializationInfo info,StreamingContext context) : base(info, context)
+        {
+        }
+    }
 
     public class OperationResult : IEquatable<OperationResult>
     {
@@ -667,55 +703,6 @@ namespace TheXDS.Triton.Component
         public override int GetHashCode()
         {
             return (int) Result;
-        }
-    }
-
-
-
-
-
-    [Serializable]
-    public class OperationResultException : Exception
-    {
-        /// <summary>
-        ///     Resultado arrojado por la operación
-        /// </summary>
-        public OperationResult Result { get; }
-
-        /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="OperationResultException"/>
-        /// </summary>
-        /// <param name="result">
-        ///     Resultado de la operación.
-        /// </param>
-        public OperationResultException(OperationResult result) : base(result.Message)
-        {
-            Result = result;
-        }
-
-        public OperationResultException(OperationResult result, Exception inner) : base(result.Message, inner)
-        {
-            Result = result;
-        }
-
-        public OperationResultException(Service.Result result) : this(result, result.NameOf())
-        {
-        }
-
-        public OperationResultException(Service.Result result, string message) : base(message)
-        {
-            Result = new OperationResult(result, message);
-        }
-
-        public OperationResultException(Service.Result result, string message, Exception inner) : base(message, inner)
-        {
-            Result = new OperationResult(result, message);
-        }
-
-        /// <inheritdoc />
-        protected OperationResultException(SerializationInfo info,StreamingContext context) : base(info, context)
-        {
         }
     }
 
