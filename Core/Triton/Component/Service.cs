@@ -22,6 +22,7 @@ using St = TheXDS.Triton.Resources.Strings;
 
 namespace TheXDS.Triton.Component
 {
+
     public static class Configuration
     {
         public static int ServerTimeout = 15000;
@@ -31,7 +32,7 @@ namespace TheXDS.Triton.Component
     ///     Clase base que provee de toda la funcionalidad de acceso a un
     ///     contexto de base de datos.
     /// </summary>
-    public abstract class Service
+    public abstract class Service : IService
     {
         /// <summary>
         ///     Enumera los posibles resultados de una operación provista por un servicio.
