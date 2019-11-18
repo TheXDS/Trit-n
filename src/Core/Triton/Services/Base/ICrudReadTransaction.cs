@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Services.Base
@@ -8,7 +9,7 @@ namespace TheXDS.Triton.Services.Base
     ///     Define una serie de miembros a implementar por un tipo que permita
     ///     realizar operaciones de lectura sobre una base de datos.
     /// </summary>
-    public interface ICrudReadTransaction : IDisposable
+    public interface ICrudReadTransaction : IDisposableEx
     {
         /// <summary>
         ///     Obtiene una entidad cuyo campo llave sea igual al valor

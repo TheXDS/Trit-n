@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -9,7 +10,7 @@ namespace TheXDS.Triton.Services.Base
     ///     realizar operaciones de escritura con efecto inmediato de forma
     ///     asíncrona basadas en transacción sobre una base de datos.
     /// </summary>
-    public interface IAsyncCrudWriteTransaction : IDisposable
+    public interface IAsyncCrudWriteTransaction : IDisposableEx
     {
         /// <summary>
         ///     Crea una nueva entidad en la base de datos de forma asíncrona.

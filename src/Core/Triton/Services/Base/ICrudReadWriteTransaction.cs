@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -8,7 +8,7 @@ namespace TheXDS.Triton.Services.Base
     ///     realizar operaciones de lectura y de escritura basadas en
     ///     transacción sobre una base de datos.
     /// </summary>
-    public interface ICrudReadWriteTransaction : ICrudReadTransaction, ICrudWriteTransaction, IDisposable
+    public interface ICrudReadWriteTransaction : ICrudReadTransaction, ICrudWriteTransaction, IDisposableEx
     {
     }
 

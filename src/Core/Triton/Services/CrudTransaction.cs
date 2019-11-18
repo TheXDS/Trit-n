@@ -21,6 +21,9 @@ namespace TheXDS.Triton.Services
         private readonly IAsyncCrudReadTransaction _asyncReadTransaction;
         private readonly IAsyncCrudWriteTransaction _asyncWriteTransaction;
 
+        /// <summary>
+        ///     Obtiene a la instancia de contexto activa en esta transacción.
+        /// </summary>
         public T Context => _context;
 
         /// <summary>
@@ -287,9 +290,26 @@ namespace TheXDS.Triton.Services
             return _asyncReadTransaction.ReadAsync<TModel, TKey>(key);
         }
 
+        /// <summary>
+        ///     Obtiene la colección completa de entidades del modelo
+        ///     especificado almacenadas en la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de las entidades a obtener.
+        /// </typeparam>
+        /// <returns></returns>
         public IQueryable<TModel> All<TModel>() where TModel : Model
         {
             return _readTransaction.All<TModel>();
+        }
+
+        /// <summary>
+        ///     Libera los recursos utilizados por esta instancia.
+        /// </summary>
+        protected override void OnDispose()
+        {
+            _writeTransaction.Dispose();
+            base.OnDispose();
         }
     }
 }

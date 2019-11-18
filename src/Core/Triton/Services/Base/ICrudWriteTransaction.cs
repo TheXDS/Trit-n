@@ -1,4 +1,5 @@
 ﻿using System;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Services.Base
@@ -8,7 +9,7 @@ namespace TheXDS.Triton.Services.Base
     ///     realizar operaciones de escritura basadas en transacción sobre una
     ///     base de datos.
     /// </summary>
-    public interface ICrudWriteTransaction : IDisposable
+    public interface ICrudWriteTransaction : IDisposableEx
     {
         /// <summary>
         ///     Crea una nueva entidad en la base de datos.

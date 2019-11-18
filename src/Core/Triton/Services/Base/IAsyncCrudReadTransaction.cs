@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -8,7 +9,7 @@ namespace TheXDS.Triton.Services.Base
     ///     Define una serie de miembros a implementar por un tipo que permita
     ///     realizar operaciones de lectura asíncrona sobre una base de datos.
     /// </summary>
-    public interface IAsyncCrudReadTransaction : IDisposable
+    public interface IAsyncCrudReadTransaction : IDisposableEx
     {
         /// <summary>
         ///     Obtiene de forma asíncrona una entidad cuyo campo llave sea
