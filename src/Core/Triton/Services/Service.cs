@@ -6,7 +6,7 @@ namespace TheXDS.Triton.Services
     /// <summary>
     ///     Expone un servicio con funcionalidad estándar para gestionar
     ///     contextos de datos de Entity Framework Core por medio de
-    ///     transacciones y operaciones CRUD.
+    ///     transacciones y operaciones Crud.
     /// </summary>
     /// <typeparam name="T">
     ///     Tipo de contexto de datos a administrar.
@@ -40,9 +40,11 @@ namespace TheXDS.Triton.Services
         /// <returns>
         ///     Una transacción para lectura y escritura de datos.
         /// </returns>
-        public ICrudReadWriteTransaction GetReadWriteTransaction()
+        public ICrudReadWriteTransaction<T> GetReadWriteTransaction()
         {
             return ActiveSettings.CrudTransactionFactory.ManufactureReadWriteTransaction<T>(ActiveSettings.ConnectionConfiguration);
         }
+
+        ICrudReadWriteTransaction IService.GetReadWriteTransaction() => GetReadWriteTransaction();
     }
 }

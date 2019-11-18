@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Services.Base
@@ -59,5 +60,15 @@ namespace TheXDS.Triton.Services.Base
         ///     será <see langword="null"/>.
         /// </returns>
         ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>;
+
+        /// <summary>
+        ///     Obtiene la colección completa de entidades del modelo
+        ///     especificado almacenadas en la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de las entidades a obtener.
+        /// </typeparam>
+        /// <returns></returns>
+        IQueryable<TModel> All<TModel>() where TModel : Model;
     }
 }

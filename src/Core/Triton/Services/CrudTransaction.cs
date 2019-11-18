@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
@@ -13,12 +14,14 @@ namespace TheXDS.Triton.Services
     /// <typeparam name="T">
     ///     Tipo de contexto de datos a utilizar.
     /// </typeparam>
-    public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction, IAsyncCrudReadWriteTransaction where T : DbContext, new()
+    public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction<T>, IAsyncCrudReadWriteTransaction where T : DbContext, new()
     {
         private readonly ICrudReadTransaction _readTransaction;
         private readonly ICrudWriteTransaction _writeTransaction;
         private readonly IAsyncCrudReadTransaction _asyncReadTransaction;
         private readonly IAsyncCrudWriteTransaction _asyncWriteTransaction;
+
+        public T Context => _context;
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase 
@@ -282,6 +285,11 @@ namespace TheXDS.Triton.Services
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
             return _asyncReadTransaction.ReadAsync<TModel, TKey>(key);
+        }
+
+        public IQueryable<TModel> All<TModel>() where TModel : Model
+        {
+            return _readTransaction.All<TModel>();
         }
     }
 }

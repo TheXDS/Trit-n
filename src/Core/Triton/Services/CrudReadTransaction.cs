@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
 
@@ -27,7 +28,19 @@ namespace TheXDS.Triton.Services
 
         internal CrudReadTransaction(IConnectionConfiguration configuration, T context) : base(configuration, context)
         {
+        }
 
+        /// <summary>
+        ///     Obtiene la colección completa de entidades del modelo
+        ///     especificado almacenadas en la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de las entidades a obtener.
+        /// </typeparam>
+        /// <returns></returns>
+        public IQueryable<TModel> All<TModel>() where TModel : Model
+        {
+            return _context.Set<TModel>();
         }
 
         /// <summary>
