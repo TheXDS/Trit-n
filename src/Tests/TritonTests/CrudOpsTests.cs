@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
@@ -101,6 +102,30 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
+        public void TransactionDisposalTest()
+        {
+            IDisposableEx t;
+
+            using (t = _srv.GetReadTransaction())
+            {
+                Assert.False(t.Disposed);
+            }
+            Assert.True(t.Disposed);
+
+            using (t = _srv.GetWriteTransaction())
+            {
+                Assert.False(t.Disposed);
+            }
+            Assert.True(t.Disposed);
+
+            using (t = _srv.GetReadWriteTransaction())
+            {
+                Assert.False(t.Disposed);
+            }
+            Assert.True(t.Disposed);
+        }
+
+        [Test]
         public void CreateAndVeryfyTransactionTest()
         {
             using (var t = _srv.GetWriteTransaction())
@@ -110,7 +135,6 @@ namespace TheXDS.Triton.Tests
                     Id = "user4",
                     PublicName = "User 4"
                 });
-                t.Commit();
 
                 Assert.IsTrue(createResult.Success);
                 Assert.IsNull(createResult.Reason);
@@ -149,7 +173,6 @@ namespace TheXDS.Triton.Tests
             using (var t = _srv.GetWriteTransaction())
             {
                 Assert.True(t.Update(r).Success);
-                t.Commit();
             }
 
             using (var t = _srv.GetReadTransaction())
@@ -165,14 +188,12 @@ namespace TheXDS.Triton.Tests
             using (var t = _srv.GetWriteTransaction())
             {
                 Assert.IsTrue(t.Delete<User, string>("user3").Success);
-                t.Commit();
             }
             using (var t = _srv.GetReadTransaction())
             {
                 Assert.IsNull(t.Read<User, string>("user3").ReturnValue);
             }
         }
-
 
         [Test]
         public void CreateAndNotifyTest()
@@ -210,6 +231,57 @@ namespace TheXDS.Triton.Tests
             Assert.AreEqual(1, q[0].Count());
         }
 
+        [Test]
+        public void ReadAndNotifyTest()
+        {
+            _srv.Configuration.Notifier.Reset();
+
+            using var t = _srv.GetReadTransaction();
+            Post? post = t.Read<Post, long>(1L);
+
+            Assert.IsTrue(_srv.Configuration.Notifier.Notified);
+            Assert.IsInstanceOf<Post>(_srv.Configuration.Notifier.Entity);
+            Assert.AreEqual(CrudAction.Read, _srv.Configuration.Notifier.Action!.Value);
+        }
+
+        [Test]
+        public void UpdateAndNotifyTest()
+        {
+            _srv.Configuration.Notifier.Reset();
+
+
+            User r;
+            using (var t = _srv.GetReadTransaction())
+            {
+                r = t.Read<User, string>("user1").ReturnValue!;
+            }
+
+            r.PublicName = "Test #1!";
+
+            using (var t = _srv.GetWriteTransaction())
+            {
+                Assert.True(t.Update(r).Success);
+            }
+
+            Assert.IsTrue(_srv.Configuration.Notifier.Notified);
+            Assert.IsInstanceOf<User>(_srv.Configuration.Notifier.Entity);
+            Assert.AreEqual(CrudAction.Update, _srv.Configuration.Notifier.Action!.Value);
+        }
+
+        [Test]
+        public void DeleteAndNotifyTest()
+        {
+            _srv.Configuration.Notifier.Reset();
+
+            using (var t = _srv.GetWriteTransaction())
+            {
+                Assert.True(t.Delete<Comment, long>(3L).Success);
+            }
+
+            Assert.IsTrue(_srv.Configuration.Notifier.Notified);
+            Assert.IsInstanceOf<Comment>(_srv.Configuration.Notifier.Entity);
+            Assert.AreEqual(CrudAction.Delete, _srv.Configuration.Notifier.Action!.Value);
+        }
 
 
         private class BlogService : Service<BlogContext>
