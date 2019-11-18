@@ -1,31 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Loader;
 using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Triton.Services
 {
-
-
-
-
-    public class Service<T> : IService where T : DbContext, new()
+    /// <summary>
+    ///     Expone un servicio con funcionalidad estándar para gestionar
+    ///     contextos de datos de Entity Framework Core por medio de
+    ///     transacciones y operaciones CRUD.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     Tipo de contexto de datos a administrar.
+    /// </typeparam>
+    public class Service<T> : ServiceBase<IServiceConfiguration, ICrudTransactionFactory, T>, IService where T : DbContext, new()
     {
-        public Service(IServiceConfiguration settings)
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase 
+        ///     <see cref="Service{T}"/>, buscando automáticamente la
+        ///     configuración a utilizar.
+        /// </summary>
+        public Service() : base()
         {
-            if (settings is null) throw new ArgumentNullException(nameof(settings));
-
-            ActiveSettings = settings;
         }
 
-        public IServiceConfiguration ActiveSettings { get; }
-
-        public ICrudFullTransaction GetFullTransaction()
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase 
+        ///     <see cref="Service{T}"/>, especificando la configuración a
+        ///     utilizar.
+        /// </summary>
+        /// <param name="settings">
+        ///     Configuración a utilizar para este servicio.
+        /// </param>
+        public Service(IServiceConfiguration settings) : base(settings)
         {
-            return ActiveSettings.CrudTransactionFactory.ManufactureTransaction<T>(ActiveSettings);
+        }
+
+        /// <summary>
+        ///     Obtiene una transacción para lectura y escritura de datos.
+        /// </summary>
+        /// <returns>
+        ///     Una transacción para lectura y escritura de datos.
+        /// </returns>
+        public ICrudReadWriteTransaction GetReadWriteTransaction()
+        {
+            return ActiveSettings.CrudTransactionFactory.ManufactureReadWriteTransaction<T>(ActiveSettings.ConnectionConfiguration);
         }
     }
 }

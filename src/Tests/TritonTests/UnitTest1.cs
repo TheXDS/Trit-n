@@ -1,15 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
-using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
 using TheXDS.Triton.Services;
-using System.Linq;
+using TheXDS.Triton.Services.Base;
 using TheXDS.Triton.TestModels;
 
 namespace TheXDS.Triton.Tests
@@ -144,9 +142,9 @@ namespace TheXDS.Triton.Tests
             {
                 Assert.IsInstanceOf<ICrudWriteTransaction>(t);
             }
-            using (var t = _srv.GetFullTransaction())
+            using (var t = _srv.GetReadWriteTransaction())
             {
-                Assert.IsInstanceOf<ICrudFullTransaction>(t);
+                Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
             }
         }
 
@@ -160,6 +158,7 @@ namespace TheXDS.Triton.Tests
                     Id = "user4",
                     PublicName = "User 4"
                 });
+                t.Commit();
 
                 Assert.IsTrue(createResult.Success);
                 Assert.IsNull(createResult.Reason);
@@ -178,7 +177,7 @@ namespace TheXDS.Triton.Tests
         [Test]
         public void ReadTransactionTest()
         {
-            using var t = _srv.GetFullTransaction();
+            using var t = _srv.GetReadWriteTransaction();
             Post? post = t.Read<Post, long>(1L);
             Assert.IsInstanceOf<Post>(post);
             Assert.AreEqual("Test", post!.Title);
@@ -198,6 +197,7 @@ namespace TheXDS.Triton.Tests
             using (var t = _srv.GetWriteTransaction())
             {
                 Assert.True(t.Update(r).Success);
+                t.Commit();
             }
 
             using (var t = _srv.GetReadTransaction())
@@ -213,6 +213,7 @@ namespace TheXDS.Triton.Tests
             using (var t = _srv.GetWriteTransaction())
             {
                 Assert.IsTrue(t.Delete<User, string>("user3").Success);
+                t.Commit();
             }
             using (var t = _srv.GetReadTransaction())
             {
@@ -226,12 +227,13 @@ namespace TheXDS.Triton.Tests
         {
             _testConfig.Notifier.Reset();
 
-            using var t = _srv.GetWriteTransaction();         
-            var createResult = t.Create(new User()
+            using var t = _srv.GetWriteTransaction();
+            t.Create(new User()
             {
                 Id = "user5",
                 PublicName = "User #5"
             });
+            t.Commit();
 
             Assert.IsTrue(_testConfig.Notifier.Notified);
             Assert.IsInstanceOf<User>(_testConfig.Notifier.Entity);
@@ -264,21 +266,25 @@ namespace TheXDS.Triton.Tests
 
 
 
-        private class TestConfiguration : IServiceConfiguration
+        private class TestConfiguration : IServiceConfiguration, IConnectionConfiguration
         {
             public ICrudTransactionFactory CrudTransactionFactory { get; } = new TestCrudTransFactory();
 
             public TestNotifier Notifier { get; } = new TestNotifier();
 
+            public IConnectionConfiguration ConnectionConfiguration => this;
+
             ICrudNotificationSource? IConnectionConfiguration.Notifier => Notifier;
         }
+
         private class TestCrudTransFactory : ICrudTransactionFactory
         {
-            public ICrudFullTransaction ManufactureTransaction<T>(IConnectionConfiguration configuration) where T : DbContext, new()
+            public ICrudReadWriteTransaction ManufactureReadWriteTransaction<T>(IConnectionConfiguration configuration) where T : DbContext, new()
             {
                 return new CrudTransaction<T>(configuration);
             }
         }
+
         private class TestNotifier : ICrudNotificationSource
         {
             public bool Notified { get; private set; }
@@ -300,6 +306,5 @@ namespace TheXDS.Triton.Tests
                 return ServiceResult.Ok;
             }
         }
-
     }
 }

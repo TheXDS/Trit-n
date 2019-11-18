@@ -1,4 +1,5 @@
-﻿using TheXDS.Triton.Models.Base;
+﻿using System.Runtime.CompilerServices;
+using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -23,5 +24,19 @@ namespace TheXDS.Triton.Services.Base
         ///     servicio subyacente.
         /// </returns>
         ServiceResult Notify(Model entity, CrudAction action);
+
+        /// <summary>
+        ///     Ayuda a determinar al origen de notificaciones sobre el momento
+        ///     en el que los cambios ya han sido escritos en la base de datos.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void Commit() { }
+
+        /// <summary>
+        ///     Ayuda a determinar al origen de notificaciones sobre una falla
+        ///     a la hora de realizar el guardado de los datos.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void Fail() { }
     }
 }

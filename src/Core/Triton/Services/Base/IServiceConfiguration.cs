@@ -1,32 +1,15 @@
-﻿using System;
-
-namespace TheXDS.Triton.Services.Base
+﻿namespace TheXDS.Triton.Services.Base
 {
-    public interface IConnectionConfiguration
-    {
-        /// <summary>
-        ///     Obtiene un valor que representa la cantidad de milisegundos a
-        ///     esperar al servidor de datos antes de marcar la operación como
-        ///     fallida.
-        /// </summary>
-        int ConnectionTimeout => 15000;
-
-        /// <summary>
-        ///     Obtiene un objeto que permite publicar notificaciones acerca de
-        ///     la ejecución de operaciones Crud sobre una entidad.
-        /// </summary>
-        ICrudNotificationSource? Notifier { get; }
-    }
     /// <summary>
-    /// 
+    ///     Define una serie de miembros a implementar por un tipo que exponga
+    ///     información de configuración para servicios que requieran
+    ///     información adicional sobre la fábrica de transacciones a utilizar.
     /// </summary>
-    public interface IServiceConfiguration : IConnectionConfiguration
+    public interface IServiceConfiguration : IServiceConfigurationBase<ICrudTransactionFactory>
     {
-
         /// <summary>
         ///     Obtiene un objeto que permite manufacturar transacciones Crud.
         /// </summary>
-        ICrudTransactionFactory CrudTransactionFactory { get; }
-
+        new ICrudTransactionFactory CrudTransactionFactory { get; }
     }
 }

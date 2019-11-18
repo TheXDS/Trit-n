@@ -19,9 +19,7 @@ namespace TheXDS.Triton.TestModels
         {
             optionsBuilder
                 .UseInMemoryDatabase(GetType().FullName)
-                .UseLoggerFactory(_m);
-
+                .UseLoggerFactory(_m);                
         }
     }
-
 }

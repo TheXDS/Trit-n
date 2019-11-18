@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using static TheXDS.MCART.Types.Extensions.EnumExtensions;
 using St = TheXDS.Triton.Resources.Strings;
 
 namespace TheXDS.Triton.Services
 {
-
     /// <summary>
     ///     Representa el resultado devuelto por un servicio al intentar
     ///     realizar una operación.
@@ -19,47 +16,6 @@ namespace TheXDS.Triton.Services
         /// </summary>
         public static ServiceResult Ok => new ServiceResult();
 
-        /// <summary>
-        ///     Enumera las posibles causas de fallo conocidas para una
-        ///     operación de servicio.
-        /// </summary>
-        public enum FailureReason
-        {
-            /// <summary>
-            ///     Fallo desconocido.
-            /// </summary>
-            Unknown,
-
-            /// <summary>
-            ///     Operación no permitida.
-            /// </summary>
-            Forbidden,
-
-            /// <summary>
-            ///     Error en el servicio.
-            /// </summary>
-            ServiceFailure,
-
-            /// <summary>
-            ///     Error en la red.
-            /// </summary>
-            NetworkFailure,
-
-            /// <summary>
-            ///     Error de la base de datos.
-            /// </summary>
-            DbFailure,
-
-            /// <summary>
-            ///     Error de validación de datos.
-            /// </summary>
-            ValidationError,
-
-            /// <summary>
-            ///     Error de concurrencia de datos.
-            /// </summary>
-            ConcurrencyFailure
-        }
 
         /// <summary>
         ///     Obtiene un valor que indica si la operación ha sido exitosa.
@@ -330,7 +286,7 @@ namespace TheXDS.Triton.Services
         public static implicit operator ServiceResult<T>(string message) => new ServiceResult<T>(message);
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="ServiceResult.FailureReason"/> en un
+        ///     Convierte implícitamente un <see cref="FailureReason"/> en un
         ///     <see cref="ServiceResult{T}"/>.
         /// </summary>
         /// <param name="reason">

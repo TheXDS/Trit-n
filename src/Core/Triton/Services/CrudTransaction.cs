@@ -1,213 +1,287 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
-using System.Linq;
-using static TheXDS.Triton.Services.ServiceResult.FailureReason;
-using System.Threading;
 
 namespace TheXDS.Triton.Services
 {
-    public class CrudTransaction<T> : ICrudFullTransaction, IAsyncCrudFullTransaction where T : DbContext, new()
+    /// <summary>
+    ///     Obtiene una transacción compleja que permite operaciones de lectura
+    ///     y de escritura sobre un contexto de datos común.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     Tipo de contexto de datos a utilizar.
+    /// </typeparam>
+    public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction, IAsyncCrudReadWriteTransaction where T : DbContext, new()
     {
-        private readonly IConnectionConfiguration _configuration;
-        private readonly T _context = new T();
-        public CrudTransaction(IConnectionConfiguration configuration)
+        private readonly ICrudReadTransaction _readTransaction;
+        private readonly ICrudWriteTransaction _writeTransaction;
+        private readonly IAsyncCrudReadTransaction _asyncReadTransaction;
+        private readonly IAsyncCrudWriteTransaction _asyncWriteTransaction;
+
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase 
+        ///     <see cref="CrudTransaction{T}"/>.
+        /// </summary>
+        /// <param name="configuration">
+        ///     Configuración a pasar a las transacciones subyacentes.
+        /// </param>
+        public CrudTransaction(IConnectionConfiguration configuration) : base(configuration)
         {
-            _configuration = configuration;
+            _readTransaction = new CrudReadTransaction<T>(configuration, _context);
+            _writeTransaction = new CrudWriteTransaction<T>(configuration, _context);
+            _asyncReadTransaction = new CrudAsyncReadTransaction<T>(configuration, _context);
+            _asyncWriteTransaction = new CrudAsyncWriteTransaction<T>(configuration, _context);
         }
 
-        public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
+        /// <summary>
+        ///     Obtiene una entidad cuyo campo llave sea igual al valor
+        ///     especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo de campo llave de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad a obtener.
+        /// </param>
+        /// <param name="entity">
+        ///     Parámetro de salida. Entidad obtenida en la operación de
+        ///     lectura. Si no existe una entidad con el campo llave
+        ///     especificado, se devolverá <see langword="null"/>.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return PerformOperation(_context.Add, newEntity) ?? ServiceResult.Ok;
+            return _readTransaction.Read(key, out entity);
         }
+
+        /// <summary>
+        ///     Obtiene una entidad cuyo campo llave sea igual al valor
+        ///     especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo de campo llave de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad a obtener.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente, incluyendo como valor de resultado a la
+        ///     entidad obtenida en la operación de lectura. Si no existe una
+        ///     entidad con el campo llave especificado, el valor de resultado
+        ///     será <see langword="null"/>.
+        /// </returns>
         public ServiceResult<TModel?> Read<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return ReadAsync<TModel,TKey>(key).GetAwaiter().GetResult();
+            return _readTransaction.Read<TModel,TKey>(key);
         }
-        public ServiceResult Update<TModel>(TModel entity) where TModel : Model
+
+        /// <summary>
+        ///     Crea una nueva entidad en la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la nueva entidad.
+        /// </typeparam>
+        /// <param name="newEntity">
+        ///     Nueva entidad a agregar a la base de datos.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
         {
-            return PerformOperation(_context.Update, entity);
+            return _writeTransaction.Create(newEntity);
         }
+
+        /// <summary>
+        ///     Elimina a una entidad de la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a eliminar.
+        /// </typeparam>
+        /// <param name="entity">
+        ///     Entidad que deberá ser eliminada de la base de datos.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
         public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
         {
-            return PerformOperation(_context.Remove, entity);
+            return _writeTransaction.Delete(entity);
         }
+
+        /// <summary>
+        ///     Elimina a una entidad de la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a eliminar.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo del campo llave que identifica a la entidad.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad que deberá ser eliminada de la base de
+        ///     datos.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
         public ServiceResult Delete<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return Read<TModel, TKey>(key).ReturnValue is TModel r ? Delete(r) : ValidationError;
-        }
-        public ServiceResult Commit()
-        {
-            return TryCallWrapExceptions(DoTrySaveAsync).GetAwaiter().GetResult();
-        }
-
-
-
-
-
-
-
-
-
-
-        /// <summary>
-        ///     Obtiene un valor que indica si este objeto ha sido desechado.
-        /// </summary>
-        public bool Disposed { get; private set; } = false;
-
-        /// <summary>
-        ///     Libera los recursos utilizados por esta instancia.
-        /// </summary>
-        /// <param name="disposing">
-        ///     Indica si deben liberarse los recursos administrados.
-        /// </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!Disposed)
-            {
-                if (disposing)
-                {
-                    if (_context.ChangeTracker.Entries().Any(p=>p.State != EntityState.Unchanged))
-                    {
-                        _context.SaveChanges();
-                    }
-                    _context.Dispose();
-                }
-                Disposed = true;
-            }
+            return _writeTransaction.Delete<TModel,TKey>(key);
         }
 
         /// <summary>
-        ///     Libera los recursos utilizados por esta instancia.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        /// <summary>
-        ///     Inserta una nueva entidad en la base de datos subyacente de
-        ///     forma asíncrona.
+        ///     Actualiza los datos contenidos en una entidad dentro de la base
+        ///     de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a insertar.
+        ///     Modelo de la entidad a actualizar.
+        /// </typeparam>
+        /// <param name="entity">
+        ///     Entidad que contiene la nueva información a escribir.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public ServiceResult Update<TModel>(TModel entity) where TModel : Model
+        {
+            return _writeTransaction.Update(entity);
+        }
+
+        /// <summary>
+        ///     Guarda todos los cambios síncronos pendientes de la transacción
+        ///     actual.
+        /// </summary>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public ServiceResult Commit()
+        {
+            return _writeTransaction.Commit();
+        }
+
+        /// <summary>
+        ///     Crea una nueva entidad en la base de datos de forma asíncrona.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la nueva entidad.
         /// </typeparam>
         /// <param name="newEntity">
-        ///     Entidad a insertar.
+        ///     Nueva entidad a agregar a la base de datos.
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
         public Task<ServiceResult> CreateAsync<TModel>(TModel newEntity) where TModel : Model
         {
-            return PerformOperationAsync(_context.Add, newEntity, CrudAction.Create);
+            return _asyncWriteTransaction.CreateAsync(newEntity);
         }
 
-        public async Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
-        {
-            var result = await TryCallWrapExceptions(() => DoReadAsync<TModel, TKey>(key));
-            if (result)
-            {
-                _configuration.Notifier?.Notify(result.ReturnValue, CrudAction.Read);
-            }
-            return result;
-        }
-        public Task<ServiceResult> UpdateAsync<TModel>(TModel entity) where TModel : Model
-        {
-            return PerformOperationAsync(_context.Update, entity, CrudAction.Update);
-        }
+        /// <summary>
+        ///     Elimina a una entidad de la base de datos de forma asíncrona.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a eliminar.
+        /// </typeparam>
+        /// <param name="entity">
+        ///     Entidad que deberá ser eliminada de la base de datos.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
         public Task<ServiceResult> DeleteAsync<TModel>(TModel entity) where TModel : Model
         {
-            return PerformOperationAsync(_context.Remove, entity, CrudAction.Delete);
+            return _asyncWriteTransaction.DeleteAsync(entity);
         }
 
-        public async Task<ServiceResult> DeleteAsync<TModel, TKey>(TKey key)
+        /// <summary>
+        ///     Elimina a una entidad de la base de datos de forma asíncrona.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a eliminar.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo del campo llave que identifica a la entidad.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad que deberá ser eliminada de la base de
+        ///     datos.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public Task<ServiceResult> DeleteAsync<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return (await ReadAsync<TModel, TKey>(key)).ReturnValue is TModel r ? await DeleteAsync(r) : ValidationError;
+            return _asyncWriteTransaction.DeleteAsync<TModel,TKey>(key);
         }
 
-
-
-
-
-
-        private ServiceResult PerformOperation<TEntity>(Func<TEntity, EntityEntry<TEntity>> operation, TEntity entity) where TEntity : Model
+        /// <summary>
+        ///     Actualiza de forma asíncrona los datos contenidos en una
+        ///     entidad dentro de la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a actualizar.
+        /// </typeparam>
+        /// <param name="entity">
+        ///     Entidad que contiene la nueva información a escribir.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public Task<ServiceResult> UpdateAsync<TModel>(TModel entity) where TModel : Model
         {
-            return TryOp(operation, entity) ?? ServiceResult.Ok;
+            return _asyncWriteTransaction.UpdateAsync(entity);
         }
-        private async Task<ServiceResult> PerformOperationAsync<TEntity>(Func<TEntity, EntityEntry<TEntity>> operation, TEntity entity, CrudAction action) where TEntity : Model
-        {
-            var result = TryOp(operation, entity) ?? (await TryCallWrapExceptions(DoTrySaveAsync));
-            if (result)
-            {
-                _configuration.Notifier?.Notify(entity, action);
-            }
-            return result;
-        }
-        private ServiceResult? TryOp<TEntity>(Func<TEntity, EntityEntry<TEntity>> operation, TEntity entity) where TEntity : class
-        {
-            try
-            {
-                operation(entity);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-        }
-            
 
-
-        private CancellationTokenSource MakeTimeoutToken()
+        /// <summary>
+        ///     Obtiene de forma asíncrona una entidad cuyo campo llave sea
+        ///     igual al valor especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo de campo llave de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad a obtener.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key)
+            where TModel : Model<TKey>
+            where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return new CancellationTokenSource(_configuration.ConnectionTimeout);
-        }
-        private async Task<ServiceResult> DoTrySaveAsync()
-        {
-            using var ct = MakeTimeoutToken();
-            var t = _context.SaveChangesAsync(ct.Token);
-            await t;
-            if (t.Exception?.InnerException is { } r) throw r;
-            return ServiceResult.Ok;
-        }
-        private async Task<ServiceResult<TModel?>> DoReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
-        {
-            using var ct = MakeTimeoutToken();
-            var t = _context.FindAsync<TModel>(new object[] { key }, ct.Token);
-            await t;
-            if (t.IsFaulted) throw t.AsTask().Exception!;
-            return new ServiceResult<TModel?>(t.Result);
-        }
-        private static Task<TServiceResult> TryCallWrapExceptions<TServiceResult>(Func<Task<TServiceResult>> op) where TServiceResult : ServiceResult
-        {
-            try
-            {
-                return op();
-            }
-            catch (TaskCanceledException)
-            {
-                return Task.FromResult((TServiceResult)NetworkFailure);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return Task.FromResult((TServiceResult)ConcurrencyFailure);
-            }
-            catch (DbUpdateException)
-            {
-                return Task.FromResult((TServiceResult)DbFailure);
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult((TServiceResult)ex);
-            }
+            return _asyncReadTransaction.ReadAsync<TModel, TKey>(key);
         }
     }
 }
