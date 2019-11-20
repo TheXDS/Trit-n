@@ -11,6 +11,6 @@
         ///     Obtiene la configuración a utilizar para administrar las
         ///     conexiones a datos.
         /// </summary>
-        IConnectionConfiguration ConnectionConfiguration { get; }
+        ITransactionConfiguration TransactionConfiguration { get; }
     }
 }

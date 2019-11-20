@@ -42,7 +42,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ICrudReadWriteTransaction<T> GetReadWriteTransaction()
         {
-            return ActiveSettings.CrudTransactionFactory.ManufactureReadWriteTransaction<T>(ActiveSettings.ConnectionConfiguration);
+            return ActiveSettings.CrudTransactionFactory.ManufactureReadWriteTransaction<T>(ActiveSettings.TransactionConfiguration);
         }
 
         ICrudReadWriteTransaction IService.GetReadWriteTransaction() => GetReadWriteTransaction();

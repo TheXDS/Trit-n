@@ -22,11 +22,11 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        public CrudAsyncReadTransaction(IConnectionConfiguration configuration) : base(configuration)
+        public CrudAsyncReadTransaction(ITransactionConfiguration configuration) : base(configuration)
         {
         }
 
-        internal CrudAsyncReadTransaction(IConnectionConfiguration configuration, T context) : base(configuration, context)
+        internal CrudAsyncReadTransaction(ITransactionConfiguration configuration, T context) : base(configuration, context)
         {
 
         }

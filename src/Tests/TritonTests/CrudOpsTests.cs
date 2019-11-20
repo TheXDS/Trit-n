@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
+using TheXDS.Triton.Security.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 using TheXDS.Triton.TestModels;
@@ -126,7 +127,7 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
-        public void CreateAndVeryfyTransactionTest()
+        public void CreateAndVerifyTransactionTest()
         {
             using (var t = _srv.GetWriteTransaction())
             {
@@ -160,7 +161,17 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
-        public void UpdateAndVeryfyTransactionTest()
+        public void FailToReadTest()
+        {
+            using var t = _srv.GetReadWriteTransaction();
+            var post = t.Read<Post, long>(999L);
+            Assert.IsFalse(post.Success);
+            Assert.AreEqual(FailureReason.NotFound, post.Reason);
+            Assert.IsNull(post.ReturnValue);
+        }
+
+        [Test]
+        public void UpdateAndVerifyTransactionTest()
         {
             User r;
             using (var t = _srv.GetReadTransaction())
@@ -304,25 +315,44 @@ namespace TheXDS.Triton.Tests
                 }
             }
             public TestConfiguration Configuration => (TestConfiguration)ActiveSettings;
+
+            public BlogService()
+            {                
+            }
         }
 
-        private class TestConfiguration : IServiceConfiguration, IConnectionConfiguration
+        private class TestConfiguration : ServiceConfiguration, ITransactionConfiguration
         {
-            public ICrudTransactionFactory CrudTransactionFactory { get; } = new TestCrudTransFactory();
+            public TestConfiguration()
+            {
+                SetFactory(new TestCrudTransFactory());
+                var tc = new TransactionConfiguration();
+                tc.NotifyVia(Notifier);
+                tc.UseBasicSecurity();
+            }
+
+
 
             public TestNotifier Notifier { get; } = new TestNotifier();
 
-            public IConnectionConfiguration ConnectionConfiguration => this;
+            public ITransactionConfiguration TransactionConfiguration => this;
 
-            ICrudNotificationSource? IConnectionConfiguration.Notifier => Notifier;
+            ICrudNotificationSource? ITransactionConfiguration.Notifier => Notifier;
+
+
+
+
+
+            public Func<CrudAction, TResult?>? Preamble<TResult>() where TResult : ServiceResult => TestSecurity<TResult>;
+
+            private TResult? TestSecurity<TResult>(CrudAction arg) where TResult : ServiceResult
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class TestCrudTransFactory : ICrudTransactionFactory
         {
-            public ICrudReadWriteTransaction<T> ManufactureReadWriteTransaction<T>(IConnectionConfiguration configuration) where T : DbContext, new()
-            {
-                return new CrudTransaction<T>(configuration);
-            }
         }
 
         private class TestNotifier : ICrudNotificationSource

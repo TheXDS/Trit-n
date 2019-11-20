@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Exceptions;
+using TheXDS.Triton.Models.Base;
 using static TheXDS.MCART.Types.Extensions.TaskExtensions;
 using static TheXDS.Triton.Services.FailureReason;
 
@@ -20,7 +23,7 @@ namespace TheXDS.Triton.Services.Base
         /// <summary>
         ///     Obtiene la configuración disponible para esta transacción.
         /// </summary>
-        protected readonly IConnectionConfiguration _configuration;
+        protected readonly ITransactionConfiguration _configuration;
 
         /// <summary>
         ///     Obtiene la instancia activa del contexto de datos a utilizar
@@ -48,15 +51,16 @@ namespace TheXDS.Triton.Services.Base
         ///     Un resultado que representa y describe una falla en la 
         ///     operación solicitada.
         /// </returns>
-        protected static TResult ResultFromException<TResult>(Exception ex) where TResult : ServiceResult
+        protected static TResult ResultFromException<TResult>(Exception ex) where TResult : ServiceResult, new()
         {
             return ex switch
             {
                 null => throw new ArgumentNullException(nameof(ex)),
-                TaskCanceledException _ => (TResult)NetworkFailure,
-                DbUpdateConcurrencyException _ => (TResult)ConcurrencyFailure,
-                DbUpdateException _ => (TResult)DbFailure,
-                RetryLimitExceededException _ => (TResult)NetworkFailure,
+                DataNotFoundException _ => ServiceResult.FailWith<TResult>(NotFound),
+                TaskCanceledException _ => ServiceResult.FailWith<TResult>(NetworkFailure),
+                DbUpdateConcurrencyException _ => ServiceResult.FailWith<TResult>(ConcurrencyFailure),
+                DbUpdateException _ => ServiceResult.FailWith<TResult>(DbFailure),
+                RetryLimitExceededException _ => ServiceResult.FailWith<TResult>(NetworkFailure),
                 _ => (TResult)ex,
             };
         }
@@ -77,7 +81,7 @@ namespace TheXDS.Triton.Services.Base
         ///     <see cref="ServiceResult"/> que representa un error en la
         ///     operación.
         /// </returns>
-        protected static Task<TResult> TryCallAsync<TResult>(Task<TResult> op) where TResult : ServiceResult
+        protected static Task<TResult> TryCallAsync<TResult>(Task<TResult> op) where TResult : ServiceResult, new()
         {
             try
             {
@@ -126,7 +130,7 @@ namespace TheXDS.Triton.Services.Base
         ///     <see cref="ServiceResult"/> que representa un error en la
         ///     misma.
         /// </returns>
-        protected static TResult TryCall<TResult>(Func<TResult> op) where TResult : ServiceResult
+        protected static TResult TryCall<TResult>(Func<TResult> op) where TResult : ServiceResult, new()
         {
             try
             {
@@ -135,6 +139,74 @@ namespace TheXDS.Triton.Services.Base
             catch (Exception ex)
             {
                 return ResultFromException<TResult>(ex);
+            }
+        }
+
+        /// <summary>
+        ///     Envuelve una función que obtiene a una entidad en un contexto
+        ///     seguro que obtendrá un resultado de error cuando se produzca
+        ///     una excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de modelo que la función devuelve.
+        /// </typeparam>
+        /// <param name="op">
+        ///     Función que devuelve una entidad.
+        /// </param>
+        /// <param name="action">Acción Crud que se realiza.</param>
+        /// <returns>
+        ///     El resultado generado por la operación, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     misma.
+        /// </returns>
+        protected ServiceResult<TModel?> TryResultCall<TModel>(Func<TModel> op, CrudAction action) where TModel : Model
+        {
+            try
+            {
+                var r =  new ServiceResult<TModel?>(op());
+                if (r)
+                {
+                    _configuration.Notifier?.Notify(r.ReturnValue!, action);
+                }
+                return r;
+            }
+            catch (Exception ex)
+            {
+                return ResultFromException<ServiceResult<TModel?>>(ex);
+            }
+        }
+
+        /// <summary>
+        ///     Envuelve una función que obtiene a una entidad en un contexto
+        ///     seguro que obtendrá un resultado de error cuando se produzca
+        ///     una excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de modelo que la función devuelve.
+        /// </typeparam>
+        /// <param name="op">
+        ///     Función que devuelve una entidad.
+        /// </param>
+        /// <param name="entity">
+        ///     Entidad sobre la cual se está realizando una operación Crud.
+        /// </param>
+        /// <param name="action">Acción Crud que se realiza.</param>
+        /// <returns>
+        ///     El resultado generado por la operación, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     misma.
+        /// </returns>
+        protected ServiceResult TryResultCall<TModel>(Func<TModel, EntityEntry<TModel>> op, TModel entity, CrudAction action) where TModel : Model
+        {
+            try
+            {
+                op(entity);
+                _configuration.Notifier?.Notify(entity, action);
+                return ServiceResult.Ok;
+            }
+            catch (Exception ex)
+            {
+                return ResultFromException<ServiceResult<TModel?>>(ex);
             }
         }
 
@@ -153,17 +225,62 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
+        ///     Ejecuta una operación Crud en un contexto verificado seguro con
+        ///     preámbulo.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de modelo sobre el cual se ejecuta la operación Crud.
+        /// </typeparam>
+        /// <param name="action">Acción Crud que se realiza.</param>
+        /// <param name="entity">
+        ///     Función que devuelve una entidad.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la operación, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     misma.
+        /// </returns>
+        protected ServiceResult<TModel?> Checked<TModel>(CrudAction action, Func<TModel> entity) where TModel : Model
+        {
+            return _configuration.Preamble(action, entity())?.CastUp<ServiceResult<TModel?>>() ?? TryResultCall(entity, action);
+        }
+
+        /// <summary>
+        ///     Ejecuta una operación Crud en un contexto verificado seguro con
+        ///     preámbulo.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de modelo sobre el cual se ejecuta la operación Crud.
+        /// </typeparam>
+        /// <param name="action">Acción Crud que se realiza.</param>
+        /// <param name="op">
+        ///     Función que ejecuta la acción Crud.
+        /// </param>
+        /// <param name="entity">
+        ///     Entidad sobre la cual se está realizando una operación Crud.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la operación, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     misma.
+        /// </returns>
+        protected ServiceResult Checked<TModel>(CrudAction action, Func<TModel, EntityEntry<TModel>> op, TModel entity) where TModel : Model
+        {
+            return _configuration.Preamble(action,entity)?.CastUp<ServiceResult<TModel?>>() ?? TryResultCall(op, entity, action);
+        }
+
+        /// <summary>
         ///     Inicializa una nueva instancia de la clase
         ///     <see cref="CrudTransactionBase{T}"/>.
         /// </summary>
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        protected CrudTransactionBase(IConnectionConfiguration configuration) : this(configuration, new T())
+        protected CrudTransactionBase(ITransactionConfiguration configuration) : this(configuration, new T())
         {
         }
 
-        private protected CrudTransactionBase(IConnectionConfiguration configuration, T contextInstance)
+        private protected CrudTransactionBase(ITransactionConfiguration configuration, T contextInstance)
         {
             _configuration = configuration;
             _context = contextInstance;

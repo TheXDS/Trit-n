@@ -21,7 +21,10 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         ///     Una transacción desechable para lectura/escritura de datos.
         /// </returns>
-        ICrudReadWriteTransaction<T> ManufactureReadWriteTransaction<T>(IConnectionConfiguration configuration) where T : DbContext, new();
+        ICrudReadWriteTransaction<T> ManufactureReadWriteTransaction<T>(ITransactionConfiguration configuration) where T : DbContext, new()
+        {
+            return new CrudTransaction<T>(configuration);
+        }
 
         /// <summary>
         ///     Fabrica una transacción de lectura.
@@ -36,7 +39,7 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         ///     Una transacción desechable para lectura de datos.
         /// </returns>
-        ICrudReadTransaction ILiteCrudTransactionFactory.ManufactureReadTransaction<T>(IConnectionConfiguration configuration)
+        ICrudReadTransaction ILiteCrudTransactionFactory.ManufactureReadTransaction<T>(ITransactionConfiguration configuration)
         {
             return ManufactureReadWriteTransaction<T>(configuration);
         }
@@ -54,7 +57,7 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         ///     Una transacción desechable para escritura de datos.
         /// </returns>
-        ICrudWriteTransaction ILiteCrudTransactionFactory.ManufactureWriteTransaction<T>(IConnectionConfiguration configuration)
+        ICrudWriteTransaction ILiteCrudTransactionFactory.ManufactureWriteTransaction<T>(ITransactionConfiguration configuration)
         {
             return ManufactureReadWriteTransaction<T>(configuration);
         }

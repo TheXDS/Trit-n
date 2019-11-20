@@ -70,6 +70,6 @@ namespace TheXDS.Triton.Services.Base
         ///     Modelo de las entidades a obtener.
         /// </typeparam>
         /// <returns></returns>
-        IQueryable<TModel> All<TModel>() where TModel : Model;
+        QueryServiceResult<TModel> All<TModel>() where TModel : Model;
     }
 }

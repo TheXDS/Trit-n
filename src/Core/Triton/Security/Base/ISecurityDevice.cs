@@ -5,8 +5,17 @@ using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Security.Base
 {
-    interface ISecurityDevice
+    public interface ICrudSecurityDevice
     {
         bool CanRun(CrudAction action);
+    }
+
+    public static class SecurityServices
+    {
+        public static TransactionConfiguration UseBasicSecurity(this TransactionConfiguration config)
+        {
+
+            return config;
+        }
     }
 }

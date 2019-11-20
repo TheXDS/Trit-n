@@ -124,6 +124,24 @@ namespace TheXDS.Triton.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Se ha intentado utilizar un servicio sin configurarlo primero..
+        /// </summary>
+        internal static string UnconfiguredServiceError {
+            get {
+                return ResourceManager.GetString("UnconfiguredServiceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Valor sin configurar: {0}.
+        /// </summary>
+        internal static string UnconfiguredValueX {
+            get {
+                return ResourceManager.GetString("UnconfiguredValueX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error de validación..
         /// </summary>
         internal static string ValidationError {

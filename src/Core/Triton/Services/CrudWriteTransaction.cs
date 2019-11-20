@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Linq;
 using TheXDS.Triton.Models.Base;
@@ -24,11 +23,11 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        public CrudWriteTransaction(IConnectionConfiguration configuration) : base(configuration)
+        public CrudWriteTransaction(ITransactionConfiguration configuration) : base(configuration)
         {
         }
 
-        internal CrudWriteTransaction(IConnectionConfiguration configuration, T context) : base(configuration, context)
+        internal CrudWriteTransaction(ITransactionConfiguration configuration, T context) : base(configuration, context)
         {
         }
 
@@ -53,21 +52,6 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Commit()
         {
-            foreach (var j in _context.ChangeTracker.Entries())
-            {
-                switch (j.State)
-                {
-                    case EntityState.Deleted:
-                        _configuration.Notifier?.Notify((Model)j.Entity, CrudAction.Delete);
-                        break;
-                    case EntityState.Modified:
-                        _configuration.Notifier?.Notify((Model)j.Entity, CrudAction.Update);
-                        break;
-                    case EntityState.Added:
-                        _configuration.Notifier?.Notify((Model)j.Entity, CrudAction.Create);
-                        break;
-                }
-            }
             try
             {
                 _context.SaveChanges();
@@ -96,7 +80,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
         {
-            return TryOp(_context.Add, newEntity);
+            return Checked(CrudAction.Create, _context.Add, newEntity);
         }
 
         /// <summary>
@@ -114,7 +98,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
         {
-            return TryOp(_context.Remove, entity);
+            return Checked(CrudAction.Delete, _context.Remove, entity);
         }
 
         /// <summary>
@@ -159,20 +143,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Update<TModel>(TModel entity) where TModel : Model
         {
-            return TryOp(_context.Update, entity);
-        }
-
-        private ServiceResult TryOp<TEntity>(Func<TEntity, EntityEntry<TEntity>> operation, TEntity entity) where TEntity : Model
-        {
-            try
-            {
-                operation(entity);
-                return ServiceResult.Ok;
-            }
-            catch (Exception ex)
-            {
-                return ResultFromException<ServiceResult>(ex);
-            }
+            return Checked(CrudAction.Update, _context.Update, entity);
         }
     }
 }

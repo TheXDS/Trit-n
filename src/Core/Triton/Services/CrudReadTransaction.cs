@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using TheXDS.MCART.Exceptions;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
 
@@ -22,11 +23,11 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        public CrudReadTransaction(IConnectionConfiguration configuration) : base(configuration)
+        public CrudReadTransaction(ITransactionConfiguration configuration) : base(configuration)
         {
         }
 
-        internal CrudReadTransaction(IConnectionConfiguration configuration, T context) : base(configuration, context)
+        internal CrudReadTransaction(ITransactionConfiguration configuration, T context) : base(configuration, context)
         {
         }
 
@@ -38,9 +39,19 @@ namespace TheXDS.Triton.Services
         ///     Modelo de las entidades a obtener.
         /// </typeparam>
         /// <returns></returns>
-        public IQueryable<TModel> All<TModel>() where TModel : Model
+        public QueryServiceResult<TModel> All<TModel>() where TModel : Model
         {
-            return _context.Set<TModel>();
+            try
+            {
+                return 
+                    _configuration.Preamble(CrudAction.Read, null)?.CastUp<QueryServiceResult<TModel>>() ?? 
+                    new QueryServiceResult<TModel>(_context.Set<TModel>());
+
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult.FailWith<QueryServiceResult<TModel>>(ex);
+            }
         }
 
         /// <summary>
@@ -67,12 +78,7 @@ namespace TheXDS.Triton.Services
             where TModel : Model<TKey>
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            var result = TryCall(() => new ServiceResult<TModel?>(_context.Find<TModel>(new object[] { key })));
-            if (result)
-            {
-                _configuration.Notifier?.Notify(result.ReturnValue!, CrudAction.Read);
-            }
-            return result;
+            return Checked(CrudAction.Read, () => _context.Find<TModel>(new object[] { key }) ?? throw new DataNotFoundException());
         }
     }
 }

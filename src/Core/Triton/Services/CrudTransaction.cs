@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
@@ -33,7 +32,7 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a pasar a las transacciones subyacentes.
         /// </param>
-        public CrudTransaction(IConnectionConfiguration configuration) : base(configuration)
+        public CrudTransaction(ITransactionConfiguration configuration) : base(configuration)
         {
             _readTransaction = new CrudReadTransaction<T>(configuration, _context);
             _writeTransaction = new CrudWriteTransaction<T>(configuration, _context);
@@ -298,7 +297,7 @@ namespace TheXDS.Triton.Services
         ///     Modelo de las entidades a obtener.
         /// </typeparam>
         /// <returns></returns>
-        public IQueryable<TModel> All<TModel>() where TModel : Model
+        public QueryServiceResult<TModel> All<TModel>() where TModel : Model
         {
             return _readTransaction.All<TModel>();
         }

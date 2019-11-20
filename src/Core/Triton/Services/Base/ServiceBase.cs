@@ -59,7 +59,7 @@ namespace TheXDS.Triton.Services.Base
         /// </returns>
         public ICrudReadTransaction GetReadTransaction()
         {
-            return ActiveSettings.CrudTransactionFactory.ManufactureReadTransaction<TContext>(ActiveSettings.ConnectionConfiguration);
+            return ActiveSettings.CrudTransactionFactory.ManufactureReadTransaction<TContext>(ActiveSettings.TransactionConfiguration);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace TheXDS.Triton.Services.Base
         /// </returns>
         public ICrudWriteTransaction GetWriteTransaction()
         {
-            return ActiveSettings.CrudTransactionFactory.ManufactureWriteTransaction<TContext>(ActiveSettings.ConnectionConfiguration);
+            return ActiveSettings.CrudTransactionFactory.ManufactureWriteTransaction<TContext>(ActiveSettings.TransactionConfiguration);
         }
     }
 }

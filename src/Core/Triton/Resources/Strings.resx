@@ -138,6 +138,12 @@
   <data name="ServiceFailure" xml:space="preserve">
     <value>El servicio ha encontrado un error.</value>
   </data>
+  <data name="UnconfiguredServiceError" xml:space="preserve">
+    <value>Se ha intentado utilizar un servicio sin configurarlo primero.</value>
+  </data>
+  <data name="UnconfiguredValueX" xml:space="preserve">
+    <value>Valor sin configurar: {0}</value>
+  </data>
   <data name="ValidationError" xml:space="preserve">
     <value>Error de validación.</value>
   </data>
