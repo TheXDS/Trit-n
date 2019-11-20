@@ -53,16 +53,16 @@ namespace TheXDS.Triton.Services.Base
         /// </returns>
         protected static TResult ResultFromException<TResult>(Exception ex) where TResult : ServiceResult, new()
         {
-            return ex switch
+            return (ex switch
             {
                 null => throw new ArgumentNullException(nameof(ex)),
-                DataNotFoundException _ => ServiceResult.FailWith<TResult>(NotFound),
-                TaskCanceledException _ => ServiceResult.FailWith<TResult>(NetworkFailure),
-                DbUpdateConcurrencyException _ => ServiceResult.FailWith<TResult>(ConcurrencyFailure),
-                DbUpdateException _ => ServiceResult.FailWith<TResult>(DbFailure),
-                RetryLimitExceededException _ => ServiceResult.FailWith<TResult>(NetworkFailure),
-                _ => (TResult)ex,
-            };
+                DataNotFoundException _ => NotFound,
+                TaskCanceledException _ => NetworkFailure,
+                DbUpdateConcurrencyException _ => ConcurrencyFailure,
+                DbUpdateException _ => DbFailure,
+                RetryLimitExceededException _ => NetworkFailure,
+                _ => (ServiceResult)ex,
+            }).CastUp<TResult>();
         }
 
         /// <summary>
