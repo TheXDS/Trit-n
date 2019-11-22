@@ -109,21 +109,21 @@ namespace TheXDS.Triton.Tests
 
             using (t = _srv.GetReadTransaction())
             {
-                Assert.False(t.Disposed);
+                Assert.False(t.IsDisposed);
             }
-            Assert.True(t.Disposed);
+            Assert.True(t.IsDisposed);
 
             using (t = _srv.GetWriteTransaction())
             {
-                Assert.False(t.Disposed);
+                Assert.False(t.IsDisposed);
             }
-            Assert.True(t.Disposed);
+            Assert.True(t.IsDisposed);
 
             using (t = _srv.GetReadWriteTransaction())
             {
-                Assert.False(t.Disposed);
+                Assert.False(t.IsDisposed);
             }
-            Assert.True(t.Disposed);
+            Assert.True(t.IsDisposed);
         }
 
         [Test]
@@ -314,48 +314,27 @@ namespace TheXDS.Triton.Tests
                     t.Dispose();
                 }
             }
-            public TestConfiguration Configuration => (TestConfiguration)ActiveSettings;
+            public TestConfiguration Configuration => (TestConfiguration)base.Configuration;
 
             public BlogService()
             {                
             }
         }
 
-        private class TestConfiguration : ServiceConfiguration, ITransactionConfiguration
+        private class TestConfiguration : ServiceConfiguration
         {
             public TestConfiguration()
             {
-                SetFactory(new TestCrudTransFactory());
-                var tc = new TransactionConfiguration();
-                tc.NotifyVia(Notifier);
-                tc.UseBasicSecurity();
             }
-
-
 
             public TestNotifier Notifier { get; } = new TestNotifier();
-
-            public ITransactionConfiguration TransactionConfiguration => this;
-
-            ICrudNotificationSource? ITransactionConfiguration.Notifier => Notifier;
-
-
-
-
-
-            public Func<CrudAction, TResult?>? Preamble<TResult>() where TResult : ServiceResult => TestSecurity<TResult>;
-
-            private TResult? TestSecurity<TResult>(CrudAction arg) where TResult : ServiceResult
-            {
-                throw new NotImplementedException();
-            }
         }
 
         private class TestCrudTransFactory : ICrudTransactionFactory
         {
         }
 
-        private class TestNotifier : ICrudNotificationSource
+        private class TestNotifier
         {
             public bool Notified { get; private set; }
             public Model? Entity { get; private set; }

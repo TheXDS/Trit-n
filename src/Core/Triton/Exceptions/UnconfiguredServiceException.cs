@@ -13,19 +13,19 @@ namespace TheXDS.Triton.Exceptions
     ///     configurar.
     /// </summary>
     [Serializable]
-    public sealed class UnconfiguredServiceException : OffendingException<PropertyInfo>
+    public class UnconfiguredServiceException : OffendingException<PropertyInfo>
     {
         private static string MkMsg(string unconfiguredValue)
         {
             return string.Join(Environment.NewLine, St.UnconfiguredServiceError, string.Format(St.UnconfiguredValueX, unconfiguredValue));
         }
 
-        private static PropertyInfo GetProp(IServiceConfigurationBase origin, string unconfiguredValue)
+        private static PropertyInfo GetProp(IServiceConfiguration origin, string unconfiguredValue)
         {
             return origin.GetType().GetProperty(unconfiguredValue) ?? throw new TamperException();
         }
 
-        public UnconfiguredServiceException(IServiceConfigurationBase origin, [CallerMemberName]string unconfiguredValue = null!) : base(MkMsg(unconfiguredValue), GetProp(origin, unconfiguredValue)) { }
+        public UnconfiguredServiceException(IServiceConfiguration origin, [CallerMemberName]string unconfiguredValue = null!) : base(MkMsg(unconfiguredValue), GetProp(origin, unconfiguredValue)) { }
 
         public UnconfiguredServiceException() : base (St.UnconfiguredServiceError) { }
 

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using static TheXDS.MCART.Types.Extensions.EnumExtensions;
 using St = TheXDS.Triton.Resources.Strings;
-using TheXDS.Triton.Models.Base;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace TheXDS.Triton.Services
 {
@@ -338,37 +333,6 @@ namespace TheXDS.Triton.Services
     }
 
     /// <summary>
-    ///     Representa el resultado de una operación de servicio que incluye
-    ///     una consulta de tipo <see cref="IQueryable{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">
-    ///     Tipo de entidades a devolver.
-    /// </typeparam>
-    public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T: Model
-    {
-        private IQueryable<T>? _result;
-
-        public Type ElementType => _result?.ElementType ?? throw new InvalidOperationException();
-
-        public Expression Expression => _result?.Expression ?? throw new InvalidOperationException();
-
-        public IQueryProvider Provider => _result?.Provider ?? throw new InvalidOperationException();
-
-        public IEnumerator<T> GetEnumerator() => _result?.GetEnumerator() ?? throw new InvalidOperationException();
-
-        IEnumerator IEnumerable.GetEnumerator() => _result?.GetEnumerator() ?? throw new InvalidOperationException();
-
-        public QueryServiceResult()
-        {
-        }
-
-        public QueryServiceResult(IQueryable<T> query)
-        {
-            _result = query;
-        }
-    }
-
-    /// <summary>
     ///     Representa el resultado de una operación de servicio que incluye un
     ///     valor devuelto.
     /// </summary>
@@ -501,23 +465,5 @@ namespace TheXDS.Triton.Services
         ///     Motivo por el cual la operación ha fallado.
         /// </param>
         public static implicit operator ServiceResult<T>(in FailureReason reason) => new ServiceResult<T>(reason);
-
-        /// <summary>
-        ///     Permite utilizar un <see cref="ServiceResult{T}"/> en una
-        ///     expresión booleana.
-        /// </summary>
-        /// <param name="result">
-        ///     Resultado desde el cual determinar el valor booleano.
-        /// </param>
-        public static implicit operator bool(ServiceResult<T> result) => result.Success;
-
-        /// <summary>
-        ///     Permite utilizar un <see cref="ServiceResult{T}"/> en una
-        ///     expresión de <see cref="string"/>.
-        /// </summary>
-        /// <param name="result">
-        ///     Resultado desde el cual extraer el mensaje.
-        /// </param>
-        public static implicit operator string(ServiceResult<T> result) => result.Message;
     }
 }

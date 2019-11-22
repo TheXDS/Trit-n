@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 
@@ -71,5 +72,24 @@ namespace TheXDS.Triton.Services.Base
         /// </typeparam>
         /// <returns></returns>
         QueryServiceResult<TModel> All<TModel>() where TModel : Model;
+
+        /// <summary>
+        ///     Obtiene de forma asíncrona una entidad cuyo campo llave sea
+        ///     igual al valor especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo de campo llave de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad a obtener.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>;
     }
 }

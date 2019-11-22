@@ -1,5 +1,4 @@
 ﻿using TheXDS.Triton.Services.Base;
-using TheXDS.Triton.Exceptions;
 
 namespace TheXDS.Triton.Services
 {
@@ -9,20 +8,17 @@ namespace TheXDS.Triton.Services
     /// </summary>
     public class ServiceConfiguration : IServiceConfiguration
     {
-        ICrudTransactionFactory? _factory;
-        ITransactionConfiguration? _transConfig;
-
         /// <summary>
         ///     Obtiene una referencia a la fábrica de transacciones
         ///     actualmente configurada.
         /// </summary>
-        protected ICrudTransactionFactory CrudTransactionFactory => _factory ?? throw new UnconfiguredServiceException(this);
+        public ICrudTransactionFactory CrudTransactionFactory { get; private set; } = new DefaultTransactionFactory();
 
         /// <summary>
         ///     Obtiene una referencia a la configuración de transacciones
         ///     activa.
         /// </summary>
-        protected ITransactionConfiguration TransactionConfiguration => _transConfig ?? throw new UnconfiguredServiceException(this);
+        public TransactionConfiguration TransactionConfiguration { get; private set; } = new TransactionConfiguration();
 
         /// <summary>
         ///     Establece la fábrica de transacciones a exponer en esta
@@ -34,7 +30,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceConfiguration SetFactory(ICrudTransactionFactory factory)
         {
-            _factory = factory;
+            CrudTransactionFactory = factory ?? throw new System.ArgumentNullException(nameof(factory));
             return this;
         }
 
@@ -46,16 +42,10 @@ namespace TheXDS.Triton.Services
         /// <returns>
         ///     Esta misma instancia.
         /// </returns>
-        public ServiceConfiguration SetTransactionConfiguration(ITransactionConfiguration transConfig)
+        public ServiceConfiguration SetTransactionConfiguration(TransactionConfiguration transConfig)
         {
-            _transConfig = transConfig;
+            TransactionConfiguration = transConfig ?? throw new System.ArgumentNullException(nameof(transConfig));
             return this;
         }
-
-        ICrudTransactionFactory IServiceConfiguration.CrudTransactionFactory => CrudTransactionFactory;
-
-        ICrudTransactionFactory IServiceConfigurationBase<ICrudTransactionFactory>.CrudTransactionFactory => CrudTransactionFactory;
-
-        ITransactionConfiguration IServiceConfigurationBase.TransactionConfiguration => TransactionConfiguration;
     }
 }

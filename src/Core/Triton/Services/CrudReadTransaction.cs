@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
-using TheXDS.MCART.Exceptions;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
+using System.Threading.Tasks;
 
 namespace TheXDS.Triton.Services
 {
@@ -23,11 +22,11 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        public CrudReadTransaction(ITransactionConfiguration configuration) : base(configuration)
+        public CrudReadTransaction(TransactionConfiguration configuration) : base(configuration)
         {
         }
 
-        internal CrudReadTransaction(ITransactionConfiguration configuration, T context) : base(configuration, context)
+        internal CrudReadTransaction(TransactionConfiguration configuration, T context) : base(configuration, context)
         {
         }
 
@@ -41,17 +40,8 @@ namespace TheXDS.Triton.Services
         /// <returns></returns>
         public QueryServiceResult<TModel> All<TModel>() where TModel : Model
         {
-            try
-            {
-                return 
-                    _configuration.Preamble(CrudAction.Read, null)?.CastUp<QueryServiceResult<TModel>>() ?? 
-                    new QueryServiceResult<TModel>(_context.Set<TModel>());
-
-            }
-            catch (Exception ex)
-            {
-                return ServiceResult.FailWith<QueryServiceResult<TModel>>(ex);
-            }
+            var result = TryCall(CrudAction.Read, (Func<DbSet<TModel>>)_context.Set<TModel>, out DbSet<TModel> dbSet, null)?.CastUp<QueryServiceResult<TModel>>();
+            return dbSet is null ? result ?? FailureReason.DbFailure : new QueryServiceResult<TModel>(dbSet);
         }
 
         /// <summary>
@@ -74,11 +64,36 @@ namespace TheXDS.Triton.Services
         ///     entidad con el campo llave especificado, el valor de resultado
         ///     será <see langword="null"/>.
         /// </returns>
-        public ServiceResult<TModel?> Read<TModel, TKey>(TKey key)
-            where TModel : Model<TKey>
-            where TKey : IComparable<TKey>, IEquatable<TKey>
+        public ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return Checked(CrudAction.Read, () => _context.Find<TModel>(new object[] { key }) ?? throw new DataNotFoundException());
+            var result = TryCall(CrudAction.Read, (Func<object[], TModel>)_context.Find<TModel>, out TModel? entity, new object?[] { new object[] { key } })?.CastUp<ServiceResult<TModel?>>();
+            return  entity is null ? result ?? FailureReason.NotFound : new ServiceResult<TModel?>(entity);
         }
+
+        /// <summary>
+        ///     Obtiene de forma asíncrona una entidad cuyo campo llave sea
+        ///     igual al valor especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <typeparam name="TKey">
+        ///     Tipo de campo llave de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        ///     Llave de la entidad a obtener.
+        /// </param>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
+        {
+            return TryCallAsync(CrudAction.Read, _context.FindAsync<TModel>(new object[] { key }).AsTask());
+        }
+
+
+
+
     }
 }

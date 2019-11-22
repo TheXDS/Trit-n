@@ -2,7 +2,7 @@
 
 namespace TheXDS.Triton.Services
 {
-    public class TransactionFactory : ICrudTransactionFactory
+    public class DefaultTransactionFactory : ICrudTransactionFactory
     {
     }
 }
