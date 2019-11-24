@@ -10,26 +10,54 @@ using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Middleware
 {
-    /*
-     * Esta clase ejemplifica una implementación simple de Middlewares por medio de la interfaz ITransactionMiddleware.
-     */
-
     /// <summary>
     ///     Middleware que permite obtener información específica sobre el
     ///     tiempo que toma ejecutar acciones Crud.
     /// </summary>
     public class PerformanceMonitor : INotifyPropertyChanged, ITransactionMiddleware
     {
-        public event EventHandler<ValueEventArgs<double>>? Elapsed;
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private readonly List<double> _events = new List<double>();
         private readonly Stopwatch _stopwatch = new Stopwatch();
+        
+        /// <summary>
+        ///     Ocurre cuando se ha producido la acción Crud
+        ///     <see cref="CrudAction.Commit"/>.
+        /// </summary>
+        public event EventHandler<ValueEventArgs<double>>? Elapsed;
 
+        /// <summary>
+        ///     Ocurre cuando el valor de una propiedad ha cambiado.
+        /// </summary>
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        ///     Obtiene la cantidad de eventos de guardado registrados por esta
+        ///     instancia.
+        /// </summary>
         public int EventCount => _events.Count;
+
+        /// <summary>
+        ///     Obtiene el tiempo promedio en milisegundos que han tomado las
+        ///     operaciones de guardado.
+        /// </summary>
         public double AverageMs => Get(Enumerable.Average);
+
+        /// <summary>
+        ///     Obtiene la cantidad de tiempo en milisegundos que ha tomado la
+        ///     operación de guardado más corta.
+        /// </summary>
         public double MinMs => Get(Enumerable.Min);
+
+        /// <summary>
+        ///     Obtiene la cantidad de tiempo en milisegundos que ha tomado la
+        ///     operación de guardado más larga.
+        /// </summary>
         public double MaxMs => Get(Enumerable.Max);
+
+        /// <summary>
+        ///     Reinicia los contadores de desempeño de esta instancia.
+        /// </summary>
+        public void Reset() => _events.Clear();
 
         private double Get(Func<List<double>,double> func)
         {
@@ -61,10 +89,5 @@ namespace TheXDS.Triton.Middleware
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public static class NOPSimulator
-    {
-
     }
 }
