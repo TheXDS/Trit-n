@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using TheXDS.Triton.Models.Base;
 
-#nullable enable
-
-namespace TheXDS.Triton.TestModels
+namespace TheXDS.Triton.Models
 {
-    internal class User : Model<string>
+    public class User : Model<string>
     {
         public string PublicName { get; set; } = null!;
         public DateTime Joined { get; set; }

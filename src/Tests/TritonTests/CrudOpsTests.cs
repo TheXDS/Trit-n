@@ -7,10 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Security.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
-using TheXDS.Triton.TestModels;
+using TheXDS.Triton.Models;
 
 namespace TheXDS.Triton.Tests
 {
@@ -171,6 +170,24 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
+        public void RelatedDataEagerLoadingTest()
+        {
+            var q = _srv.GetAllUsersFirst3Posts().ToList();
+
+            /* -= Según la base de datos de prueba: =-
+             * Existen 3 usuarios, y únicamente el primer usuario debe tener un
+             * Post. Los demás usuarios no deben tener ninguno.
+             * 
+             * Por la forma en que el Query está construido, solo se debe
+             * obtener al primer usuario y a su correspondiente post.
+             */
+
+            Assert.AreEqual(1, q.Count);
+            Assert.AreEqual("user1", q[0].Key.Id);
+            Assert.AreEqual(1, q[0].Count());
+        }
+
+        [Test]
         public void UpdateAndVerifyTransactionTest()
         {
             User r;
@@ -206,6 +223,7 @@ namespace TheXDS.Triton.Tests
             }
         }
 
+
         [Test]
         public void CreateAndNotifyTest()
         {
@@ -222,24 +240,6 @@ namespace TheXDS.Triton.Tests
             Assert.IsTrue(_srv.Configuration.Notifier.Notified);
             Assert.IsInstanceOf<User>(_srv.Configuration.Notifier.Entity);
             Assert.AreEqual(CrudAction.Create, _srv.Configuration.Notifier.Action!.Value);
-        }
-
-        [Test]
-        public void RelatedDataEagerLoadingTest()
-        {
-            var q = _srv.GetAllUsersFirst3Posts().ToList();
-
-            /* -= Según la base de datos de prueba: =-
-             * Existen 3 usuarios, y únicamente el primer usuario debe tener un
-             * Post. Los demás usuarios no deben tener ninguno.
-             * 
-             * Por la forma en que el Query está construido, solo se debe
-             * obtener al primer usuario y a su correspondiente post.
-             */
-
-            Assert.AreEqual(1, q.Count);
-            Assert.AreEqual("user1", q[0].Key.Id);
-            Assert.AreEqual(1, q[0].Count());
         }
 
         [Test]
@@ -324,7 +324,7 @@ namespace TheXDS.Triton.Tests
         private class TestConfiguration : ServiceConfiguration
         {
             public TestConfiguration()
-            {
+            {                
             }
 
             public TestNotifier Notifier { get; } = new TestNotifier();

@@ -1,11 +1,9 @@
 ﻿using System;
 using TheXDS.Triton.Models.Base;
 
-#nullable enable
-
-namespace TheXDS.Triton.TestModels
+namespace TheXDS.Triton.Models
 {
-    internal class Comment : Model<long>
+    public class Comment : Model<long>
     {
         public User Author { get; set; }
         public Post Parent { get; set; }

@@ -12,7 +12,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />    
+    <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
+    <ProjectReference Include="..\Triton.Tests.Common\Triton.Tests.Common.csproj" />    
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
   </ItemGroup>

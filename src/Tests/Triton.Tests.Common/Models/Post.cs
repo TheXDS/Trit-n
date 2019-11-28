@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using TheXDS.Triton.Models.Base;
 
-#nullable enable
-
-namespace TheXDS.Triton.TestModels
+namespace TheXDS.Triton.Models
 {
-    internal class Post : Model<long>
+    public class Post : Model<long>
     {
         public string Title { get; set; } = null!;
         public DateTime CreationTime { get; set; }
