@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using TheXDS.MCART;
 using TheXDS.MCART.Exceptions;
 using TheXDS.Triton.Services.Base;
@@ -17,14 +18,21 @@ namespace TheXDS.Triton.Services
     public abstract class Service<TContext> : IService where TContext : DbContext, new()
     {
         /// <summary>
-        ///     Obtiene una referencia a la configuración activa para este servicio.
+        ///     Obtiene una referencia al tipo de contexto para el cual este
+        ///     servicio generará transacciones.
+        /// </summary>
+        public Type ContextType => typeof(TContext);
+
+        /// <summary>
+        ///     Obtiene una referencia a la configuración activa para este
+        ///     servicio.
         /// </summary>
         public IServiceConfiguration Configuration { get; }
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase 
-        ///     <see cref="ServiceBase{TContext}"/>,
-        ///     buscando automáticamente la configuración a utilizar.
+        ///     <see cref="Service{TContext}"/>, buscando automáticamente la
+        ///     configuración a utilizar.
         /// </summary>
         protected Service() : this(Objects.FindFirstObject<IServiceConfiguration>() ?? throw new MissingTypeException(typeof(IServiceConfiguration)))
         {
@@ -32,8 +40,8 @@ namespace TheXDS.Triton.Services
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase 
-        ///     <see cref="ServiceBase{TContext}"/>,
-        ///     especificando la configuración a utilizar.
+        ///     <see cref="Service{TContext}"/>, especificando la configuración
+        ///     a utilizar.
         /// </summary>
         /// <param name="settings">
         ///     Configuración a utilizar para este servicio.

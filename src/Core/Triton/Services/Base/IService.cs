@@ -1,4 +1,9 @@
-﻿namespace TheXDS.Triton.Services.Base
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace TheXDS.Triton.Services.Base
 {
     /// <summary>
     ///     Define una serie de miembros a implementar por un servicio que
@@ -35,6 +40,12 @@
         ///     Una transacción que permite leer y escribir información en la
         ///     base de datos.
         /// </returns>
-        ICrudReadWriteTransaction GetReadWriteTransaction();        
+        ICrudReadWriteTransaction GetReadWriteTransaction();
+        
+        /// <summary>
+        ///     Obtiene una referencia al tipo de contexto para el cual este
+        ///     servicio generará transacciones.
+        /// </summary>
+        Type ContextType { get; }        
     }
 }
