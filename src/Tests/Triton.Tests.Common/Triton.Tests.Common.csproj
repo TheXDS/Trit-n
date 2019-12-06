@@ -7,6 +7,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
-    <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\Triton\Triton.csproj" />
   </ItemGroup>
 </Project>
