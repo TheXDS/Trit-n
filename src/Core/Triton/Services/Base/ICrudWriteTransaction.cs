@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 
@@ -84,5 +85,14 @@ namespace TheXDS.Triton.Services.Base
         ///     servicio subyacente.
         /// </returns>
         ServiceResult Commit();
+
+        /// <summary>
+        ///     Guarda todos los cambios realizados de forma asíncrona.
+        /// </summary>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        Task<ServiceResult> CommitAsync();
     }
 }

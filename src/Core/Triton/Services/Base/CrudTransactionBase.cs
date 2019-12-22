@@ -23,7 +23,7 @@ namespace TheXDS.Triton.Services.Base
         /// <summary>
         ///     Obtiene la configuración disponible para esta transacción.
         /// </summary>
-        protected readonly ITransactionConfiguration _configuration;
+        protected readonly TransactionConfiguration _configuration;
 
         /// <summary>
         ///     Obtiene la instancia activa del contexto de datos a utilizar
@@ -41,19 +41,18 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Obtiene un <typeparamref name="TResult"/> que representa un
+        ///     Obtiene un <see cref="ServiceResult"/> que representa un
         ///     <see cref="ServiceResult"/> fallido a partir de la excepción
         ///     producida.
         /// </summary>
-        /// <typeparam name="TResult">Tipo de resultado a devolver.</typeparam>
         /// <param name="ex">Excepción que se ha producido.</param>
         /// <returns>
         ///     Un resultado que representa y describe una falla en la 
         ///     operación solicitada.
         /// </returns>
-        protected static TResult ResultFromException<TResult>(Exception ex) where TResult : ServiceResult, new()
+        protected static ServiceResult ResultFromException(Exception ex)
         {
-            return (ex switch
+            return ex switch
             {
                 null => throw new ArgumentNullException(nameof(ex)),
                 DataNotFoundException _ => NotFound,
@@ -61,38 +60,10 @@ namespace TheXDS.Triton.Services.Base
                 DbUpdateConcurrencyException _ => ConcurrencyFailure,
                 DbUpdateException _ => DbFailure,
                 RetryLimitExceededException _ => NetworkFailure,
-                _ => (ServiceResult)ex,
-            }).CastUp<TResult>();
+                _ => ex,
+            };
         }
-
-        /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
-        /// </summary>
-        /// <typeparam name="TResult">
-        ///     Tipo de resultado de la tarea.
-        /// </typeparam>
-        /// <param name="op">
-        ///     Tarea a ejecutar.
-        /// </param>
-        /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
-        /// </returns>
-        protected static Task<TResult> TryCallAsync<TResult>(Task<TResult> op) where TResult : ServiceResult, new()
-        {
-            try
-            {
-                return op.Throwable();
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(ResultFromException<TResult>(ex));
-            }
-        }
-
+     
         /// <summary>
         ///     Mapea el valor <see cref="EntityState"/> a su valor equivalente
         ///     de tipo <see cref="CrudAction"/>.
@@ -122,151 +93,249 @@ namespace TheXDS.Triton.Services.Base
         /// <typeparam name="TResult">
         ///     Tipo de resultado de la operación.
         /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
         /// <param name="op">
         ///     Operación a ejecutar.
         /// </param>
-        /// <returns>
-        ///     El resultado generado por la operación, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     misma.
-        /// </returns>
-        protected static TResult TryCall<TResult>(Func<TResult> op) where TResult : ServiceResult, new()
-        {
-            try
-            {
-                return op();
-            }
-            catch (Exception ex)
-            {
-                return ResultFromException<TResult>(ex);
-            }
-        }
-
-        /// <summary>
-        ///     Envuelve una función que obtiene a una entidad en un contexto
-        ///     seguro que obtendrá un resultado de error cuando se produzca
-        ///     una excepción.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Tipo de modelo que la función devuelve.
-        /// </typeparam>
-        /// <param name="op">
-        ///     Función que devuelve una entidad.
+        /// <param name="result">
+        ///     Resultado de la operación.
         /// </param>
-        /// <param name="action">Acción Crud que se realiza.</param>
+        /// <param name="args">
+        ///     Argumentos a pasar a la operación.
+        /// </param>
         /// <returns>
         ///     El resultado generado por la operación, o un 
         ///     <see cref="ServiceResult"/> que representa un error en la
         ///     misma.
         /// </returns>
-        protected ServiceResult<TModel?> TryResultCall<TModel>(Func<TModel> op, CrudAction action) where TModel : Model
+        protected ServiceResult? TryCall<TResult>(CrudAction action, Delegate op, out TResult result, params object?[]? args)
         {
+            result = default!;
             try
             {
-                var r =  new ServiceResult<TModel?>(op());
-                if (r)
+                if (_configuration.Prolog(action, args?[0] as Model) is { } r) return r;
+
+                if (op.Method.ReturnType == typeof(void))
                 {
-                    _configuration.Notifier?.Notify(r.ReturnValue!, action);
+                    op.DynamicInvoke(args);
                 }
-                return r;
+                else if (typeof(TResult).IsAssignableFrom(op.Method.ReturnType))
+                {
+                    result = (TResult)op.DynamicInvoke(args)!;
+                }
+                else
+                {
+                    throw new InvalidCastException();
+                }
+
+                return _configuration.Epilog(action, result as Model);
+            }
+            catch (InvalidCastException)
+            { 
+                throw;
             }
             catch (Exception ex)
             {
-                return ResultFromException<ServiceResult<TModel?>>(ex);
+                return ResultFromException(ex);
             }
         }
 
         /// <summary>
-        ///     Envuelve una función que obtiene a una entidad en un contexto
-        ///     seguro que obtendrá un resultado de error cuando se produzca
-        ///     una excepción.
+        ///     Envuelve una operación en un contexto seguro que obtendrá un
+        ///     resultado de error cuando se produzca una excepción.
         /// </summary>
-        /// <typeparam name="TModel">
-        ///     Tipo de modelo que la función devuelve.
-        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
         /// <param name="op">
-        ///     Función que devuelve una entidad.
+        ///     Operación a ejecutar.
         /// </param>
-        /// <param name="entity">
-        ///     Entidad sobre la cual se está realizando una operación Crud.
+        /// <param name="args">
+        ///     Argumentos a pasar a la operación.
         /// </param>
-        /// <param name="action">Acción Crud que se realiza.</param>
         /// <returns>
         ///     El resultado generado por la operación, o un 
         ///     <see cref="ServiceResult"/> que representa un error en la
         ///     misma.
         /// </returns>
-        protected ServiceResult TryResultCall<TModel>(Func<TModel, EntityEntry<TModel>> op, TModel entity, CrudAction action) where TModel : Model
+        protected ServiceResult? TryCall(CrudAction action, Delegate op, params object?[]? args)
+        {
+            return TryCall<object?>(action, op, out _, args);
+        }
+
+        /// <summary>
+        ///     Envuelve una llamada a una tarea en un contexto seguro que
+        ///     obtendrá un resultado de error cuando se produzca una
+        ///     excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de resultado de la tarea.
+        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="op">
+        ///     Tarea a ejecutar.
+        /// </param>
+        /// <param name="entity">
+        ///     Entidad que se ha pasado como argumento a la tarea. Si la tarea
+        ///     no recibe un <see cref="Model"/> como argumento, este valor 
+        ///     debe establecerse en <see langword="null"/>.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la tarea, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     operación.
+        /// </returns>
+        protected async Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel> op, TModel? entity) where TModel : Model
         {
             try
             {
-                op(entity);
-                _configuration.Notifier?.Notify(entity, action);
-                return ServiceResult.Ok;
+                if (_configuration.Prolog(action, entity) is { } r) return r.CastUp<ServiceResult<TModel?>>();
+                var result = await op.Throwable();
+                return _configuration.Epilog(action, result as Model ?? entity)?.CastUp<ServiceResult<TModel?>>()
+                    ?? new ServiceResult<TModel?>(result as TModel ?? entity);
+            }
+            catch (InvalidCastException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                return ResultFromException<ServiceResult<TModel?>>(ex);
+                return ResultFromException(ex).CastUp<ServiceResult<TModel?>>();
             }
         }
 
         /// <summary>
-        ///     Crea un token de cancelación que puede ser utilizado para
-        ///     cancelar una tarea luego agotarse el tiempo de espera
-        ///     configurado para las conexiones de datos.
-        /// </summary>
-        /// <returns>
-        ///     Un token de cancelación de tarea que puede utilizarse para
-        ///     detener una tarea.
-        /// </returns>
-        protected CancellationTokenSource MakeTimeoutToken()
-        {
-            return new CancellationTokenSource(_configuration.ConnectionTimeout);
-        }
-
-        /// <summary>
-        ///     Ejecuta una operación Crud en un contexto verificado seguro con
-        ///     preámbulo.
+        ///     Envuelve una llamada a una tarea en un contexto seguro que
+        ///     obtendrá un resultado de error cuando se produzca una
+        ///     excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de modelo sobre el cual se ejecuta la operación Crud.
+        ///     Tipo de resultado de la tarea.
         /// </typeparam>
-        /// <param name="action">Acción Crud que se realiza.</param>
-        /// <param name="entity">
-        ///     Función que devuelve una entidad.
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
         /// </param>
-        /// <returns>
-        ///     El resultado generado por la operación, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     misma.
-        /// </returns>
-        protected ServiceResult<TModel?> Checked<TModel>(CrudAction action, Func<TModel> entity) where TModel : Model
-        {
-            return _configuration.Preamble(action, entity())?.CastUp<ServiceResult<TModel?>>() ?? TryResultCall(entity, action);
-        }
-
-        /// <summary>
-        ///     Ejecuta una operación Crud en un contexto verificado seguro con
-        ///     preámbulo.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Tipo de modelo sobre el cual se ejecuta la operación Crud.
-        /// </typeparam>
-        /// <param name="action">Acción Crud que se realiza.</param>
         /// <param name="op">
-        ///     Función que ejecuta la acción Crud.
+        ///     Tarea a ejecutar.
         /// </param>
         /// <param name="entity">
-        ///     Entidad sobre la cual se está realizando una operación Crud.
+        ///     Entidad que se ha pasado como argumento a la tarea. Si la tarea
+        ///     no recibe un <see cref="Model"/> como argumento, este valor 
+        ///     debe establecerse en <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la operación, o un 
+        ///     El resultado generado por la tarea, o un 
         ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     misma.
+        ///     operación.
         /// </returns>
-        protected ServiceResult Checked<TModel>(CrudAction action, Func<TModel, EntityEntry<TModel>> op, TModel entity) where TModel : Model
+        protected Task<ServiceResult> TryCallAsync<TModel>(CrudAction action, Task op, TModel? entity) where TModel : Model
         {
-            return _configuration.Preamble(action,entity)?.CastUp<ServiceResult<TModel?>>() ?? TryResultCall(op, entity, action);
+            return TryCallAsync(action, op, entity);
+        }
+
+        /// <summary>
+        ///     Envuelve una llamada a una tarea en un contexto seguro que
+        ///     obtendrá un resultado de error cuando se produzca una
+        ///     excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de resultado de la tarea.
+        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="op">
+        ///     Tarea a ejecutar.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la tarea, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     operación.
+        /// </returns>
+        protected Task<ServiceResult> TryCallAsync<TModel>(CrudAction action, Task op) where TModel : Model
+        {
+            return TryCallAsync<Model>(action, op, null);
+        }
+
+        /// <summary>
+        ///     Envuelve una llamada a una tarea en un contexto seguro que
+        ///     obtendrá un resultado de error cuando se produzca una
+        ///     excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de resultado de la tarea.
+        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="op">
+        ///     Tarea a ejecutar.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la tarea, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     operación.
+        /// </returns>
+        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel> op) where TModel : Model
+        {
+            return TryCallAsync(action, op, null);
+        }
+
+        /// <summary>
+        ///     Envuelve una llamada a una tarea en un contexto seguro que
+        ///     obtendrá un resultado de error cuando se produzca una
+        ///     excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de resultado de la tarea.
+        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="op">
+        ///     Tarea a ejecutar.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la tarea, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     operación.
+        /// </returns>
+        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel> op) where TModel : Model
+        {
+            return TryCallAsync(action, op.AsTask(), null);
+        }
+
+        /// <summary>
+        ///     Envuelve una llamada a una tarea en un contexto seguro que
+        ///     obtendrá un resultado de error cuando se produzca una
+        ///     excepción.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Tipo de resultado de la tarea.
+        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="op">
+        ///     Tarea a ejecutar.
+        /// </param>
+        /// <param name="entity">
+        ///     Entidad que se ha pasado como argumento a la tarea. Si la tarea
+        ///     no recibe un <see cref="Model"/> como argumento, este valor 
+        ///     debe establecerse en <see langword="null"/>.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la tarea, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     operación.
+        /// </returns>
+        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel> op, TModel? entity) where TModel : Model
+        {
+            return TryCallAsync(action, op.AsTask(), entity);
         }
 
         /// <summary>
@@ -276,11 +345,36 @@ namespace TheXDS.Triton.Services.Base
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        protected CrudTransactionBase(ITransactionConfiguration configuration) : this(configuration, new T())
+        protected CrudTransactionBase(TransactionConfiguration configuration) : this(configuration, new T())
         {
         }
 
-        private protected CrudTransactionBase(ITransactionConfiguration configuration, T contextInstance)
+        /// <summary>
+        ///     Ejecuta una operación Crud de escritura.
+        /// </summary>
+        /// <typeparam name="TModel">
+        ///     Modelo utilizado por la operación.
+        /// </typeparam>
+        /// <param name="action">
+        ///     Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="operation">
+        ///     Operación a ejecutar.
+        /// </param>
+        /// <param name="entity">
+        ///     Entidad sobre la cual se ejecutará la acción.
+        /// </param>
+        /// <returns>
+        ///     El resultado generado por la operación, o un 
+        ///     <see cref="ServiceResult"/> que representa un error en la
+        ///     misma.
+        /// </returns>
+        protected ServiceResult Perform<TModel>(CrudAction action, Func<TModel, EntityEntry<TModel>> operation, TModel entity) where TModel : Model
+        {
+            return TryCall(action, operation, new object?[] { entity }) ?? ServiceResult.Ok;
+        }
+
+        private protected CrudTransactionBase(TransactionConfiguration configuration, T contextInstance)
         {
             _configuration = configuration;
             _context = contextInstance;

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
 using static TheXDS.Triton.Services.FailureReason;
@@ -23,11 +25,11 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a utilizar para la transacción.
         /// </param>
-        public CrudWriteTransaction(ITransactionConfiguration configuration) : base(configuration)
+        public CrudWriteTransaction(TransactionConfiguration configuration) : base(configuration)
         {
         }
 
-        internal CrudWriteTransaction(ITransactionConfiguration configuration, T context) : base(configuration, context)
+        internal CrudWriteTransaction(TransactionConfiguration configuration, T context) : base(configuration, context)
         {
         }
 
@@ -52,17 +54,19 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Commit()
         {
-            try
-            {
-                _context.SaveChanges();
-                _configuration.Notifier?.Commit();
-                return ServiceResult.Ok;
-            }
-            catch (Exception ex)
-            {
-                _configuration.Notifier?.Fail();
-                return ResultFromException<ServiceResult>(ex);
-            }
+            return TryCall(CrudAction.Commit, (Func<int>)_context.SaveChanges, null) ?? ServiceResult.Ok;
+        }
+
+        /// <summary>
+        ///     Guarda todos los cambios realizados de forma asíncrona.
+        /// </summary>
+        /// <returns>
+        ///     El resultado reportado de la operación ejecutada por el
+        ///     servicio subyacente.
+        /// </returns>
+        public Task<ServiceResult> CommitAsync()
+        {
+            return TryCallAsync<Model>(CrudAction.Commit, _context.SaveChangesAsync(), null) ?? Task.FromResult(ServiceResult.Ok);
         }
 
         /// <summary>
@@ -80,7 +84,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
         {
-            return Checked(CrudAction.Create, _context.Add, newEntity);
+            return Perform(CrudAction.Create, _context.Add, newEntity);
         }
 
         /// <summary>
@@ -98,7 +102,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
         {
-            return Checked(CrudAction.Delete, _context.Remove, entity);
+            return Perform(CrudAction.Delete, _context.Remove, entity);
         }
 
         /// <summary>
@@ -143,7 +147,8 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult Update<TModel>(TModel entity) where TModel : Model
         {
-            return Checked(CrudAction.Update, _context.Update, entity);
+            return Perform(CrudAction.Update, _context.Update, entity);
         }
+
     }
 }

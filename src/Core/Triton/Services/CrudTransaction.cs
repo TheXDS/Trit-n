@@ -13,12 +13,10 @@ namespace TheXDS.Triton.Services
     /// <typeparam name="T">
     ///     Tipo de contexto de datos a utilizar.
     /// </typeparam>
-    public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction<T>, IAsyncCrudReadWriteTransaction where T : DbContext, new()
+    public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction<T> where T : DbContext, new()
     {
         private readonly ICrudReadTransaction _readTransaction;
         private readonly ICrudWriteTransaction _writeTransaction;
-        private readonly IAsyncCrudReadTransaction _asyncReadTransaction;
-        private readonly IAsyncCrudWriteTransaction _asyncWriteTransaction;
 
         /// <summary>
         ///     Obtiene a la instancia de contexto activa en esta transacción.
@@ -32,12 +30,10 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         ///     Configuración a pasar a las transacciones subyacentes.
         /// </param>
-        public CrudTransaction(ITransactionConfiguration configuration) : base(configuration)
+        public CrudTransaction(TransactionConfiguration configuration) : base(configuration)
         {
             _readTransaction = new CrudReadTransaction<T>(configuration, _context);
             _writeTransaction = new CrudWriteTransaction<T>(configuration, _context);
-            _asyncReadTransaction = new CrudAsyncReadTransaction<T>(configuration, _context);
-            _asyncWriteTransaction = new CrudAsyncWriteTransaction<T>(configuration, _context);
         }
 
         /// <summary>
@@ -187,82 +183,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Crea una nueva entidad en la base de datos de forma asíncrona.
+        ///     Guarda todos los cambios realizados de forma asíncrona.
         /// </summary>
-        /// <typeparam name="TModel">
-        ///     Modelo de la nueva entidad.
-        /// </typeparam>
-        /// <param name="newEntity">
-        ///     Nueva entidad a agregar a la base de datos.
-        /// </param>
         /// <returns>
         ///     El resultado reportado de la operación ejecutada por el
         ///     servicio subyacente.
         /// </returns>
-        public Task<ServiceResult> CreateAsync<TModel>(TModel newEntity) where TModel : Model
+        public Task<ServiceResult> CommitAsync()
         {
-            return _asyncWriteTransaction.CreateAsync(newEntity);
-        }
-
-        /// <summary>
-        ///     Elimina a una entidad de la base de datos de forma asíncrona.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Modelo de la entidad a eliminar.
-        /// </typeparam>
-        /// <param name="entity">
-        ///     Entidad que deberá ser eliminada de la base de datos.
-        /// </param>
-        /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
-        /// </returns>
-        public Task<ServiceResult> DeleteAsync<TModel>(TModel entity) where TModel : Model
-        {
-            return _asyncWriteTransaction.DeleteAsync(entity);
-        }
-
-        /// <summary>
-        ///     Elimina a una entidad de la base de datos de forma asíncrona.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Modelo de la entidad a eliminar.
-        /// </typeparam>
-        /// <typeparam name="TKey">
-        ///     Tipo del campo llave que identifica a la entidad.
-        /// </typeparam>
-        /// <param name="key">
-        ///     Llave de la entidad que deberá ser eliminada de la base de
-        ///     datos.
-        /// </param>
-        /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
-        /// </returns>
-        public Task<ServiceResult> DeleteAsync<TModel, TKey>(TKey key)
-            where TModel : Model<TKey>
-            where TKey : IComparable<TKey>, IEquatable<TKey>
-        {
-            return _asyncWriteTransaction.DeleteAsync<TModel,TKey>(key);
-        }
-
-        /// <summary>
-        ///     Actualiza de forma asíncrona los datos contenidos en una
-        ///     entidad dentro de la base de datos.
-        /// </summary>
-        /// <typeparam name="TModel">
-        ///     Modelo de la entidad a actualizar.
-        /// </typeparam>
-        /// <param name="entity">
-        ///     Entidad que contiene la nueva información a escribir.
-        /// </param>
-        /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
-        /// </returns>
-        public Task<ServiceResult> UpdateAsync<TModel>(TModel entity) where TModel : Model
-        {
-            return _asyncWriteTransaction.UpdateAsync(entity);
+            return _writeTransaction.CommitAsync();
         }
 
         /// <summary>
@@ -286,7 +215,7 @@ namespace TheXDS.Triton.Services
             where TModel : Model<TKey>
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return _asyncReadTransaction.ReadAsync<TModel, TKey>(key);
+            return _readTransaction.ReadAsync<TModel, TKey>(key);
         }
 
         /// <summary>
@@ -310,5 +239,6 @@ namespace TheXDS.Triton.Services
             _writeTransaction.Dispose();
             base.OnDispose();
         }
+
     }
 }

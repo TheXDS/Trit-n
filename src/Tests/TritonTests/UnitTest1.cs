@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 
 namespace TheXDS.Triton.Tests

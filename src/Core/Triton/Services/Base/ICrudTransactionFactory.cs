@@ -6,7 +6,7 @@ namespace TheXDS.Triton.Services.Base
     ///     Define una serie de miembros a implementar por un tipo que permita
     ///     fabricar transacciones de lectura y escritura.
     /// </summary>
-    public interface ICrudTransactionFactory : ILiteCrudTransactionFactory
+    public interface ICrudTransactionFactory
     {
         /// <summary>
         ///     Fabrica una transacción de lectura/escritura.
@@ -21,7 +21,7 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         ///     Una transacción desechable para lectura/escritura de datos.
         /// </returns>
-        ICrudReadWriteTransaction<T> ManufactureReadWriteTransaction<T>(ITransactionConfiguration configuration) where T : DbContext, new()
+        ICrudReadWriteTransaction<T> ManufactureReadWriteTransaction<T>(TransactionConfiguration configuration) where T : DbContext, new()
         {
             return new CrudTransaction<T>(configuration);
         }
@@ -39,7 +39,7 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         ///     Una transacción desechable para lectura de datos.
         /// </returns>
-        ICrudReadTransaction ILiteCrudTransactionFactory.ManufactureReadTransaction<T>(ITransactionConfiguration configuration)
+        ICrudReadTransaction ManufactureReadTransaction<T>(TransactionConfiguration configuration) where T : DbContext, new()
         {
             return ManufactureReadWriteTransaction<T>(configuration);
         }
@@ -57,7 +57,7 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         ///     Una transacción desechable para escritura de datos.
         /// </returns>
-        ICrudWriteTransaction ILiteCrudTransactionFactory.ManufactureWriteTransaction<T>(ITransactionConfiguration configuration)
+        ICrudWriteTransaction ManufactureWriteTransaction<T>(TransactionConfiguration configuration) where T : DbContext, new()
         {
             return ManufactureReadWriteTransaction<T>(configuration);
         }
