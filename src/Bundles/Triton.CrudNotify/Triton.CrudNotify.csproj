@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp3.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Core\Triton\Triton.csproj" />

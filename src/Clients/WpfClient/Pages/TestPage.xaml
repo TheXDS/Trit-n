@@ -7,14 +7,21 @@
     mc:Ignorable="d"
     xmlns:vm="clr-namespace:TheXDS.Triton.ViewModels"
     xmlns:vm2="clr-namespace:TheXDS.Triton.ViewModels;assembly=TritonUi"
-    d:DesignHeight="150" d:DesignWidth="400"
-    d:DataContext="{d:DesignInstance vm2:PageViewModel}"
+    xmlns:cmp="clr-namespace:TheXDS.Triton.Component;assembly=TritonUi"    
+    d:DataContext="{d:DesignInstance cmp:TestViewModel}"
     Title="TestPage">
     <Viewbox>
         <StackPanel Margin="50">
             <TextBlock FontSize="24" Text="{Binding Title}"/>
             <Separator/>
             <TextBlock>Esto es una página de prueba.</TextBlock>
+            <Separator Margin="0,20"/>
+            <Slider Minimum="-10" Maximum="10" Value="{Binding NumberOne}"/>
+            <Slider Grid.Row="1" Minimum="-10" Maximum="10" Value="{Binding NumberTwo}"/>
+            <Button Grid.Row="2" Command="{Binding SumCommand, Mode=OneWay}">Sumar</Button>
+            <TextBlock Grid.Row="3">
+                Resultado: <Run Text="{Binding Result, Mode=OneWay}"/>
+            </TextBlock>
         </StackPanel>
     </Viewbox>
 </Page>

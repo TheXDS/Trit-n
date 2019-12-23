@@ -10,10 +10,7 @@
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
     Title="MainWindow" Height="450" Width="600">
-    <Window.Resources>
-        <vm:TabPageBuilder x:Key="TabPageBuilder"/>
-    </Window.Resources>
     <Grid>
-        <TabControl ItemsSource="{Binding Converter={StaticResource TabPageBuilder}, Mode=OneWay}"/>
+        <TabControl ItemsSource="{Binding Children, Mode=OneWay}"/>
     </Grid>
 </Window>

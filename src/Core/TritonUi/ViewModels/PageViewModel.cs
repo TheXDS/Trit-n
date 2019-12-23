@@ -1,43 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
-using TheXDS.Triton.Component;
 using static TheXDS.MCART.Types.Extensions.ObservingCommandExtensions;
 using St = TheXDS.Triton.Resources.UiStrings;
 
 namespace TheXDS.Triton.ViewModels
 {
-    public class PageContainerViewModel<THost> : ViewModelBase, IEnumerable<PageViewModel<THost>>, INotifyCollectionChanged where THost : IVisualHost, new()
-    {
-        private readonly ObservableCollection<PageViewModel<THost>> _children = new ObservableCollection<PageViewModel<THost>>();
-
-        public void AddPage(PageViewModel<THost> page)
-        {
-            _children.Add(page);
-        }
-
-        public void RemovePage(PageViewModel<THost> page)
-        {
-            _children.Remove(page);
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged
-        {
-            add { _children.CollectionChanged += value; }
-            remove { _children.CollectionChanged -= value; }
-        }
-
-        IEnumerator<PageViewModel<THost>> IEnumerable<PageViewModel<THost>>.GetEnumerator() => _children.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => _children.GetEnumerator();
-    }
-
     /// <summary>
     ///     ViewModel que describe una página visual.
     /// </summary>
@@ -46,7 +15,8 @@ namespace TheXDS.Triton.ViewModels
         private string? _title;
         private bool _closeable = true;
         private Color? _accentColor;
-        private readonly ICloseable _host;
+
+        internal HostViewModel? Host { get; set; }
 
         /// <summary>
         ///     Obtiene o establece el valor Title.
@@ -85,23 +55,37 @@ namespace TheXDS.Triton.ViewModels
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="PageViewModel{T}"/>.
+        ///     <see cref="PageViewModel"/>.
         /// </summary>
         public PageViewModel()
         {
-            _host = UiBuilder.Builder.BuildHost(this);
             CloseCommand = new ObservingCommand(this, Close).ListensToCanExecute(() => Closeable);
         }
 
+        /// <summary>
+        ///     Método que se ejecuta antes de cerrar una página.
+        /// </summary>
+        /// <param name="cancel">
+        ///     Parámetro que, cuando se establece en <see langword="true"/>, 
+        ///     permite cancelar la operación de cerrado de la página.
+        /// </param>
         protected virtual void OnClosing(ref bool cancel) { }
+
+        /// <summary>
+        ///     Método que se ejecuta luego de cerrar satisfactoriamente la
+        ///     página.
+        /// </summary>
         protected virtual void OnClosed() { }
 
+        /// <summary>
+        ///     Solicita el cierre de esta página.
+        /// </summary>
         protected void Close()
         {
             var cancel = false;
             OnClosing(ref cancel);
             if (cancel) return;
-            _host.Close();
+            Host?.ClosePage(this);
             OnClosed();
         }
     }
