@@ -48,11 +48,11 @@ namespace TheXDS.Triton.Services
         public static ServiceHost Discover(IEnumerable<IServiceSource> sources)
         {
             var host = new ServiceHost();
-            host._services.AddRange(sources.SelectMany(p => p.GetServices()).Distinct(new ServComarer()));
+            host._services.AddRange(sources.SelectMany(p => p.GetServices()).Distinct(new TypeComparer<IService>()));
             return host;
         }
 
-        private List<IService> _services = new List<IService>();
+        private readonly List<IService> _services = new List<IService>();
 
         /// <summary>
         /// Obtiene la cantidad de servicios cargados dentro de este Host.
@@ -136,19 +136,6 @@ namespace TheXDS.Triton.Services
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((ICollection<IService>)_services).GetEnumerator();
-        }
-    }
-
-    internal class ServComarer : IEqualityComparer<IService>
-    {
-        public bool Equals([AllowNull] IService x, [AllowNull]IService y)
-        {
-            return x?.GetType() == y?.GetType();
-        }
-
-        public int GetHashCode([DisallowNull] IService obj)
-        {
-            return obj!.GetType().GetHashCode();
         }
     }
 }
