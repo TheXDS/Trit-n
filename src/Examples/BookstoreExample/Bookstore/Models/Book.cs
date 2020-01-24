@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Text;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
-using Microsoft.EntityFrameworkCore;
 
 namespace TheXDS.Triton.Examples.BookstoreExample.Models
 {

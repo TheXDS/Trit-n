@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using TheXDS.MCART.Types.Extensions;
+using System.Diagnostics;
 
 namespace TheXDS.Triton.Component
 {
@@ -28,9 +29,39 @@ namespace TheXDS.Triton.Component
         ///     Un contenedor visual fuertemente tipeado para el
         ///     <see cref="PageViewModel"/> especificado.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     Se produce si se intenta resolver el contenedor visual para un
+        ///     valor nulo.
+        /// </exception>
+        /// <exception cref="KeyNotFoundException">
+        ///     Se produce si se intenta resolver el contenedor visual para un
+        ///     tipo de <see cref="PageViewModel"/> que no ha sido registrado.
+        /// </exception>
+        [DebuggerNonUserCode]
         public T ResolveVisual(PageViewModel viewModel)
         {
             return _mappings[viewModel.GetType()].New<T>();
+        }
+
+        /// <summary>
+        ///     Resuelve el contenedor visual a utilizar para alojar a un 
+        ///     <see cref="PageViewModel"/> del tipo especificado.
+        /// </summary>
+        /// <typeparam name="TViewModel">
+        ///     Tipo de <see cref="PageViewModel"/> que va a alojarse.
+        /// </typeparam>
+        /// <returns>
+        ///     Un contenedor visual fuertemente tipeado para el
+        ///     <see cref="PageViewModel"/> especificado.
+        /// </returns>
+        /// <exception cref="KeyNotFoundException">
+        ///     Se produce si se intenta resolver el contenedor visual para un
+        ///     tipo de <see cref="PageViewModel"/> que no ha sido registrado.
+        /// </exception>
+        [DebuggerNonUserCode]
+        public T ResolveVisual<TViewModel>() where TViewModel : PageViewModel
+        {
+            return _mappings[typeof(TViewModel)].New<T>();
         }
 
         /// <summary>

@@ -3,9 +3,8 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.12.0-a001" />
-    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.12.0-a001" />
-    <PackageReference Include="TheXDS.MCART.Ext.ViewModelFactory" Version="0.12.0-a001" />
+    <PackageReference Include="TheXDS.MCART" Version="0.12.0-a007" />
+    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.12.0-a007" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Triton\Triton.csproj" />
