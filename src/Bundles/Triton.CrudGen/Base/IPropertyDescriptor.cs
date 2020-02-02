@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using TheXDS.MCART;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.CrudGen.Base
@@ -14,13 +16,18 @@ namespace TheXDS.Triton.CrudGen.Base
     public enum GenerationTarget : byte
     {
         /// <summary>
+        /// Vista vacía. Aplica únicamente a acciones perzonalizadas y a
+        /// propiedades de un ViewModel.
+        /// </summary>
+        Empty = 1,
+        /// <summary>
         /// Vista autogenerada.
         /// </summary>
-        View = 1,
+        View = 2,
         /// <summary>
         /// Editor autogenerado.
         /// </summary>
-        Editor = 2
+        Editor = 4
     }
 
     /// <summary>
@@ -32,11 +39,6 @@ namespace TheXDS.Triton.CrudGen.Base
     /// <typeparam name="TProperty">Tipo de propiedad seleccionada.</typeparam>
     public interface IPropertyDescriptor<in TModel, in TProperty> where TModel : Model
     {
-        /// <summary>
-        /// Obtiene la información por reflexión de la propiedad descrita.
-        /// </summary>
-        PropertyInfo Property { get; }
-
         /// <summary>
         /// Indica el valor predeterminado al cual establecer la propiedad al
         /// crear una nueva entidad.
@@ -95,14 +97,120 @@ namespace TheXDS.Triton.CrudGen.Base
 
     public interface IPropertyDescription
     {
+        /// <summary>
+        /// Obtiene la información por reflexión de la propiedad descrita.
+        /// </summary>
+        PropertyInfo Property { get; }
 
+        /// <summary>
+        /// Obtiene un diccionario que contiene todos los valores configurados en la descripción de la propiedad.
+        /// </summary>
+        public IDictionary<Guid, object?> Configurations { get; }
     }
 
+
+
+    /// <summary>
+    /// Describe el modo de nulabilidad a aplicar a una propiedad descrita.
+    /// </summary>
+    public enum NullabilityMode : byte
+    {
+        /// <summary>
+        /// Infiere el modo de nulabilidad de acuerdo al tipo de objeto y a los
+        /// atributos de nulabilidad establecidos por la sintaxis de C# 8.
+        /// </summary>
+        Infer,
+        /// <summary>
+        /// La propiedad puede aceptar <see langword="null"/>.
+        /// </summary>
+        Nullable,
+        /// <summary>
+        /// La propiedad no deberá aceptar <see langword="null"/>.
+        /// </summary>
+        NonNullable
+    }
+
+    /// <summary>
+    /// Contiene métodos de descripción comunes.
+    /// </summary>
     public static class PropertyDescriptorCommonExtensions
     {
+        private static readonly Dictionary<MethodInfo, Guid> _registeredGuids = new Dictionary<MethodInfo, Guid>();
+
+        private static Guid GetGuid(MethodInfo? m = null)
+        {
+            m ??= ReflectionHelpers.GetCallingMethod()!;
+            return _registeredGuids.ContainsKey(m) ? _registeredGuids[m] : new Guid().PushInto(m, _registeredGuids);
+        }
+
+        /// <summary>
+        /// Marca una propiedad de forma explícita para aceptar valores
+        /// <see langword="null"/>.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo de modelo descrito.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Información de tipo devuelto por la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">
+        /// Instancia de descriptor de propiedad sobre la cual aplicar la
+        /// configuración.
+        /// </param>
+        /// <returns>
+        /// La misma instancia que <paramref name="descriptor"/>, permitiendo
+        /// el uso de sintaxis Fluent.
+        /// </returns>
         public static IPropertyDescriptor<TModel, TProperty> Nullable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : Model where TProperty : class
         {
-            return descriptor;
+            return NullMode(descriptor, NullabilityMode.Nullable);
         }
+
+        /// <summary>
+        /// Marca una propiedad de forma explícita para inferir la posibilidad
+        /// de aceptar valores <see langword="null"/>. Este es el valor 
+        /// predeterminado para todas las propiedades.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo de modelo descrito.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Información de tipo devuelto por la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">
+        /// Instancia de descriptor de propiedad sobre la cual aplicar la
+        /// configuración.
+        /// </param>
+        /// <returns>
+        /// La misma instancia que <paramref name="descriptor"/>, permitiendo
+        /// el uso de sintaxis Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> InferNullability<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : Model where TProperty : class
+        {
+            return NullMode(descriptor, NullabilityMode.Infer);
+        }
+
+        public static IPropertyDescriptor<TModel, TProperty> NullMode<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor, NullabilityMode mode) where TModel : Model where TProperty : class
+        {
+            return descriptor.SetCustomConfigurationValue(GetGuid(), mode);
+        }
+
+        /// <summary>
+        /// Marca una propiedad de forma explícita para no aceptar valores
+        /// <see langword="null"/>.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo de modelo descrito.</typeparam>
+        /// <typeparam name="TProperty">
+        /// Información de tipo devuelto por la propiedad descrita.
+        /// </typeparam>
+        /// <param name="descriptor">
+        /// Instancia de descriptor de propiedad sobre la cual aplicar la
+        /// configuración.
+        /// </param>
+        /// <returns>
+        /// La misma instancia que <paramref name="descriptor"/>, permitiendo
+        /// el uso de sintaxis Fluent.
+        /// </returns>
+        public static IPropertyDescriptor<TModel, TProperty> NonNullable<TModel, TProperty>(this IPropertyDescriptor<TModel, TProperty> descriptor) where TModel : Model where TProperty : class
+        {
+            return NullMode(descriptor, NullabilityMode.NonNullable);
+        }
+
     }
 }
