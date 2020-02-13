@@ -23,7 +23,7 @@ namespace TheXDS.Triton.Models
 
 
         /// <summary>
-        ///     Inicializa la clase <see cref="BlogContext"/>.
+        /// Inicializa la clase <see cref="BlogContext"/>.
         /// </summary>
         static BlogContext()
         {

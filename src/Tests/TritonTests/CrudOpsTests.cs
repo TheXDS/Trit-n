@@ -4,10 +4,9 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
-using TheXDS.Triton.Models.Base;
+using TheXDS.Triton.Models;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
-using TheXDS.Triton.Models;
 
 namespace TheXDS.Triton.Tests
 {

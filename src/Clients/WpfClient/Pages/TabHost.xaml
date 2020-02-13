@@ -9,7 +9,7 @@
     xmlns:vc ="clr-namespace:System.Windows.Converters;assembly=MCART.WPF"
     xmlns:vm="clr-namespace:TheXDS.Triton.ViewModels"
     xmlns:vm2="clr-namespace:TheXDS.Triton.ViewModels;assembly=TritonUi"
-    d:DataContext="{d:DesignInstance vm:TabHostViewModel}">
+    d:DataContext="{d:DesignInstance vm2:PageViewModel}">
     <TabItem.Resources>
         <vc:McartColorConverter x:Key="McartColorConverter"/>
     </TabItem.Resources>

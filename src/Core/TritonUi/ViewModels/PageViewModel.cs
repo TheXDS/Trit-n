@@ -1,57 +1,27 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
-using TheXDS.Triton.Component;
 using static TheXDS.MCART.Types.Extensions.ObservingCommandExtensions;
 using St = TheXDS.Triton.Resources.UiStrings;
 
 namespace TheXDS.Triton.ViewModels
 {
-    public class PageContainerViewModel<THost> : ViewModelBase, IEnumerable<PageViewModel<THost>>, INotifyCollectionChanged where THost : IVisualHost, new()
-    {
-        private readonly ObservableCollection<PageViewModel<THost>> _children = new ObservableCollection<PageViewModel<THost>>();
-
-        public void AddPage(PageViewModel<THost> page)
-        {
-            _children.Add(page);
-        }
-
-        public void RemovePage(PageViewModel<THost> page)
-        {
-            _children.Remove(page);
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged
-        {
-            add { _children.CollectionChanged += value; }
-            remove { _children.CollectionChanged -= value; }
-        }
-
-        IEnumerator<PageViewModel<THost>> IEnumerable<PageViewModel<THost>>.GetEnumerator() => _children.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => _children.GetEnumerator();
-    }
-
     /// <summary>
-    ///     ViewModel que describe una página visual.
+    /// ViewModel que describe una página visual.
     /// </summary>
     public class PageViewModel : ViewModelBase
     {
         private string? _title;
         private bool _closeable = true;
         private Color? _accentColor;
-        private readonly ICloseable _host;
+
+        internal HostViewModel? Host { get; set; }
 
         /// <summary>
-        ///     Obtiene o establece el valor Title.
+        /// Obtiene o establece el título de la página.
         /// </summary>
-        /// <value>El valor de Title.</value>
+        /// <value>El título de la página.</value>
         public string Title
         {
             get => _title ?? St.UntitledPage;
@@ -59,9 +29,13 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor Closeable.
+        /// Obtiene o establece un valor que indica si esta página puede ser
+        /// cerrada.
         /// </summary>
-        /// <value>El valor de Closeable.</value>
+        /// <value>
+        /// <see langword="true"/> para indicar que la página puede ser
+        /// cerrada, <see langword="false"/> en caso contrario.
+        /// </value>
         public bool Closeable
         {
             get => _closeable;
@@ -69,7 +43,7 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece un color decorativo a utilizar para la página.
+        /// Obtiene o establece un color decorativo a utilizar para la página.
         /// </summary>
         /// <value>El color decorativo a utilizar.</value>
         public Color? AccentColor
@@ -79,29 +53,43 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el comando a ejecutar para cerrar esta página.
+        /// Obtiene el comando a ejecutar para cerrar esta página.
         /// </summary>
         public ICommand CloseCommand { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="PageViewModel{T}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="PageViewModel"/>.
         /// </summary>
         public PageViewModel()
         {
-            _host = UiBuilder.Builder.BuildHost(this);
             CloseCommand = new ObservingCommand(this, Close).ListensToCanExecute(() => Closeable);
         }
 
+        /// <summary>
+        /// Método que se ejecuta antes de cerrar una página.
+        /// </summary>
+        /// <param name="cancel">
+        /// Parámetro que, cuando se establece en <see langword="true"/>, 
+        /// permite cancelar la operación de cerrado de la página.
+        /// </param>
         protected virtual void OnClosing(ref bool cancel) { }
+
+        /// <summary>
+        /// Método que se ejecuta luego de cerrar satisfactoriamente la
+        /// página.
+        /// </summary>
         protected virtual void OnClosed() { }
 
+        /// <summary>
+        /// Solicita el cierre de esta página.
+        /// </summary>
         protected void Close()
         {
             var cancel = false;
             OnClosing(ref cancel);
             if (cancel) return;
-            _host.Close();
+            Host?.ClosePage(this);
             OnClosed();
         }
     }

@@ -8,8 +8,9 @@ namespace RelayBaron.Server
 {
     internal static class Program
     {
-        static Server<Client> _srv = new Server<Client>(new RelayBaronProtocol(), 61440);
-        static void Main(string[] args)
+        private static readonly Server<Client> _srv = new Server<Client>(new RelayBaronProtocol(), 61440);
+
+        private static void Main()
         {
             _srv.Start();
             Console.CancelKeyPress += OnExit;
@@ -18,6 +19,7 @@ namespace RelayBaron.Server
                 Thread.Sleep(1000);
             }
         }
+
         private static void OnExit(object sender, ConsoleCancelEventArgs e)
         {
             _srv.Stop();   

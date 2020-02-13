@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp3.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.12.0-a001" />
-    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.12.0-a001" />
-    <PackageReference Include="TheXDS.MCART.Ext.ViewModelFactory" Version="0.12.0-a001" />
+    <PackageReference Include="TheXDS.MCART" Version="0.12.0-a007" />
+    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.12.0-a007" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Triton\Triton.csproj" />
@@ -19,8 +18,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\UiStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UiStrings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>TheXDS.Triton.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

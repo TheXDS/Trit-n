@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp3.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\StringTables\*.deflate" />
@@ -9,6 +9,6 @@
     <EmbeddedResource Include="Resources\StringTables\*.deflate" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.12.0-a001" />
+    <PackageReference Include="TheXDS.MCART" Version="0.12.0-a007" />
   </ItemGroup>
 </Project>

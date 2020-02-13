@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,20 +9,20 @@ using static TheXDS.Triton.Services.FailureReason;
 namespace TheXDS.Triton.Services
 {
     /// <summary>
-    ///     Clase que describe una transacción que permite realizar operaciones
-    ///     de escritura sobre un contexto de datos.
+    /// Clase que describe una transacción que permite realizar operaciones
+    /// de escritura sobre un contexto de datos.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de contexto de datos a utilizar dentro de la transacción.
+    /// Tipo de contexto de datos a utilizar dentro de la transacción.
     /// </typeparam>
     public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransaction where T : DbContext, new()
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudWriteTransaction{T}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudWriteTransaction{T}"/>.
         /// </summary>
         /// <param name="configuration">
-        ///     Configuración a utilizar para la transacción.
+        /// Configuración a utilizar para la transacción.
         /// </param>
         public CrudWriteTransaction(TransactionConfiguration configuration) : base(configuration)
         {
@@ -34,7 +33,7 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Ejecuta tareas de limpieza antes de eliminar esta transacción.
+        /// Ejecuta tareas de limpieza antes de eliminar esta transacción.
         /// </summary>
         protected override void OnDispose()
         {
@@ -46,11 +45,11 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Guarda todos los cambios pendientes de la transacción actual.
+        /// Guarda todos los cambios pendientes de la transacción actual.
         /// </summary>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Commit()
         {
@@ -58,11 +57,11 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Guarda todos los cambios realizados de forma asíncrona.
+        /// Guarda todos los cambios realizados de forma asíncrona.
         /// </summary>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public Task<ServiceResult> CommitAsync()
         {
@@ -70,17 +69,17 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Crea una nueva entidad en la base de datos.
+        /// Crea una nueva entidad en la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la nueva entidad.
+        /// Modelo de la nueva entidad.
         /// </typeparam>
         /// <param name="newEntity">
-        ///     Nueva entidad a agregar a la base de datos.
+        /// Nueva entidad a agregar a la base de datos.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
         {
@@ -88,17 +87,17 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Elimina a una entidad de la base de datos.
+        /// Elimina a una entidad de la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a eliminar.
+        /// Modelo de la entidad a eliminar.
         /// </typeparam>
         /// <param name="entity">
-        ///     Entidad que deberá ser eliminada de la base de datos.
+        /// Entidad que deberá ser eliminada de la base de datos.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
         {
@@ -106,21 +105,21 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Elimina a una entidad de la base de datos.
+        /// Elimina a una entidad de la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a eliminar.
+        /// Modelo de la entidad a eliminar.
         /// </typeparam>
         /// <typeparam name="TKey">
-        ///     Tipo del campo llave que identifica a la entidad.
+        /// Tipo del campo llave que identifica a la entidad.
         /// </typeparam>
         /// <param name="key">
-        ///     Llave de la entidad que deberá ser eliminada de la base de
-        ///     datos.
+        /// Llave de la entidad que deberá ser eliminada de la base de
+        /// datos.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Delete<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
@@ -132,18 +131,18 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Actualiza los datos contenidos en una entidad dentro de la base
-        ///     de datos.
+        /// Actualiza los datos contenidos en una entidad dentro de la base
+        /// de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a actualizar.
+        /// Modelo de la entidad a actualizar.
         /// </typeparam>
         /// <param name="entity">
-        ///     Entidad que contiene la nueva información a escribir.
+        /// Entidad que contiene la nueva información a escribir.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Update<TModel>(TModel entity) where TModel : Model
         {
