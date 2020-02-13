@@ -3,6 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Configurations>Debug;Release;Debug-Publish;Debug-PublishLocal;Build-Release</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TheXDS.MCART.WPF" Version="0.12.0-a011" />
