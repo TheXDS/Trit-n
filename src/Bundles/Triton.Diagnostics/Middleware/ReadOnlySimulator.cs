@@ -6,10 +6,10 @@ using TheXDS.Triton.Services;
 namespace TheXDS.Triton.Middleware
 {
     /// <summary>
-    ///     Middleware estático que bloquea todas las operaciones de escritura
-    ///     de datos, devolviendo para las mismas siempre el resultado
-    ///     <see cref="ServiceResult.Ok"/> o un error producido en el epílogo
-    ///     de la transacción.
+    /// Middleware estático que bloquea todas las operaciones de escritura
+    /// de datos, devolviendo para las mismas siempre el resultado
+    /// <see cref="ServiceResult.Ok"/> o un error producido en el epílogo
+    /// de la transacción.
     /// </summary>
     public static class ReadOnlySimulator
     {

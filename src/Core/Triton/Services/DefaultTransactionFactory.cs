@@ -2,6 +2,9 @@
 
 namespace TheXDS.Triton.Services
 {
+    /// <summary>
+    /// Implementa una fábrica de transacciones predeterminada.
+    /// </summary>
     public class DefaultTransactionFactory : ICrudTransactionFactory
     {
     }

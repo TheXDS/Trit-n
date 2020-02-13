@@ -7,11 +7,11 @@ using TheXDS.Triton.Services.Base;
 namespace TheXDS.Triton.Services
 {
     /// <summary>
-    ///     Obtiene una transacción compleja que permite operaciones de lectura
-    ///     y de escritura sobre un contexto de datos común.
+    /// Obtiene una transacción compleja que permite operaciones de lectura
+    /// y de escritura sobre un contexto de datos común.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de contexto de datos a utilizar.
+    /// Tipo de contexto de datos a utilizar.
     /// </typeparam>
     public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction<T> where T : DbContext, new()
     {
@@ -19,16 +19,16 @@ namespace TheXDS.Triton.Services
         private readonly ICrudWriteTransaction _writeTransaction;
 
         /// <summary>
-        ///     Obtiene a la instancia de contexto activa en esta transacción.
+        /// Obtiene a la instancia de contexto activa en esta transacción.
         /// </summary>
         public T Context => _context;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase 
-        ///     <see cref="CrudTransaction{T}"/>.
+        /// Inicializa una nueva instancia de la clase 
+        /// <see cref="CrudTransaction{T}"/>.
         /// </summary>
         /// <param name="configuration">
-        ///     Configuración a pasar a las transacciones subyacentes.
+        /// Configuración a pasar a las transacciones subyacentes.
         /// </param>
         public CrudTransaction(TransactionConfiguration configuration) : base(configuration)
         {
@@ -37,26 +37,26 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Obtiene una entidad cuyo campo llave sea igual al valor
-        ///     especificado.
+        /// Obtiene una entidad cuyo campo llave sea igual al valor
+        /// especificado.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a obtener.
+        /// Modelo de la entidad a obtener.
         /// </typeparam>
         /// <typeparam name="TKey">
-        ///     Tipo de campo llave de la entidad a obtener.
+        /// Tipo de campo llave de la entidad a obtener.
         /// </typeparam>
         /// <param name="key">
-        ///     Llave de la entidad a obtener.
+        /// Llave de la entidad a obtener.
         /// </param>
         /// <param name="entity">
-        ///     Parámetro de salida. Entidad obtenida en la operación de
-        ///     lectura. Si no existe una entidad con el campo llave
-        ///     especificado, se devolverá <see langword="null"/>.
+        /// Parámetro de salida. Entidad obtenida en la operación de
+        /// lectura. Si no existe una entidad con el campo llave
+        /// especificado, se devolverá <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
@@ -64,24 +64,24 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Obtiene una entidad cuyo campo llave sea igual al valor
-        ///     especificado.
+        /// Obtiene una entidad cuyo campo llave sea igual al valor
+        /// especificado.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a obtener.
+        /// Modelo de la entidad a obtener.
         /// </typeparam>
         /// <typeparam name="TKey">
-        ///     Tipo de campo llave de la entidad a obtener.
+        /// Tipo de campo llave de la entidad a obtener.
         /// </typeparam>
         /// <param name="key">
-        ///     Llave de la entidad a obtener.
+        /// Llave de la entidad a obtener.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente, incluyendo como valor de resultado a la
-        ///     entidad obtenida en la operación de lectura. Si no existe una
-        ///     entidad con el campo llave especificado, el valor de resultado
-        ///     será <see langword="null"/>.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente, incluyendo como valor de resultado a la
+        /// entidad obtenida en la operación de lectura. Si no existe una
+        /// entidad con el campo llave especificado, el valor de resultado
+        /// será <see langword="null"/>.
         /// </returns>
         public ServiceResult<TModel?> Read<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
@@ -91,17 +91,17 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Crea una nueva entidad en la base de datos.
+        /// Crea una nueva entidad en la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la nueva entidad.
+        /// Modelo de la nueva entidad.
         /// </typeparam>
         /// <param name="newEntity">
-        ///     Nueva entidad a agregar a la base de datos.
+        /// Nueva entidad a agregar a la base de datos.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
         {
@@ -109,17 +109,17 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Elimina a una entidad de la base de datos.
+        /// Elimina a una entidad de la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a eliminar.
+        /// Modelo de la entidad a eliminar.
         /// </typeparam>
         /// <param name="entity">
-        ///     Entidad que deberá ser eliminada de la base de datos.
+        /// Entidad que deberá ser eliminada de la base de datos.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
         {
@@ -127,21 +127,21 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Elimina a una entidad de la base de datos.
+        /// Elimina a una entidad de la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a eliminar.
+        /// Modelo de la entidad a eliminar.
         /// </typeparam>
         /// <typeparam name="TKey">
-        ///     Tipo del campo llave que identifica a la entidad.
+        /// Tipo del campo llave que identifica a la entidad.
         /// </typeparam>
         /// <param name="key">
-        ///     Llave de la entidad que deberá ser eliminada de la base de
-        ///     datos.
+        /// Llave de la entidad que deberá ser eliminada de la base de
+        /// datos.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Delete<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
@@ -151,18 +151,18 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Actualiza los datos contenidos en una entidad dentro de la base
-        ///     de datos.
+        /// Actualiza los datos contenidos en una entidad dentro de la base
+        /// de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a actualizar.
+        /// Modelo de la entidad a actualizar.
         /// </typeparam>
         /// <param name="entity">
-        ///     Entidad que contiene la nueva información a escribir.
+        /// Entidad que contiene la nueva información a escribir.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Update<TModel>(TModel entity) where TModel : Model
         {
@@ -170,12 +170,12 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Guarda todos los cambios síncronos pendientes de la transacción
-        ///     actual.
+        /// Guarda todos los cambios síncronos pendientes de la transacción
+        /// actual.
         /// </summary>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public ServiceResult Commit()
         {
@@ -183,11 +183,11 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Guarda todos los cambios realizados de forma asíncrona.
+        /// Guarda todos los cambios realizados de forma asíncrona.
         /// </summary>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public Task<ServiceResult> CommitAsync()
         {
@@ -195,21 +195,21 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Obtiene de forma asíncrona una entidad cuyo campo llave sea
-        ///     igual al valor especificado.
+        /// Obtiene de forma asíncrona una entidad cuyo campo llave sea
+        /// igual al valor especificado.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de la entidad a obtener.
+        /// Modelo de la entidad a obtener.
         /// </typeparam>
         /// <typeparam name="TKey">
-        ///     Tipo de campo llave de la entidad a obtener.
+        /// Tipo de campo llave de la entidad a obtener.
         /// </typeparam>
         /// <param name="key">
-        ///     Llave de la entidad a obtener.
+        /// Llave de la entidad a obtener.
         /// </param>
         /// <returns>
-        ///     El resultado reportado de la operación ejecutada por el
-        ///     servicio subyacente.
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
         /// </returns>
         public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
@@ -219,11 +219,11 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Obtiene la colección completa de entidades del modelo
-        ///     especificado almacenadas en la base de datos.
+        /// Obtiene la colección completa de entidades del modelo
+        /// especificado almacenadas en la base de datos.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo de las entidades a obtener.
+        /// Modelo de las entidades a obtener.
         /// </typeparam>
         /// <returns></returns>
         public QueryServiceResult<TModel> All<TModel>() where TModel : Model
@@ -232,7 +232,7 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Libera los recursos utilizados por esta instancia.
+        /// Libera los recursos utilizados por esta instancia.
         /// </summary>
         protected override void OnDispose()
         {

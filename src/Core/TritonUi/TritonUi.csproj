@@ -18,8 +18,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\UiStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UiStrings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>TheXDS.Triton.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

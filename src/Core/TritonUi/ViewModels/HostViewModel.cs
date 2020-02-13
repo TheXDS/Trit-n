@@ -8,22 +8,22 @@ using TheXDS.Triton.Component;
 namespace TheXDS.Triton.ViewModels
 {
     /// <summary>
-    ///     Clase base para un ViewModel que contenga páginas.
+    /// Clase base para un ViewModel que contenga páginas.
     /// </summary>
     public class HostViewModel : ViewModelBase
     {
         private protected readonly ObservableCollection<PageViewModel> _pages = new ObservableCollection<PageViewModel>();
 
         /// <summary>
-        ///     Enumera las páginas abiertas activas de esta instancia.
+        /// Enumera las páginas abiertas activas de esta instancia.
         /// </summary>
         public IEnumerable<PageViewModel> Pages => _pages;
 
         /// <summary>
-        ///     Agrega una página a esta instancia.
+        /// Agrega una página a esta instancia.
         /// </summary>
         /// <param name="page">
-        ///     Página a agregar.
+        /// Página a agregar.
         /// </param>
         public virtual void AddPage(PageViewModel page)
         {
@@ -31,10 +31,10 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Cierra una página activa en esta instancia.
+        /// Cierra una página activa en esta instancia.
         /// </summary>
         /// <param name="page">
-        ///     Página a cerrar.
+        /// Página a cerrar.
         /// </param>
         public virtual void ClosePage(PageViewModel page)
         {
@@ -44,12 +44,12 @@ namespace TheXDS.Triton.ViewModels
     }
 
     /// <summary>
-    ///     Clase base para un ViewModel que contenga páginas y que las
-    ///     presente en contenedores visuales fuertemente tipeados.
+    /// Clase base para un ViewModel que contenga páginas y que las
+    /// presente en contenedores visuales fuertemente tipeados.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de contenedor visual. Debe implementar
-    ///     <see cref="ICloseable"/>.
+    /// Tipo de contenedor visual. Debe implementar
+    /// <see cref="ICloseable"/>.
     /// </typeparam>
     public class HostViewModel<T> : HostViewModel where T : ICloseable
     {
@@ -57,12 +57,12 @@ namespace TheXDS.Triton.ViewModels
         //private readonly Dictionary<PageViewModel, T> _visualChildren = new Dictionary<PageViewModel, T>();
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="HostViewModel{T}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="HostViewModel{T}"/>.
         /// </summary>
         /// <param name="visualBuilder">
-        ///     Constructor de contenedores visuales a utilizar para presentar
-        ///     las páginas.
+        /// Constructor de contenedores visuales a utilizar para presentar
+        /// las páginas.
         /// </param>
         public HostViewModel(IVisualBuilder<T> visualBuilder)
         {
@@ -70,10 +70,10 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Agrega una página a esta instancia.
+        /// Agrega una página a esta instancia.
         /// </summary>
         /// <param name="page">
-        ///     Página a agregar.
+        /// Página a agregar.
         /// </param>
         public override void AddPage(PageViewModel page)
         {
@@ -83,10 +83,10 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Cierra una página activa en esta instancia.
+        /// Cierra una página activa en esta instancia.
         /// </summary>
         /// <param name="page">
-        ///     Página a cerrar.
+        /// Página a cerrar.
         /// </param>
         public override void ClosePage(PageViewModel page)
         {
@@ -96,8 +96,8 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Enumera los contenedores visuales de los
-        ///     <see cref="PageViewModel"/> abiertos dentro de esta instancia.
+        /// Enumera los contenedores visuales de los
+        /// <see cref="PageViewModel"/> abiertos dentro de esta instancia.
         /// </summary>
         public IEnumerable<T> Children => _pages.Select(_visualBuilder.Build);//_visualChildren.Values;
     }

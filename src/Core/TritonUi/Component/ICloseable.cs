@@ -9,13 +9,13 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Triton.Component
 {
     /// <summary>
-    ///     Define una serie de métodos a implementar por una clase que permita
-    ///     cerrar un contenedor visual o un elemento de UI.
+    /// Define una serie de métodos a implementar por una clase que permita
+    /// cerrar un contenedor visual o un elemento de UI.
     /// </summary>
     public interface ICloseable
     {
         /// <summary>
-        ///     Cierra el elemento activo.
+        /// Cierra el elemento activo.
         /// </summary>
         void Close();
     }
@@ -48,7 +48,7 @@ namespace TheXDS.Triton.Component
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor NumberOne.
+        /// Obtiene o establece el valor NumberOne.
         /// </summary>
         /// <value>El valor de NumberOne.</value>
         public int NumberOne
@@ -58,7 +58,7 @@ namespace TheXDS.Triton.Component
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor NumberTwo.
+        /// Obtiene o establece el valor NumberTwo.
         /// </summary>
         /// <value>El valor de NumberTwo.</value>
         public int NumberTwo
@@ -68,7 +68,7 @@ namespace TheXDS.Triton.Component
         }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Sum.
+        /// Obtiene el comando relacionado a la acción Sum.
         /// </summary>
         /// <returns>El comando Sum.</returns>
         public System.Windows.Input.ICommand SumCommand { get; }
@@ -79,7 +79,7 @@ namespace TheXDS.Triton.Component
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor Result.
+        /// Obtiene o establece el valor Result.
         /// </summary>
         /// <value>El valor de Result.</value>
         public int Result

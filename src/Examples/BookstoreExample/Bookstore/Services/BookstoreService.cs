@@ -6,6 +6,7 @@ using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Examples.BookstoreExample.Models;
 using TheXDS.Triton.Services;
+using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Triton.Examples.BookstoreExample.Services
 {
@@ -13,41 +14,30 @@ namespace TheXDS.Triton.Examples.BookstoreExample.Services
     {
         public Task<List<Book>> GetBestBooksAsync()
         {
-            var t = GetReadTransaction();
-            try
-            {
-                return t.All<Book>()
-                    .Include(p => p.Category)
-                    .OrderByDescending(p => p.Rating)
-                    .Take(10).ToListAsync();
-            }
-            finally
-            {
-                if (!t.IsDisposed) t.Dispose();
-            }
+            return WithReadTransaction(t => t.All<Book>()
+                .Include(p => p.Category)
+                .OrderByDescending(p => p.Rating)
+                .Take(10).ToListAsync());
         }
 
-        public async Task<IDictionary<string, int>> CrunchTagsAsync()
+        public Task<IDictionary<string, int>> CrunchTagsAsync()
         {
-            var t = GetReadTransaction();
-            try
-            {
-                var tags = 
-                    (await t.All<Book>().Select(p => p.Tags).ToListAsync())
-                    .NotNull()
-                    .SelectMany(p => p.Split(';'))
-                    .ToList();
+            return WithReadTransaction(CrunchTagsAsync);
+        }
 
-                t.Dispose();
+        private async Task<IDictionary<string, int>> CrunchTagsAsync(ICrudReadTransaction t)
+        {
+            var tags = 
+                (await t.All<Book>().Select(p => p.Tags).ToListAsync())
+                .NotNull()
+                .SelectMany(p => p.Split(';'))
+                .ToList();
 
-                var d = new AutoDictionary<string, int>();
-                foreach (var j in tags) d[j]++;
-                return d;
-            }
-            finally
-            {
-                if (!t.IsDisposed) t.Dispose();
-            }
+            t.Dispose();
+
+            var d = new AutoDictionary<string, int>();
+            foreach (var j in tags) d[j]++;
+            return d;
         }
     }
 }

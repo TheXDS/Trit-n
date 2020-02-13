@@ -13,27 +13,27 @@ using static TheXDS.Triton.Services.FailureReason;
 namespace TheXDS.Triton.Services.Base
 {
     /// <summary>
-    ///     Clase base que permite definir transacciones de datos.
+    /// Clase base que permite definir transacciones de datos.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de contexto de datos a utilizar dentro de la transacción.
+    /// Tipo de contexto de datos a utilizar dentro de la transacción.
     /// </typeparam>
     public abstract class CrudTransactionBase<T> : Disposable where T : DbContext, new()
     {
         /// <summary>
-        ///     Obtiene la configuración disponible para esta transacción.
+        /// Obtiene la configuración disponible para esta transacción.
         /// </summary>
         protected readonly TransactionConfiguration _configuration;
 
         /// <summary>
-        ///     Obtiene la instancia activa del contexto de datos a utilizar
-        ///     para esta transacción.
+        /// Obtiene la instancia activa del contexto de datos a utilizar
+        /// para esta transacción.
         /// </summary>
         protected readonly T _context;
 
         /// <summary>
-        ///     Elimina el estado administrado y libera los recursos no 
-        ///     administrados utilizados por esta instancia.
+        /// Elimina el estado administrado y libera los recursos no 
+        /// administrados utilizados por esta instancia.
         /// </summary>
         protected override void OnDispose()
         {
@@ -41,14 +41,14 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="ServiceResult"/> que representa un
-        ///     <see cref="ServiceResult"/> fallido a partir de la excepción
-        ///     producida.
+        /// Obtiene un <see cref="ServiceResult"/> que representa un
+        /// <see cref="ServiceResult"/> fallido a partir de la excepción
+        /// producida.
         /// </summary>
         /// <param name="ex">Excepción que se ha producido.</param>
         /// <returns>
-        ///     Un resultado que representa y describe una falla en la 
-        ///     operación solicitada.
+        /// Un resultado que representa y describe una falla en la 
+        /// operación solicitada.
         /// </returns>
         protected static ServiceResult ResultFromException(Exception ex)
         {
@@ -65,15 +65,15 @@ namespace TheXDS.Triton.Services.Base
         }
      
         /// <summary>
-        ///     Mapea el valor <see cref="EntityState"/> a su valor equivalente
-        ///     de tipo <see cref="CrudAction"/>.
+        /// Mapea el valor <see cref="EntityState"/> a su valor equivalente
+        /// de tipo <see cref="CrudAction"/>.
         /// </summary>
         /// <param name="state">
-        ///     Valor a convertir.
+        /// Valor a convertir.
         /// </param>
         /// <returns>
-        ///     Un valor <see cref="CrudAction"/> equivalente al
-        ///     <see cref="EntityState"/> especificado.
+        /// Un valor <see cref="CrudAction"/> equivalente al
+        /// <see cref="EntityState"/> especificado.
         /// </returns>
         protected static CrudAction Map(EntityState state)
         {
@@ -87,28 +87,28 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una operación en un contexto seguro que obtendrá un
-        ///     resultado de error cuando se produzca una excepción.
+        /// Envuelve una operación en un contexto seguro que obtendrá un
+        /// resultado de error cuando se produzca una excepción.
         /// </summary>
         /// <typeparam name="TResult">
-        ///     Tipo de resultado de la operación.
+        /// Tipo de resultado de la operación.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Operación a ejecutar.
+        /// Operación a ejecutar.
         /// </param>
         /// <param name="result">
-        ///     Resultado de la operación.
+        /// Resultado de la operación.
         /// </param>
         /// <param name="args">
-        ///     Argumentos a pasar a la operación.
+        /// Argumentos a pasar a la operación.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la operación, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     misma.
+        /// El resultado generado por la operación, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// misma.
         /// </returns>
         protected ServiceResult? TryCall<TResult>(CrudAction action, Delegate op, out TResult result, params object?[]? args)
         {
@@ -143,22 +143,22 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una operación en un contexto seguro que obtendrá un
-        ///     resultado de error cuando se produzca una excepción.
+        /// Envuelve una operación en un contexto seguro que obtendrá un
+        /// resultado de error cuando se produzca una excepción.
         /// </summary>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Operación a ejecutar.
+        /// Operación a ejecutar.
         /// </param>
         /// <param name="args">
-        ///     Argumentos a pasar a la operación.
+        /// Argumentos a pasar a la operación.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la operación, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     misma.
+        /// El resultado generado por la operación, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// misma.
         /// </returns>
         protected ServiceResult? TryCall(CrudAction action, Delegate op, params object?[]? args)
         {
@@ -166,28 +166,28 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
+        /// Envuelve una llamada a una tarea en un contexto seguro que
+        /// obtendrá un resultado de error cuando se produzca una
+        /// excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de resultado de la tarea.
+        /// Tipo de resultado de la tarea.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Tarea a ejecutar.
+        /// Tarea a ejecutar.
         /// </param>
         /// <param name="entity">
-        ///     Entidad que se ha pasado como argumento a la tarea. Si la tarea
-        ///     no recibe un <see cref="Model"/> como argumento, este valor 
-        ///     debe establecerse en <see langword="null"/>.
+        /// Entidad que se ha pasado como argumento a la tarea. Si la tarea
+        /// no recibe un <see cref="Model"/> como argumento, este valor 
+        /// debe establecerse en <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
+        /// El resultado generado por la tarea, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// operación.
         /// </returns>
         protected async Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel> op, TModel? entity) where TModel : Model
         {
@@ -209,28 +209,28 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
+        /// Envuelve una llamada a una tarea en un contexto seguro que
+        /// obtendrá un resultado de error cuando se produzca una
+        /// excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de resultado de la tarea.
+        /// Tipo de resultado de la tarea.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Tarea a ejecutar.
+        /// Tarea a ejecutar.
         /// </param>
         /// <param name="entity">
-        ///     Entidad que se ha pasado como argumento a la tarea. Si la tarea
-        ///     no recibe un <see cref="Model"/> como argumento, este valor 
-        ///     debe establecerse en <see langword="null"/>.
+        /// Entidad que se ha pasado como argumento a la tarea. Si la tarea
+        /// no recibe un <see cref="Model"/> como argumento, este valor 
+        /// debe establecerse en <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
+        /// El resultado generado por la tarea, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// operación.
         /// </returns>
         protected Task<ServiceResult> TryCallAsync<TModel>(CrudAction action, Task op, TModel? entity) where TModel : Model
         {
@@ -238,23 +238,23 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
+        /// Envuelve una llamada a una tarea en un contexto seguro que
+        /// obtendrá un resultado de error cuando se produzca una
+        /// excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de resultado de la tarea.
+        /// Tipo de resultado de la tarea.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Tarea a ejecutar.
+        /// Tarea a ejecutar.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
+        /// El resultado generado por la tarea, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// operación.
         /// </returns>
         protected Task<ServiceResult> TryCallAsync<TModel>(CrudAction action, Task op) where TModel : Model
         {
@@ -262,23 +262,23 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
+        /// Envuelve una llamada a una tarea en un contexto seguro que
+        /// obtendrá un resultado de error cuando se produzca una
+        /// excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de resultado de la tarea.
+        /// Tipo de resultado de la tarea.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Tarea a ejecutar.
+        /// Tarea a ejecutar.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
+        /// El resultado generado por la tarea, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// operación.
         /// </returns>
         protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel> op) where TModel : Model
         {
@@ -286,23 +286,23 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
+        /// Envuelve una llamada a una tarea en un contexto seguro que
+        /// obtendrá un resultado de error cuando se produzca una
+        /// excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de resultado de la tarea.
+        /// Tipo de resultado de la tarea.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Tarea a ejecutar.
+        /// Tarea a ejecutar.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
+        /// El resultado generado por la tarea, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// operación.
         /// </returns>
         protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel> op) where TModel : Model
         {
@@ -310,28 +310,28 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Envuelve una llamada a una tarea en un contexto seguro que
-        ///     obtendrá un resultado de error cuando se produzca una
-        ///     excepción.
+        /// Envuelve una llamada a una tarea en un contexto seguro que
+        /// obtendrá un resultado de error cuando se produzca una
+        /// excepción.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Tipo de resultado de la tarea.
+        /// Tipo de resultado de la tarea.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="op">
-        ///     Tarea a ejecutar.
+        /// Tarea a ejecutar.
         /// </param>
         /// <param name="entity">
-        ///     Entidad que se ha pasado como argumento a la tarea. Si la tarea
-        ///     no recibe un <see cref="Model"/> como argumento, este valor 
-        ///     debe establecerse en <see langword="null"/>.
+        /// Entidad que se ha pasado como argumento a la tarea. Si la tarea
+        /// no recibe un <see cref="Model"/> como argumento, este valor 
+        /// debe establecerse en <see langword="null"/>.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la tarea, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     operación.
+        /// El resultado generado por la tarea, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// operación.
         /// </returns>
         protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel> op, TModel? entity) where TModel : Model
         {
@@ -339,35 +339,35 @@ namespace TheXDS.Triton.Services.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudTransactionBase{T}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudTransactionBase{T}"/>.
         /// </summary>
         /// <param name="configuration">
-        ///     Configuración a utilizar para la transacción.
+        /// Configuración a utilizar para la transacción.
         /// </param>
         protected CrudTransactionBase(TransactionConfiguration configuration) : this(configuration, new T())
         {
         }
 
         /// <summary>
-        ///     Ejecuta una operación Crud de escritura.
+        /// Ejecuta una operación Crud de escritura.
         /// </summary>
         /// <typeparam name="TModel">
-        ///     Modelo utilizado por la operación.
+        /// Modelo utilizado por la operación.
         /// </typeparam>
         /// <param name="action">
-        ///     Acción Crud a ejecutar.
+        /// Acción Crud a ejecutar.
         /// </param>
         /// <param name="operation">
-        ///     Operación a ejecutar.
+        /// Operación a ejecutar.
         /// </param>
         /// <param name="entity">
-        ///     Entidad sobre la cual se ejecutará la acción.
+        /// Entidad sobre la cual se ejecutará la acción.
         /// </param>
         /// <returns>
-        ///     El resultado generado por la operación, o un 
-        ///     <see cref="ServiceResult"/> que representa un error en la
-        ///     misma.
+        /// El resultado generado por la operación, o un 
+        /// <see cref="ServiceResult"/> que representa un error en la
+        /// misma.
         /// </returns>
         protected ServiceResult Perform<TModel>(CrudAction action, Func<TModel, EntityEntry<TModel>> operation, TModel entity) where TModel : Model
         {

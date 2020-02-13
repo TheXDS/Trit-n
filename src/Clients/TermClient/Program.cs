@@ -197,7 +197,7 @@ namespace TermClient
         private int _y;
 
         /// <summary>
-        ///     Obtiene o establece el valor X.
+        /// Obtiene o establece el valor X.
         /// </summary>
         /// <value>El valor de X.</value>
         public int X
@@ -207,7 +207,7 @@ namespace TermClient
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor Y.
+        /// Obtiene o establece el valor Y.
         /// </summary>
         /// <value>El valor de Y.</value>
         public int Y

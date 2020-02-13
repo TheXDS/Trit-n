@@ -7,35 +7,35 @@ using System.Diagnostics;
 namespace TheXDS.Triton.Component
 {
     /// <summary>
-    ///     Implementa un <see cref="IVisualResolver"/> que contiene un
-    ///     diccionario que mapea un <see cref="PageViewModel"/> por su tipo
-    ///     con un contenedor visual de tipo <typeparamref name="T"/>.
+    /// Implementa un <see cref="IVisualResolver"/> que contiene un
+    /// diccionario que mapea un <see cref="PageViewModel"/> por su tipo
+    /// con un contenedor visual de tipo <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de contenedor visual a implementar.
+    /// Tipo de contenedor visual a implementar.
     /// </typeparam>
     public class DictionaryVisualResolver<T> : IVisualResolver<T> where T : new()
     {
         private readonly Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
         /// <summary>
-        ///     Resuelve el contenedor visual a utilizar para alojar al 
-        ///     <see cref="PageViewModel"/> especificado.
+        /// Resuelve el contenedor visual a utilizar para alojar al 
+        /// <see cref="PageViewModel"/> especificado.
         /// </summary>
         /// <param name="viewModel">
-        ///     <see cref="PageViewModel"/> que va a alojarse.
+        /// <see cref="PageViewModel"/> que va a alojarse.
         /// </param>
         /// <returns>
-        ///     Un contenedor visual fuertemente tipeado para el
-        ///     <see cref="PageViewModel"/> especificado.
+        /// Un contenedor visual fuertemente tipeado para el
+        /// <see cref="PageViewModel"/> especificado.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     Se produce si se intenta resolver el contenedor visual para un
-        ///     valor nulo.
+        /// Se produce si se intenta resolver el contenedor visual para un
+        /// valor nulo.
         /// </exception>
         /// <exception cref="KeyNotFoundException">
-        ///     Se produce si se intenta resolver el contenedor visual para un
-        ///     tipo de <see cref="PageViewModel"/> que no ha sido registrado.
+        /// Se produce si se intenta resolver el contenedor visual para un
+        /// tipo de <see cref="PageViewModel"/> que no ha sido registrado.
         /// </exception>
         [DebuggerNonUserCode]
         public T ResolveVisual(PageViewModel viewModel)
@@ -44,19 +44,19 @@ namespace TheXDS.Triton.Component
         }
 
         /// <summary>
-        ///     Resuelve el contenedor visual a utilizar para alojar a un 
-        ///     <see cref="PageViewModel"/> del tipo especificado.
+        /// Resuelve el contenedor visual a utilizar para alojar a un 
+        /// <see cref="PageViewModel"/> del tipo especificado.
         /// </summary>
         /// <typeparam name="TViewModel">
-        ///     Tipo de <see cref="PageViewModel"/> que va a alojarse.
+        /// Tipo de <see cref="PageViewModel"/> que va a alojarse.
         /// </typeparam>
         /// <returns>
-        ///     Un contenedor visual fuertemente tipeado para el
-        ///     <see cref="PageViewModel"/> especificado.
+        /// Un contenedor visual fuertemente tipeado para el
+        /// <see cref="PageViewModel"/> especificado.
         /// </returns>
         /// <exception cref="KeyNotFoundException">
-        ///     Se produce si se intenta resolver el contenedor visual para un
-        ///     tipo de <see cref="PageViewModel"/> que no ha sido registrado.
+        /// Se produce si se intenta resolver el contenedor visual para un
+        /// tipo de <see cref="PageViewModel"/> que no ha sido registrado.
         /// </exception>
         [DebuggerNonUserCode]
         public T ResolveVisual<TViewModel>() where TViewModel : PageViewModel
@@ -65,8 +65,8 @@ namespace TheXDS.Triton.Component
         }
 
         /// <summary>
-        ///     Mapea el tipo de <see cref="PageViewModel"/> con un tipo de
-        ///     contenedor visual a resolver.
+        /// Mapea el tipo de <see cref="PageViewModel"/> con un tipo de
+        /// contenedor visual a resolver.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <typeparam name="TVisual"></typeparam>

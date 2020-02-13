@@ -7,8 +7,8 @@ using TheXDS.Triton.Models.Base;
 namespace TheXDS.Triton.Services
 {
     /// <summary>
-    ///     Objeto que provee de configuración y otros servicios a las
-    ///     transacciones Crud.
+    /// Objeto que provee de configuración y otros servicios a las
+    /// transacciones Crud.
     /// </summary>
     public class TransactionConfiguration
     {
@@ -16,16 +16,16 @@ namespace TheXDS.Triton.Services
         private readonly OpenList<Func<CrudAction, Model?, ServiceResult?>> _epilogs = new OpenList<Func<CrudAction, Model?, ServiceResult?>>();
 
         /// <summary>
-        ///     Agrega las acciones de un Middleware a ejecutar durante una
-        ///     operación Crud.
+        /// Agrega las acciones de un Middleware a ejecutar durante una
+        /// operación Crud.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de Middleware a agregar.
+        /// Tipo de Middleware a agregar.
         /// </typeparam>
         /// <param name="middleware">Middleware que ha sido agregado.</param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
         {
@@ -36,16 +36,16 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega con prioridad las acciones de un Middleware a ejecutar
-        ///     durante una operación Crud.
+        /// Agrega con prioridad las acciones de un Middleware a ejecutar
+        /// durante una operación Crud.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de Middleware a agregar.
+        /// Tipo de Middleware a agregar.
         /// </typeparam>
         /// <param name="middleware">Middleware que ha sido agregado.</param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration PriorityAttach<T>(out T middleware) where T : ITransactionMiddleware, new()
         {
@@ -56,15 +56,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega las acciones de un Middleware a ejecutar durante una
-        ///     operación Crud.
+        /// Agrega las acciones de un Middleware a ejecutar durante una
+        /// operación Crud.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de Middleware a agregar.
+        /// Tipo de Middleware a agregar.
         /// </typeparam>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration Attach<T>() where T : ITransactionMiddleware, new()
         {            
@@ -72,15 +72,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega con prioridad las acciones de un Middleware a ejecutar
-        ///     durante una operación Crud.
+        /// Agrega con prioridad las acciones de un Middleware a ejecutar
+        /// durante una operación Crud.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de Middleware a agregar.
+        /// Tipo de Middleware a agregar.
         /// </typeparam>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration PriorityAttach<T>() where T : ITransactionMiddleware, new()
         {
@@ -88,15 +88,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega una acción a ejecutar durante el prólogo de una
-        ///     operación Crud.
+        /// Agrega una acción a ejecutar durante el prólogo de una
+        /// operación Crud.
         /// </summary>
         /// <param name="func">
-        ///     Función a agregar al prólogo.
+        /// Función a agregar al prólogo.
         /// </param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration AddProlog(Func<CrudAction, Model?, ServiceResult?> func)
         {
@@ -105,15 +105,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega una acción a ejecutar al inicio del prólogo de una
-        ///     operación Crud.
+        /// Agrega una acción a ejecutar al inicio del prólogo de una
+        /// operación Crud.
         /// </summary>
         /// <param name="func">
-        ///     Función a agregar al prólogo.
+        /// Función a agregar al prólogo.
         /// </param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration AddFirstProlog(Func<CrudAction, Model?, ServiceResult?> func)
         {
@@ -122,15 +122,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega una acción a ejecutar al final del prólogo de una
-        ///     operación Crud.
+        /// Agrega una acción a ejecutar al final del prólogo de una
+        /// operación Crud.
         /// </summary>
         /// <param name="func">
-        ///     Función a agregar al prólogo.
+        /// Función a agregar al prólogo.
         /// </param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration AddLastProlog(Func<CrudAction, Model?, ServiceResult?> func)
         {
@@ -139,15 +139,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega una acción a ejecutar durante el epílogo de una
-        ///     operación Crud.
+        /// Agrega una acción a ejecutar durante el epílogo de una
+        /// operación Crud.
         /// </summary>
         /// <param name="func">
-        ///     Función a agregar al epílogo.
+        /// Función a agregar al epílogo.
         /// </param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration AddEpilog(Func<CrudAction, Model?, ServiceResult?> func)
         {
@@ -156,15 +156,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega una acción a ejecutar al inicio del epílogo de una
-        ///     operación Crud.
+        /// Agrega una acción a ejecutar al inicio del epílogo de una
+        /// operación Crud.
         /// </summary>
         /// <param name="func">
-        ///     Función a agregar al epílogo.
+        /// Función a agregar al epílogo.
         /// </param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration AddFirstEpilog(Func<CrudAction, Model?, ServiceResult?> func)
         {
@@ -173,15 +173,15 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Agrega una acción a ejecutar al final del epílogo de una
-        ///     operación Crud.
+        /// Agrega una acción a ejecutar al final del epílogo de una
+        /// operación Crud.
         /// </summary>
         /// <param name="func">
-        ///     Función a agregar al epílogo.
+        /// Función a agregar al epílogo.
         /// </param>
         /// <returns>
-        ///     La misma instancia de <see cref="TransactionConfiguration"/>
-        ///     para poder utilizar sintaxis Fluent.
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
         /// </returns>
         public TransactionConfiguration AddLastEpilog(Func<CrudAction, Model?, ServiceResult?> func)
         {
@@ -190,36 +190,36 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
-        ///     Realiza comprobaciones adicionales antes de ejecutar una acción
-        ///     de crud, devolviendo <see langword="null"/> si la operación 
-        ///     puede continuar.
+        /// Realiza comprobaciones adicionales antes de ejecutar una acción
+        /// de crud, devolviendo <see langword="null"/> si la operación 
+        /// puede continuar.
         /// </summary>
         /// <param name="action">
-        ///     Acción Crud a intentar realizar.
+        /// Acción Crud a intentar realizar.
         /// </param>
         /// <param name="entity">
-        ///     Entidad sobre la cual se ejecutará la acción.
+        /// Entidad sobre la cual se ejecutará la acción.
         /// </param>
         /// <returns>
-        ///     Un <see cref="ServiceResult"/> con el resultado del preámbulo,
-        ///     o <see langword="null"/> si la operación puede continuar.
+        /// Un <see cref="ServiceResult"/> con el resultado del preámbulo,
+        /// o <see langword="null"/> si la operación puede continuar.
         /// </returns>
         public ServiceResult? Prolog(CrudAction action, Model? entity) => Run(_prologs, action, entity);
 
         /// <summary>
-        ///     Realiza comprobaciones adicionales después de ejecutar una
-        ///     acción de Crud, devolviendo <see langword="null"/> si la
-        ///     operación puede continuar.
+        /// Realiza comprobaciones adicionales después de ejecutar una
+        /// acción de Crud, devolviendo <see langword="null"/> si la
+        /// operación puede continuar.
         /// </summary>
         /// <param name="action">
-        ///     Acción Crud que se ha realizado.
+        /// Acción Crud que se ha realizado.
         /// </param>
         /// <param name="entity">
-        ///     Entidad sobre la cual se ha ejecutado la acción.
+        /// Entidad sobre la cual se ha ejecutado la acción.
         /// </param>
         /// <returns>
-        ///     Un <see cref="ServiceResult"/> con el resultado del epílogo,
-        ///     o <see langword="null"/> si la operación puede continuar.
+        /// Un <see cref="ServiceResult"/> con el resultado del epílogo,
+        /// o <see langword="null"/> si la operación puede continuar.
         /// </returns>
         public ServiceResult? Epilog(CrudAction action, Model? entity) => Run(_epilogs, action, entity);
 

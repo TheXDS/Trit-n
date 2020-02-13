@@ -8,7 +8,7 @@ using St = TheXDS.Triton.Resources.UiStrings;
 namespace TheXDS.Triton.ViewModels
 {
     /// <summary>
-    ///     ViewModel que describe una página visual.
+    /// ViewModel que describe una página visual.
     /// </summary>
     public class PageViewModel : ViewModelBase
     {
@@ -19,9 +19,9 @@ namespace TheXDS.Triton.ViewModels
         internal HostViewModel? Host { get; set; }
 
         /// <summary>
-        ///     Obtiene o establece el valor Title.
+        /// Obtiene o establece el título de la página.
         /// </summary>
-        /// <value>El valor de Title.</value>
+        /// <value>El título de la página.</value>
         public string Title
         {
             get => _title ?? St.UntitledPage;
@@ -29,9 +29,13 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor Closeable.
+        /// Obtiene o establece un valor que indica si esta página puede ser
+        /// cerrada.
         /// </summary>
-        /// <value>El valor de Closeable.</value>
+        /// <value>
+        /// <see langword="true"/> para indicar que la página puede ser
+        /// cerrada, <see langword="false"/> en caso contrario.
+        /// </value>
         public bool Closeable
         {
             get => _closeable;
@@ -39,7 +43,7 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece un color decorativo a utilizar para la página.
+        /// Obtiene o establece un color decorativo a utilizar para la página.
         /// </summary>
         /// <value>El color decorativo a utilizar.</value>
         public Color? AccentColor
@@ -49,13 +53,13 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el comando a ejecutar para cerrar esta página.
+        /// Obtiene el comando a ejecutar para cerrar esta página.
         /// </summary>
         public ICommand CloseCommand { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="PageViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="PageViewModel"/>.
         /// </summary>
         public PageViewModel()
         {
@@ -63,22 +67,22 @@ namespace TheXDS.Triton.ViewModels
         }
 
         /// <summary>
-        ///     Método que se ejecuta antes de cerrar una página.
+        /// Método que se ejecuta antes de cerrar una página.
         /// </summary>
         /// <param name="cancel">
-        ///     Parámetro que, cuando se establece en <see langword="true"/>, 
-        ///     permite cancelar la operación de cerrado de la página.
+        /// Parámetro que, cuando se establece en <see langword="true"/>, 
+        /// permite cancelar la operación de cerrado de la página.
         /// </param>
         protected virtual void OnClosing(ref bool cancel) { }
 
         /// <summary>
-        ///     Método que se ejecuta luego de cerrar satisfactoriamente la
-        ///     página.
+        /// Método que se ejecuta luego de cerrar satisfactoriamente la
+        /// página.
         /// </summary>
         protected virtual void OnClosed() { }
 
         /// <summary>
-        ///     Solicita el cierre de esta página.
+        /// Solicita el cierre de esta página.
         /// </summary>
         protected void Close()
         {

@@ -9,8 +9,8 @@ using St = TheXDS.Triton.Resources.Strings;
 namespace TheXDS.Triton.Exceptions
 {
     /// <summary>
-    ///     Excepción que se produce al intentar utilizar un servicio sin
-    ///     configurar.
+    /// Excepción que se produce al intentar utilizar un servicio sin
+    /// configurar.
     /// </summary>
     [Serializable]
     public class UnconfiguredServiceException : OffendingException<PropertyInfo>
