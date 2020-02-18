@@ -144,7 +144,7 @@ namespace TheXDS.Triton.Fakers
         public static DateTime FakeBirth(int minAge, int maxAge)
         {
             var a = _rnd.NextDouble();
-            return (DateTime.Today - TimeSpan.FromDays(((a * (maxAge - minAge)) + minAge)*365.25)).Date;
+            return (DateTime.Today - TimeSpan.FromDays(((a * (maxAge - minAge)) + minAge) * 365.25)).Date;
         }
 
         /// <summary>
@@ -171,7 +171,6 @@ namespace TheXDS.Triton.Fakers
             } while (--rounds > 0);
 
             return sb.ToString().ToLower();
-
         }
 
         /// <summary>

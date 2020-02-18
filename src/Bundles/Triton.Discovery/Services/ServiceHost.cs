@@ -57,7 +57,7 @@ namespace TheXDS.Triton.Services
         /// <summary>
         /// Obtiene la cantidad de servicios cargados dentro de este Host.
         /// </summary>
-        public int Count => ((ICollection<IService>)_services).Count;
+        public int Count => _services.Count;
 
         /// <summary>
         /// Obtiene un valor que indica si esta colección de servicios es de
@@ -71,7 +71,7 @@ namespace TheXDS.Triton.Services
         /// <param name="item">Servicio activo a agregar a este host.</param>
         public void Add(IService item)
         {
-            ((ICollection<IService>)_services).Add(item);
+            _services.Add(item);
         }
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace TheXDS.Triton.Services
         /// </summary>
         public void Clear()
         {
-            foreach (var j in _services.OfType<IDisposable>()) j.Dispose(); 
-            ((ICollection<IService>)_services).Clear();
+            foreach (var j in _services.OfType<IDisposable>()) j.Dispose();
+            _services.Clear();
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public bool Contains(IService item)
         {
-            return ((ICollection<IService>)_services).Contains(item);
+            return _services.Contains(item);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace TheXDS.Triton.Services
         /// </param>
         public void CopyTo(IService[] array, int arrayIndex)
         {
-            ((ICollection<IService>)_services).CopyTo(array, arrayIndex);
+            _services.CopyTo(array, arrayIndex);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public bool Remove(IService item)
         {            
-            return ((ICollection<IService>)_services).Remove(item);
+            return _services.Remove(item);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

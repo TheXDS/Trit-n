@@ -59,7 +59,7 @@ namespace TheXDS.Triton.Middleware
         /// </summary>
         public void Reset() => _events.Clear();
 
-        private double Get(Func<List<double>,double> func)
+        private double Get(Func<List<double>, double> func)
         {
             return _events.Any() ? func(_events) : double.NaN;
         }
