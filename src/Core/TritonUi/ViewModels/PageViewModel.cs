@@ -3,9 +3,9 @@ using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using static TheXDS.MCART.Types.Extensions.ObservingCommandExtensions;
-using St = TheXDS.Triton.Resources.UiStrings;
+using St = TheXDS.Triton.Ui.Resources.Strings;
 
-namespace TheXDS.Triton.ViewModels
+namespace TheXDS.Triton.Ui.ViewModels
 {
     /// <summary>
     /// ViewModel que describe una página visual.

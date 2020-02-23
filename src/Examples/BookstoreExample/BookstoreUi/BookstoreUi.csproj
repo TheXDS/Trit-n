@@ -1,11 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <!--<TargetFramework>netstandard2.1</TargetFramework>-->
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\TritonUi\TritonUi.csproj" />
+    <ProjectReference Include="..\..\..\Bundles\Triton.CrudGen\Triton.CrudGen.csproj" />
+    <ProjectReference Include="..\..\..\Core\TritonUi\Triton.Ui.csproj" />
     <ProjectReference Include="..\Bookstore\Bookstore.csproj" />
   </ItemGroup>
 

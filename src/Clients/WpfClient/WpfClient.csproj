@@ -3,14 +3,13 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Configurations>Debug;Release;Debug-Publish;Debug-PublishLocal;Build-Release</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TheXDS.MCART.WPF" Version="0.12.0-a012" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\TritonUi\TritonUi.csproj" />
-    <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
+    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
+    <ProjectReference Include="..\..\Core\TritonUi\Triton.Ui.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Component\" />

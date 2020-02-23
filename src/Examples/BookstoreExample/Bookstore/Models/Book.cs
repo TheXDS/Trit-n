@@ -15,6 +15,7 @@ namespace TheXDS.Triton.Examples.BookstoreExample.Models
         public Category? Category { get; set; }
         public int Existance { get; set; }
         public string? Tags { get; set; }
+        public string ShortDescription { get; set; }
     }
 
     public class BookAuthor : Model<int>
@@ -42,5 +43,9 @@ namespace TheXDS.Triton.Examples.BookstoreExample.Models
         public virtual DbSet<BookAuthor> BookAuthors { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("(LocalDB)\\MSSQLLocalDB");
+        }
     }
 }

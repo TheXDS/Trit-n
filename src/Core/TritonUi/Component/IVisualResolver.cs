@@ -1,6 +1,6 @@
-﻿using TheXDS.Triton.ViewModels;
+﻿using TheXDS.Triton.Ui.ViewModels;
 
-namespace TheXDS.Triton.Component
+namespace TheXDS.Triton.Ui.Component
 {
     /// <summary>
     /// Define una serie de miembros a implementar por un tipo que permita

@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
-using TheXDS.Triton.Component;
+using TheXDS.Triton.Ui.Component;
 
-namespace TheXDS.Triton.ViewModels
+namespace TheXDS.Triton.Ui.ViewModels
 {
     /// <summary>
     /// Clase base para un ViewModel que contenga páginas.

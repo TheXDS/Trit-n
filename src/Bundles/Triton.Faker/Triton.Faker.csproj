@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
-    <Configurations>Debug;Release;Debug-Publish;Debug-PublishLocal;Build-Release</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\StringTables\*.deflate" />

@@ -1,10 +1,10 @@
-﻿using TheXDS.Triton.ViewModels;
+﻿using TheXDS.Triton.Ui.ViewModels;
 using System.Collections.Generic;
 using System;
 using TheXDS.MCART.Types.Extensions;
 using System.Diagnostics;
 
-namespace TheXDS.Triton.Component
+namespace TheXDS.Triton.Ui.Component
 {
     /// <summary>
     /// Implementa un <see cref="IVisualResolver"/> que contiene un

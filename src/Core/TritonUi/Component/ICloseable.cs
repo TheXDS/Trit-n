@@ -1,12 +1,12 @@
 ﻿using TheXDS.MCART;
 using TheXDS.MCART.Exceptions;
-using TheXDS.Triton.ViewModels;
+using TheXDS.Triton.Ui.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using TheXDS.MCART.Types.Extensions;
 
-namespace TheXDS.Triton.Component
+namespace TheXDS.Triton.Ui.Component
 {
     /// <summary>
     /// Define una serie de métodos a implementar por una clase que permita
@@ -34,10 +34,9 @@ namespace TheXDS.Triton.Component
     public class TestViewModel : PageViewModel
     {
         private static int _count;
-
-        private int _NumberOne;
-        private int _NumberTwo;
-        private int _Result;
+        private int _numberOne;
+        private int _numberTwo;
+        private int _result;
 
         public TestViewModel()
         {
@@ -53,8 +52,8 @@ namespace TheXDS.Triton.Component
         /// <value>El valor de NumberOne.</value>
         public int NumberOne
         {
-            get => _NumberOne;
-            set => Change(ref _NumberOne, value);
+            get => _numberOne;
+            set => Change(ref _numberOne, value);
         }
 
         /// <summary>
@@ -63,8 +62,8 @@ namespace TheXDS.Triton.Component
         /// <value>El valor de NumberTwo.</value>
         public int NumberTwo
         {
-            get => _NumberTwo;
-            set => Change(ref _NumberTwo, value);
+            get => _numberTwo;
+            set => Change(ref _numberTwo, value);
         }
 
         /// <summary>
@@ -84,8 +83,8 @@ namespace TheXDS.Triton.Component
         /// <value>El valor de Result.</value>
         public int Result
         {
-            get => _Result;
-            private set => Change(ref _Result, value);
+            get => _result;
+            private set => Change(ref _result, value);
         }
     }
 }

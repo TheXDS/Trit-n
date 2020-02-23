@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
-    <Configurations>Debug;Release;Debug-Publish;Debug-PublishLocal;Build-Release</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TheXDS.MCART" Version="0.12.0-a012" />
     <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.12.0-a012" />
+    <PackageReference Include="TheXDS.MCART.UI" Version="0.12.0-a012" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Triton\Triton.csproj" />
+    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Resources\UiStrings.Designer.cs">
+    <Compile Update="Resources\Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>UiStrings.resx</DependentUpon>
+      <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Resources\UiStrings.resx">
+    <EmbeddedResource Update="Resources\Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UiStrings.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>TheXDS.Triton.Resources</CustomToolNamespace>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>TheXDS.Triton.Ui.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
