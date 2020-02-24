@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.UI;
-using TheXDS.Triton.Ui.ViewModels;
 
 namespace TheXDS.Triton.Ui.Component
 {
-    public interface IModule
+    public interface IModule : INameable
     {
-        IGrouping<string, Launcher> Pages { get; }
+        IGrouping<string, Launcher> Launchers { get; }
     }
 }

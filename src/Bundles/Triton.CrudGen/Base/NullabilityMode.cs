@@ -19,4 +19,12 @@
         /// </summary>
         NonNullable
     }
+
+    internal enum TextKind : byte 
+    {
+        Default,
+        Big,
+        FilePath,
+        PicturePath
+    }
 }

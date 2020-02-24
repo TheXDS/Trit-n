@@ -5,7 +5,7 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.WPF" Version="0.12.0-a012" />
+    <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a002" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />

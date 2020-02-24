@@ -45,7 +45,7 @@ namespace TheXDS.Triton.Examples.BookstoreExample.Models
         public virtual DbSet<Category> Categories { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("(LocalDB)\\MSSQLLocalDB");
+            optionsBuilder.UseSqlServer("(LocalDB)\\MSSQLLocalDB");            
         }
     }
 }
