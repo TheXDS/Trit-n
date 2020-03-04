@@ -25,6 +25,8 @@
         Default,
         Big,
         FilePath,
-        PicturePath
+        PicturePath,
+        Base64,
+        Base64Picture
     }
 }

@@ -68,5 +68,77 @@ namespace TheXDS.Triton.CrudGen.Resources {
                 return ResourceManager.GetString("AllFiles", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Archivos de audio.
+        /// </summary>
+        internal static string AudioFiles {
+            get {
+                return ResourceManager.GetString("AudioFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Imágenes de mapa de bits.
+        /// </summary>
+        internal static string Bitmaps {
+            get {
+                return ResourceManager.GetString("Bitmaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Archivos de base de datos.
+        /// </summary>
+        internal static string DatabaseFiles {
+            get {
+                return ResourceManager.GetString("DatabaseFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Documentos.
+        /// </summary>
+        internal static string Documents {
+            get {
+                return ResourceManager.GetString("Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Archivos de Microsoft Office.
+        /// </summary>
+        internal static string MsOfficeFiles {
+            get {
+                return ResourceManager.GetString("MsOfficeFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Archivos de texto.
+        /// </summary>
+        internal static string TextFiles {
+            get {
+                return ResourceManager.GetString("TextFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Archivos de video.
+        /// </summary>
+        internal static string VideoFiles {
+            get {
+                return ResourceManager.GetString("VideoFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Archivo {0}.
+        /// </summary>
+        internal static string XFile {
+            get {
+                return ResourceManager.GetString("XFile", resourceCulture);
+            }
+        }
     }
 }

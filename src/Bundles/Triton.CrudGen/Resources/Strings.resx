@@ -120,4 +120,28 @@
   <data name="AllFiles" xml:space="preserve">
     <value>Todos los archivos</value>
   </data>
+  <data name="AudioFiles" xml:space="preserve">
+    <value>Archivos de audio</value>
+  </data>
+  <data name="Bitmaps" xml:space="preserve">
+    <value>Imágenes de mapa de bits</value>
+  </data>
+  <data name="DatabaseFiles" xml:space="preserve">
+    <value>Archivos de base de datos</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="MsOfficeFiles" xml:space="preserve">
+    <value>Archivos de Microsoft Office</value>
+  </data>
+  <data name="TextFiles" xml:space="preserve">
+    <value>Archivos de texto</value>
+  </data>
+  <data name="VideoFiles" xml:space="preserve">
+    <value>Archivos de video</value>
+  </data>
+  <data name="XFile" xml:space="preserve">
+    <value>Archivo {0}</value>
+  </data>
 </root>

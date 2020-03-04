@@ -7,13 +7,13 @@ namespace BookstoreUi
 {
     public class BookCrudBuilder : CrudBuilder<Book>
     {
-        protected override void Describe(ICrudDescriptionBuilder<Book> builder)
+        protected override void Describe(ICrudDescriptionBuilder<Book> editor, ICrudDescriptionBuilder<Book> viewer)
         {
-            builder.Property(p => p.Name)
+            editor.Property(p => p.Name)
                 .Label("Nombre")
                 .Big();
 
-            builder.Property(p => p.Edition)
+            editor.Property(p => p.Edition)
                 .Label("Edición")
                 .Range(1, 10);
         }
