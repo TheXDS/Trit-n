@@ -4,8 +4,8 @@ using System.Linq;
 using TheXDS.MCART.Resources;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
-using TheXDS.Triton.Component;
-using TheXDS.Triton.ViewModels;
+using TheXDS.Triton.Ui.Component;
+using TheXDS.Triton.Ui.ViewModels;
 
 namespace TermClient
 {

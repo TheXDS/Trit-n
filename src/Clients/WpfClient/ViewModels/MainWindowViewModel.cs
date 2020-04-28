@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using TheXDS.MCART.ViewModel;
-using TheXDS.Triton.Component;
+﻿using System.Windows.Controls;
 using TheXDS.Triton.Pages;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.ViewModels;
+using TheXDS.Triton.Ui.Component;
+using TheXDS.Triton.Ui.ViewModels;
 
-namespace TheXDS.Triton.ViewModels
+namespace TheXDS.Triton.WpfClient.ViewModels
 {
     public class MainWindowViewModel : HostViewModel<TabHost>
     {

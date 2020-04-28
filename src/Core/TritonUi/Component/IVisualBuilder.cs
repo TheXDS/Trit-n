@@ -1,4 +1,5 @@
-﻿using TheXDS.Triton.Ui.ViewModels;
+﻿using TheXDS.MCART.Component;
+using TheXDS.Triton.Ui.ViewModels;
 
 namespace TheXDS.Triton.Ui.Component
 {

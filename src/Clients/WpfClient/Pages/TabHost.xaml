@@ -4,23 +4,102 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:TheXDS.Triton.Pages"
     mc:Ignorable="d"
-    xmlns:vc ="clr-namespace:System.Windows.Converters;assembly=MCART.WPF"
-    xmlns:vm="clr-namespace:TheXDS.Triton.ViewModels"
-    xmlns:vm2="clr-namespace:TheXDS.Triton.ViewModels;assembly=TritonUi"
-    d:DataContext="{d:DesignInstance vm2:PageViewModel}">
+    xmlns:vc ="clr-namespace:TheXDS.MCART.ValueConverters;assembly=MCART.WPF"
+    xmlns:vm2="clr-namespace:TheXDS.Triton.Ui.ViewModels;assembly=Triton.Ui"    
+    d:DataContext="{d:DesignInstance vm2:PageViewModel}"
+    BorderBrush="{x:Null}">
     <TabItem.Resources>
         <vc:McartColorConverter x:Key="McartColorConverter"/>
+        <LinearGradientBrush x:Key="TabItem.Static.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#F0F0F0" Offset="0.0"/>
+            <GradientStop Color="#E5E5E5" Offset="1.0"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="TabItem.MouseOver.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#ECF4FC" Offset="0.0"/>
+            <GradientStop Color="#DCECFC" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="TabItem.MouseOver.Border" Color="#7EB4EA"/>
     </TabItem.Resources>
+    <!--<TabItem.FocusVisualStyle>
+        <Style>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <RadialGradientBrush RadiusX="0.548" RadiusY="0.548" GradientOrigin="0.503,-0.244">
+                                    <GradientStop Offset="1"/>
+                                    <GradientStop Offset="0.475" Color="{Binding AccentColor, Converter={StaticResource McartColorConverter}}"/>
+                                </RadialGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </TabItem.FocusVisualStyle>-->
+    <TabItem.Template>
+        <ControlTemplate TargetType="{x:Type TabItem}">
+            <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                <Border
+                    x:Name="mainBorder"
+                    Opacity="0.5"
+                    Background="{Binding AccentColor, Converter={StaticResource McartColorConverter}}">
+                    <Border.OpacityMask>
+                        <RadialGradientBrush RadiusX="0.548" RadiusY="0.548" GradientOrigin="0.504,1.638">
+                            <GradientStop Offset="0.744">
+                            </GradientStop>
+                            <GradientStop Offset="0.363" Color="White"/>
+                        </RadialGradientBrush>
+                    </Border.OpacityMask>
+                </Border>
+                <Border
+                    x:Name="innerBorder"
+                    Background="{Binding AccentColor, Converter={StaticResource McartColorConverter}}"
+                    Opacity="0">
+                    <Border.OpacityMask>
+                        <LinearGradientBrush EndPoint="0,1.5">
+                            <GradientStop Offset="0"/>
+                            <GradientStop Offset="1" Color="White"/>
+                        </LinearGradientBrush>
+                    </Border.OpacityMask>
+                </Border>
+                <ContentPresenter                    
+                    x:Name="contentPresenter"
+                    ContentSource="Header"
+                    Focusable="False"
+                    Margin="{TemplateBinding Padding}"
+                    RecognizesAccessKey="True"
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                    HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                    VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True">
+                    <Setter Property="Opacity" TargetName="mainBorder" Value="1"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false">
+                    <Setter Property="Opacity" TargetName="contentPresenter" Value="0.5"/>
+                    <Setter Property="Opacity" TargetName="mainBorder" Value="0"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true">
+                    <Setter Property="Panel.ZIndex" Value="1"/>
+                    <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
+                </DataTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </TabItem.Template>
     <TabItem.Header>
         <DockPanel>
-            <Separator DockPanel.Dock="Bottom" Height="3" Margin="0,0,0,-2" Background="{Binding AccentColor, Converter={StaticResource McartColorConverter}}"/>
-            <Button Width="16" BorderThickness="0" Background="Transparent" DockPanel.Dock="Right" Command="{Binding CloseCommand, Mode=OneWay}">x</Button>
-            <TextBlock Margin="0,0,5,0" Text="{Binding Title}"/>
+            <Button 
+                Width="16"
+                VerticalAlignment="Center"
+                BorderThickness="0" 
+                Background="Transparent"
+                DockPanel.Dock="Right"
+                Command="{Binding CloseCommand, Mode=OneWay}">x</Button>
+            <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" Text="{Binding Title}"/>
         </DockPanel>
     </TabItem.Header>
-    <TabItem.Content>
-        <Frame NavigationUIVisibility="Hidden" Source="/WpfClient;component/Pages/TestPage.xaml"/>
-    </TabItem.Content>
 </TabItem>

@@ -1,49 +1,41 @@
-﻿using TheXDS.MCART;
-using TheXDS.MCART.Exceptions;
-using TheXDS.Triton.Ui.ViewModels;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System;
-using TheXDS.MCART.Types.Extensions;
+﻿using TheXDS.Triton.Ui.ViewModels;
+using System.Windows.Input;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Triton.Ui.Component
 {
     /// <summary>
-    /// Define una serie de métodos a implementar por una clase que permita
-    /// cerrar un contenedor visual o un elemento de UI.
+    /// ViewModel de prueba de generación de UI.
     /// </summary>
-    public interface ICloseable
-    {
-        /// <summary>
-        /// Cierra el elemento activo.
-        /// </summary>
-        void Close();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
     public class TestViewModel : PageViewModel
     {
         private static int _count;
+        private string _name = "usuario";
         private int _numberOne;
         private int _numberTwo;
         private int _result;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="TestViewModel"/>.
+        /// </summary>
         public TestViewModel()
         {
             _count++;
             Title = $"Prueba # {_count}";
             AccentColor = MCART.Resources.Colors.Pick();
-            SumCommand = new MCART.ViewModel.SimpleCommand(OnSum);
+            SumCommand = new SimpleCommand(OnSum);
+            OkTkxByeCommand = new SimpleCommand(OnOkTkxBye);
+        }
+
+        /// <summary>
+        /// Obtiene o establece el valor Name.
+        /// </summary>
+        /// <value>El valor de Name.</value>
+        public string Name
+        {
+            get => _name;
+            set => Change(ref _name, value);
         }
 
         /// <summary>
@@ -67,17 +59,6 @@ namespace TheXDS.Triton.Ui.Component
         }
 
         /// <summary>
-        /// Obtiene el comando relacionado a la acción Sum.
-        /// </summary>
-        /// <returns>El comando Sum.</returns>
-        public System.Windows.Input.ICommand SumCommand { get; }
-
-        private void OnSum()
-        {
-            Result = NumberOne + NumberTwo;
-        }
-
-        /// <summary>
         /// Obtiene o establece el valor Result.
         /// </summary>
         /// <value>El valor de Result.</value>
@@ -85,6 +66,27 @@ namespace TheXDS.Triton.Ui.Component
         {
             get => _result;
             private set => Change(ref _result, value);
+        }
+
+        /// <summary>
+        /// Obtiene el comando relacionado a la acción Sum.
+        /// </summary>
+        /// <returns>El comando Sum.</returns>
+        public ICommand SumCommand { get; }
+
+        private void OnSum()
+        {
+            Result = NumberOne + NumberTwo;
+        }
+
+        /// <summary>
+        /// Okay, Thanks, Bye.
+        /// </summary>
+        public ICommand OkTkxByeCommand { get; } 
+
+        private void OnOkTkxBye()
+        {
+            Close();
         }
     }
 }

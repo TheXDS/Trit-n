@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using TheXDS.Triton.ViewModels;
 
-namespace WpfClient
+namespace TheXDS.Triton.WpfClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -10,7 +9,6 @@ namespace WpfClient
     {
         public MainWindow()
         {
-            DataContext = new MainWindowViewModel();
             InitializeComponent();
         }
     }

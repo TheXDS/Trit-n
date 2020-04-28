@@ -4,6 +4,11 @@ using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.CrudGen.Base
 {
+    /// <summary>
+    /// Define una serie de miembros a implementar por un tipo que permita
+    /// describir un modelo de datos por medio del establecimiento de
+    /// propiedades de descripción.
+    /// </summary>
     public interface IDescriptor
     {
         /// <summary>

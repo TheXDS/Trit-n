@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using TheXDS.MCART.Component;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Triton.Ui.Component;
@@ -54,7 +55,6 @@ namespace TheXDS.Triton.Ui.ViewModels
     public class HostViewModel<T> : HostViewModel where T : ICloseable
     {
         private readonly IVisualBuilder<T> _visualBuilder;
-        //private readonly Dictionary<PageViewModel, T> _visualChildren = new Dictionary<PageViewModel, T>();
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -78,7 +78,6 @@ namespace TheXDS.Triton.Ui.ViewModels
         public override void AddPage(PageViewModel page)
         {
             base.AddPage(page);
-            //_visualChildren.Add(page, _visualBuilder.Build(page));
             Notify(nameof(Children));
         }
 
@@ -91,7 +90,6 @@ namespace TheXDS.Triton.Ui.ViewModels
         public override void ClosePage(PageViewModel page)
         {
             base.ClosePage(page);
-            //if (_visualChildren.Remove(page))
             Notify(nameof(Children));
         }
 
@@ -99,6 +97,6 @@ namespace TheXDS.Triton.Ui.ViewModels
         /// Enumera los contenedores visuales de los
         /// <see cref="PageViewModel"/> abiertos dentro de esta instancia.
         /// </summary>
-        public IEnumerable<T> Children => _pages.Select(_visualBuilder.Build);//_visualChildren.Values;
+        public IEnumerable<T> Children => _pages.Select(_visualBuilder.Build);
     }
 }

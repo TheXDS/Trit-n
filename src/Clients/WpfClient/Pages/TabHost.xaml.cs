@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using TheXDS.Triton.Component;
-using TheXDS.Triton.ViewModels;
+using TheXDS.MCART.Component;
+using TheXDS.Triton.Ui.ViewModels;
 
 namespace TheXDS.Triton.Pages
 {
