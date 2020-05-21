@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  
+  <ItemGroup Condition="'$(TritonClient)'=='true'">
+    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
+    <ProjectReference Include="$(SolutionDir)Core\TritonUi\Triton.Ui.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DataLayer)'=='true'">
+    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
+  </ItemGroup>
+</Project>

@@ -6,8 +6,4 @@
   <ItemGroup>
     <PackageReference Include="TheXDS.MCART" Version="0.13.0-a004" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
-    <ProjectReference Include="..\..\Core\TritonUi\Triton.Ui.csproj" />
-  </ItemGroup>
 </Project>

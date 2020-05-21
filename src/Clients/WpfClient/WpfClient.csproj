@@ -8,10 +8,6 @@
     <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a004" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
-    <ProjectReference Include="..\..\Core\TritonUi\Triton.Ui.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Component\" />
   </ItemGroup>
 </Project>

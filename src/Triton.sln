@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{7DE3
 	ProjectSection(SolutionItems) = preProject
 		Targets\BuildPaths.props = Targets\BuildPaths.props
 		Targets\CompileOptions.targets = Targets\CompileOptions.targets
+		Targets\Components.targets = Targets\Components.targets
 		Targets\GlobalDirectives.targets = Targets\GlobalDirectives.targets
 		Targets\PackageInfo.props = Targets\PackageInfo.props
 		Targets\Packages.targets = Targets\Packages.targets
@@ -45,6 +46,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelayBaron.Server", "Extras\RelayBaron\RelayBaron.Server\RelayBaron.Server.csproj", "{D000C695-2B12-4D34-AE39-94D7C0EE13A4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{D7131B96-202D-46EE-A490-C01C7A7A1B12}"
+	ProjectSection(SolutionItems) = preProject
+		Clients\Directory.Build.targets = Clients\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Ui", "Core\TritonUi\Triton.Ui.csproj", "{B90CBE29-C14A-451E-B967-1EEE3DA048F3}"
 EndProject
