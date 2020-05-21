@@ -91,9 +91,5 @@ namespace TheXDS.Triton.Services
         {
             return TryCallAsync(CrudAction.Read, _context.FindAsync<TModel>(new object[] { key }).AsTask());
         }
-
-
-
-
     }
 }

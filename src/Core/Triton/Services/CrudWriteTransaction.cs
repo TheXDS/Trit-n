@@ -148,6 +148,5 @@ namespace TheXDS.Triton.Services
         {
             return Perform(CrudAction.Update, _context.Update, entity);
         }
-
     }
 }

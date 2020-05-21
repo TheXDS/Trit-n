@@ -24,7 +24,7 @@ namespace TheXDS.Triton.Services
         /// Establece la fábrica de transacciones a exponer en esta
         /// instancia de configuración.
         /// </summary>
-        /// <param name="factory"></param>
+        /// <param name="factory">Fábrica de transacciones a utilizar.</param>
         /// <returns>
         /// Esta misma instancia.
         /// </returns>
@@ -38,7 +38,9 @@ namespace TheXDS.Triton.Services
         /// Establece la configuración de transacciones a exponer en esta
         /// instancia de configuración.
         /// </summary>
-        /// <param name="transConfig"></param>
+        /// <param name="transConfig">
+        /// Configuración de transacción a exponer en esta instancia.
+        /// </param>
         /// <returns>
         /// Esta misma instancia.
         /// </returns>

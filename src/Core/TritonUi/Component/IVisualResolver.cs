@@ -43,6 +43,7 @@ namespace TheXDS.Triton.Ui.Component
         /// </returns>
         new T ResolveVisual(PageViewModel viewModel);
 
+        /// <inheritdoc/>
         object IVisualResolver.ResolveVisual(PageViewModel viewModel) => ResolveVisual(viewModel)!;
     }
 }

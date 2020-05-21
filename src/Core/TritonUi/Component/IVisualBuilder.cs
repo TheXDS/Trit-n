@@ -44,6 +44,7 @@ namespace TheXDS.Triton.Ui.Component
         /// </returns>
         new T Build(PageViewModel viewModel);
 
+        /// <inheritdoc/>
         ICloseable IVisualBuilder.Build(PageViewModel viewModel) => Build(viewModel);
     }
 }

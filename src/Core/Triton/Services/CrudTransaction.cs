@@ -239,6 +239,5 @@ namespace TheXDS.Triton.Services
             _writeTransaction.Dispose();
             base.OnDispose();
         }
-
     }
 }

@@ -65,11 +65,15 @@ namespace TheXDS.Triton.Ui.Component
         }
 
         /// <summary>
-        /// Mapea el tipo de <see cref="PageViewModel"/> con un tipo de
-        /// contenedor visual a resolver.
+        /// Registra la resolución de un <see cref="PageViewModel"/> a un tipo
+        /// de contenedor visual a utilizar para presentarlo.
         /// </summary>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TVisual"></typeparam>
+        /// <typeparam name="TViewModel">
+        /// Tipo de <see cref="PageViewModel"/> que va a alojarse.
+        /// </typeparam>
+        /// <typeparam name="TVisual">
+        /// Tipo de contenedor visual a utilizar para mostrar el <see cref="PageViewModel"/> a registrar.
+        /// </typeparam>
         public void RegisterVisual<TViewModel, TVisual>() where TViewModel : PageViewModel where TVisual : T, new()
         {
             _mappings.Add(typeof(TViewModel), typeof(TVisual));

@@ -10,6 +10,10 @@ namespace TheXDS.Triton.Tests
 {
     public class BlogService : Service<BlogContext>
     {
+        /// <summary>
+        /// Obtiene una lista agrupada de todos los usuarios junto con sus 3 primeros posts.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IGrouping<User, Post>> GetAllUsersFirst3Posts()
         {
             var t = GetReadTransaction();

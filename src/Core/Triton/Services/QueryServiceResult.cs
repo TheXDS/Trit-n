@@ -33,13 +33,17 @@ namespace TheXDS.Triton.Services
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => _result?.GetEnumerator() ?? throw new InvalidOperationException();
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="QueryServiceResult{T}"/> exioso sin resultados.
+        /// </summary>
         public QueryServiceResult()
         {
         }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
-        /// <see cref="QueryServiceResult{T}"/>, especificando el Query
+        /// <see cref="QueryServiceResult{T}"/> exitoso, especificando el Query
         /// resultante de la operación.
         /// </summary>
         /// <param name="query">
@@ -52,7 +56,7 @@ namespace TheXDS.Triton.Services
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
-        /// <see cref="QueryServiceResult{T}"/>, especificando el motivo por el 
+        /// <see cref="QueryServiceResult{T}"/>, especificando el motivo por el
         /// cual la operación ha fallado.
         /// </summary>
         /// <param name="reason">
@@ -64,7 +68,7 @@ namespace TheXDS.Triton.Services
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
-        /// <see cref="QueryServiceResult{T}"/>, especificando el motivo por el 
+        /// <see cref="QueryServiceResult{T}"/>, especificando el motivo por el
         /// cual la operación ha fallado, además de un mensaje descriptivo
         /// del resultado.
         /// </summary>
@@ -92,7 +96,7 @@ namespace TheXDS.Triton.Services
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
-        /// <see cref="QueryServiceResult{T}"/>, indicando un mensaje de estado 
+        /// <see cref="QueryServiceResult{T}"/>, indicando un mensaje de estado
         /// personalizado a mostrar.
         /// </summary>
         /// <param name="message">Mensaje descriptivo del resultado.</param>
