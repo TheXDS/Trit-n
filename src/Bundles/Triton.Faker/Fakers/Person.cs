@@ -163,7 +163,6 @@ namespace TheXDS.Triton.Fakers
             var sb = new StringBuilder();
             var rounds = _rnd.Next(1, 4);
             sb.Append(new[] { person.Surname, person.FirstName, StringTables.Lorem.Pick() }.Pick());
-
             do
             {
                 if (_rnd.CoinFlip()) sb.Append('_');
@@ -186,7 +185,7 @@ namespace TheXDS.Triton.Fakers
             do
             {
                 if (_rnd.CoinFlip()) sb.Append('_');
-                sb.Append(new[] { StringTables.Lorem.Pick(), _rnd.Next(0, 10000).ToString().PadLeft(_rnd.Next(1, 5), '0') }.Pick());
+                sb.Append(new[] { StringTables.Lorem.Pick(), _rnd.Next(0, 10000).ToString().PadLeft(_rnd.Next(1, 5), '0')}.Pick());
             } while (--rounds > 0);
 
             return sb.ToString();

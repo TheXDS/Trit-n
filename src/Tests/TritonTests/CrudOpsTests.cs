@@ -1,7 +1,6 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
-using System;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models;

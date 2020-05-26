@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
-using System.Threading.Tasks;
 
 namespace TheXDS.Triton.Services
 {

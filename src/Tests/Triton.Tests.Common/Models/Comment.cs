@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Models
