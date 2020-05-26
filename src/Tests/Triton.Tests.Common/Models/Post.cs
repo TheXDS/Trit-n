@@ -60,10 +60,21 @@ namespace TheXDS.Triton.Models
         /// </summary>
         /// <param name="title">Tìtulo del post.</param>
         /// <param name="content">Contenido del post.</param>
-        public Post(string title, string content)
+        /// <param name="creationTime">Marca de tiempo de creación del post.</param>
+        public Post(string title, string content, DateTime creationTime)
         {
             Title = title;
             Content = content;
+            CreationTime = creationTime;
         }
+
+        /// <summary>
+        /// Inicializa una nueva instancia del modelo <see cref="Post"/>,
+        /// especificando el valor de los campos que no pueden ser
+        /// <see langword="null"/>.
+        /// </summary>
+        /// <param name="title">Tìtulo del post.</param>
+        /// <param name="content">Contenido del post.</param>
+        public Post(string title, string content) : this (title, content, DateTime.Now) { }
     }
 }

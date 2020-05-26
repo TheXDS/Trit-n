@@ -36,7 +36,19 @@ namespace TheXDS.Triton.Models
         /// </summary>
         /// <param name="id">Id de la entidad.</param>
         /// <param name="publicName">Nombre a mostrar.</param>
-        public User(string id, string publicName) : base(id)
+        public User(string id, string publicName) : this(id, publicName, DateTime.Now)
+        {
+        }
+
+        /// <summary>
+        /// Inicializa una nueva instancia del modelo <see cref="User"/>,
+        /// especificando el valor de los campos que no pueden ser
+        /// <see langword="null"/>.
+        /// </summary>
+        /// <param name="id">Id de la entidad.</param>
+        /// <param name="publicName">Nombre a mostrar.</param>
+        /// <param name="joined">Fecha en la que se ha unido el usuario.</param>
+        public User(string id, string publicName, DateTime joined) : base(id)
         {
             PublicName = publicName;
         }
