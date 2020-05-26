@@ -37,7 +37,7 @@ namespace TheXDS.Triton.Models
                 .UseLoggerFactory(_m);                
         }
 
-
+        /*
         /// <summary>
         /// Inicializa la clase <see cref="BlogContext"/>.
         /// </summary>
@@ -72,5 +72,6 @@ namespace TheXDS.Triton.Models
 
             c.SaveChanges();
         }
+        */
     }
 }

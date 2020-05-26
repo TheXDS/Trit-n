@@ -47,8 +47,8 @@ namespace TheXDS.Triton.Models.Base
         /// <remarks>
         /// Si desea dejar a propósito el valor del campo llave en su valor
         /// predeterminado (por ejemplo, para campos llave de tipos numéricos
-        /// primitivos), utilice el constructor predetermiando de
-        /// <see cref="Model{T}"/>.
+        /// primitivos, <see cref="string"/> o <see cref="Guid"/>), utilice el
+        /// constructor predetermiando de <see cref="Model{T}"/>.
         /// </remarks>
         protected Model(T id)
         {

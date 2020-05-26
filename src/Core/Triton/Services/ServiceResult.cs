@@ -22,6 +22,7 @@ namespace TheXDS.Triton.Services
                 FailureReason.DbFailure => St.DbFailure,
                 FailureReason.ValidationError => St.ValidationError,
                 FailureReason.ConcurrencyFailure => St.ConcurrencyFailure,
+                FailureReason.BadQuery => St.BadQuery,
                 FailureReason f => f.NameOf() ?? f.ToString("X").PadLeft(8, '0')
             };
         }

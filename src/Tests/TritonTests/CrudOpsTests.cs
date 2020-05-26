@@ -108,9 +108,14 @@ namespace TheXDS.Triton.Tests
         public void ReadTransactionTest()
         {
             using var t = _srv.GetReadWriteTransaction();
+
             Post? post = t.Read<Post, long>(1L);
             Assert.IsInstanceOf<Post>(post);
             Assert.AreEqual("Test", post!.Title);
+
+            Comment? comment = t.Read<Comment>(1L);
+            Assert.IsInstanceOf<Comment>(comment);
+            Assert.AreEqual("It works!", comment!.Content);
         }
 
         [Test]

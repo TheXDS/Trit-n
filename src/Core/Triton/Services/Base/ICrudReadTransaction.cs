@@ -1,8 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using TheXDS.MCART;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
+using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.Linq;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.Exceptions;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -34,7 +39,7 @@ namespace TheXDS.Triton.Services.Base
         /// El resultado reportado de la operación ejecutada por el
         /// servicio subyacente.
         /// </returns>
-        ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
+        ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
         {
             var r = Read<TModel, TKey>(key);
             entity = r.ReturnValue;
@@ -61,7 +66,34 @@ namespace TheXDS.Triton.Services.Base
         /// entidad con el campo llave especificado, el valor de resultado
         /// será <see langword="null"/>.
         /// </returns>
-        ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>;
+        ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>;
+
+        /// <summary>
+        /// Obtiene una entidad cuyo campo llave sea igual al valor
+        /// especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        /// Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        /// Llave de la entidad a obtener.
+        /// </param>
+        /// <returns>
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente, incluyendo como valor de resultado a la
+        /// entidad obtenida en la operación de lectura. Si no existe una
+        /// entidad con el campo llave especificado, el valor de resultado
+        /// será <see langword="null"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si <paramref name="key"/> es <see langword="null"/>.
+        /// </exception>
+        ServiceResult<TModel?> Read<TModel>(object key) where TModel : Model
+        {
+            var t = key?.GetType() ?? throw new ArgumentNullException(nameof(key));            
+            if (!ChkIdType<TModel>(t)) return FailureReason.BadQuery;
+            return (ServiceResult<TModel?>)GetReadMethod(typeof(TModel), t).Invoke(this, new[] { key })!;
+        }
 
         /// <summary>
         /// Obtiene la colección completa de entidades del modelo
@@ -90,6 +122,24 @@ namespace TheXDS.Triton.Services.Base
         /// El resultado reportado de la operación ejecutada por el
         /// servicio subyacente.
         /// </returns>
-        Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>;
+        Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool ChkIdType<T>(Type idType)
+        {
+            return typeof(Model<>).MakeGenericType(idType).IsAssignableFrom(typeof(T));
+        }
+
+        private MethodInfo GetReadMethod(Type tModel, Type tKey)
+        {
+            foreach (var j in GetType().GetMethods().Where(p => p.Name == "Read"))
+            {
+                var args = j.GetGenericArguments();
+                var para = j.GetParameters();
+                if (para.Length == 1 && !para[0].IsOut && args.Length == 2 && args[0].BaseType!.Implements(typeof(Model<>)) && !args[1].IsByRef)
+                    return j.MakeGenericMethod(tModel, tKey);
+            }
+            throw new TamperException();
+        }
     }
 }

@@ -44,6 +44,11 @@
         /// <summary>
         /// Entidad no encontrada.
         /// </summary>
-        NotFound
+        NotFound,
+
+        /// <summary>
+        /// Query malformado (error de app cliente)
+        /// </summary>
+        BadQuery
     }
 }

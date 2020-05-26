@@ -11,12 +11,12 @@ namespace TheXDS.Triton.Models
         /// <summary>
         /// Autor del comentario.
         /// </summary>
-        public User Author { get; set; }
+        public User Author { get; set; } = null!;
 
         /// <summary>
         /// <see cref="Post"/> en el cual se ha dejado este comentario.
         /// </summary>
-        public Post Parent { get; set; }
+        public Post Parent { get; set; } = null!;
 
         /// <summary>
         /// Fecha en la que se ha creado este comentario.
@@ -38,15 +38,24 @@ namespace TheXDS.Triton.Models
         /// Post en el cual se ha realizado el comentario.
         /// </param>
         /// <param name="content">Contenido del comentario.</param>
-        public Comment(User author, Post parent, string content)
+        public Comment(User author, Post parent, string content) : this(content)
+        {
+            Author = author ?? throw new ArgumentNullException(nameof(author));
+            Parent = parent ?? throw new ArgumentNullException(nameof(parent));
+        }
+
+        /// <summary>
+        /// Inicializa una nueva instancia del modelo <see cref="Comment"/>,
+        /// especificando el valor de los campos que no pueden ser
+        /// <see langword="null"/>.
+        /// </summary>
+        /// <param name="content">Contenido del comentario.</param>
+        public Comment(string content)
         {
             if (string.IsNullOrEmpty(content))
             {
                 throw new ArgumentNullException(nameof(content));
             }
-
-            Author = author ?? throw new ArgumentNullException(nameof(author));
-            Parent = parent ?? throw new ArgumentNullException(nameof(parent));
             Content = content;
         }
     }

@@ -61,6 +61,15 @@ namespace TheXDS.Triton.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Consulta de datos malformada..
+        /// </summary>
+        internal static string BadQuery {
+            get {
+                return ResourceManager.GetString("BadQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se ha intentado sobreescribir información que otro usuario ya ha editado..
         /// </summary>
         internal static string ConcurrencyFailure {

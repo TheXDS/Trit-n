@@ -22,21 +22,21 @@ namespace TheXDS.Triton.Tests
         {
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        [Test]
-        public void AppDomainCreationTest()
-        {
-            const string p = @"C:\Users\xds_x\source\repos\TheXDS\MCART\Build\bin\Consoleer\Debug\netcoreapp3.0" + @"\Consoleer.dll";
-            var x = MCART.Resources.RtInfo.RtSupport(this.GetType().Assembly);
-            var alc = new TestLoadContext(p);
-            var asm = new WeakReference(alc.LoadFromAssemblyPath(p), false);
-            Assert.True(asm.IsAlive);
-            Assert.NotNull(asm.Target);
-            ((Assembly)asm.Target).EntryPoint.Invoke(null, new object[] { new string[] { "--Detail:alot" } });
-            alc.Unload();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
+        //[MethodImpl(MethodImplOptions.NoInlining)]
+        //[Test]
+        //public void AppDomainCreationTest()
+        //{
+        //    const string p = @"C:\Users\xds_x\source\repos\TheXDS\MCART\Build\bin\Consoleer\Debug\netcoreapp3.0" + @"\Consoleer.dll";
+        //    var x = MCART.Resources.RtInfo.RtSupport(this.GetType().Assembly);
+        //    var alc = new TestLoadContext(p);
+        //    var asm = new WeakReference(alc.LoadFromAssemblyPath(p), false);
+        //    Assert.True(asm.IsAlive);
+        //    Assert.NotNull(asm.Target);
+        //    ((Assembly)asm.Target).EntryPoint.Invoke(null, new object[] { new string[] { "--Detail:alot" } });
+        //    alc.Unload();
+        //    GC.Collect();
+        //    GC.WaitForPendingFinalizers();
+        //}
 
         private class TestLoadContext: AssemblyLoadContext
         {
