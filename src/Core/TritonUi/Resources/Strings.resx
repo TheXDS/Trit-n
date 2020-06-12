@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AreYouSureRunOp" xml:space="preserve">
-    <value>¿Està seguro que desea ejecutar esta acción?</value>
+    <value>¿Está seguro que desea ejecutar esta acción?</value>
   </data>
   <data name="Critical" xml:space="preserve">
     <value>Error crítico</value>

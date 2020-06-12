@@ -3,11 +3,18 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <AssemblyName>TritonWorkstation</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FluentWPF" Version="0.8.0" />
     <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a004" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Component\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Resources\Theme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

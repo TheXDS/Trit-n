@@ -25,7 +25,7 @@ namespace TheXDS.Triton.Ui.Component
             Title = $"Prueba # {_count}";
             AccentColor = MCART.Resources.Colors.Pick();
             SumCommand = new SimpleCommand(OnSum);
-            OkTkxByeCommand = new SimpleCommand(OnOkTkxBye);
+            OkTkxByeCommand = new SimpleCommand(Close);
         }
 
         /// <summary>
@@ -74,19 +74,14 @@ namespace TheXDS.Triton.Ui.Component
         /// <returns>El comando Sum.</returns>
         public ICommand SumCommand { get; }
 
-        private void OnSum()
-        {
-            Result = NumberOne + NumberTwo;
-        }
-
         /// <summary>
         /// Okay, Thanks, Bye.
         /// </summary>
-        public ICommand OkTkxByeCommand { get; } 
+        public ICommand OkTkxByeCommand { get; }
 
-        private void OnOkTkxBye()
+        private void OnSum()
         {
-            Close();
+            Result = NumberOne + NumberTwo;
         }
     }
 }

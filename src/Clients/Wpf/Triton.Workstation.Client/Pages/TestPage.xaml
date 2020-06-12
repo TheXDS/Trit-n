@@ -42,7 +42,6 @@
                 </TextBlock>
                 <Separator Margin="0,10"/>
                 <Button Grid.Row="2" Command="{Binding OkTkxByeCommand, Mode=OneWay}">OkThxBye!</Button>
-
             </StackPanel>
         </Viewbox>
     </Grid>

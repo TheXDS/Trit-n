@@ -9,10 +9,11 @@
     xmlns:vm2="clr-namespace:TheXDS.Triton.Ui.ViewModels;assembly=Triton.Ui"
     mc:Ignorable="d"    
     Title="MainWindow" Height="450" Width="600">
+    <Window.Resources>
+        <!--<ResourceDictionary Source="/Resources/Theme.xaml" />-->
+    </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid Background="#202020">
-        <TabControl BorderThickness="0" Padding="0" ItemsSource="{Binding Children, Mode=OneWay}"/>
-    </Grid>
+    <TabControl Background="Transparent" BorderThickness="0" Padding="0" ItemsSource="{Binding Children, Mode=OneWay}"/>
 </Window>

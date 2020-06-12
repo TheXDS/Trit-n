@@ -61,7 +61,7 @@ namespace TheXDS.Triton.Ui.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ¿Està seguro que desea ejecutar esta acción?.
+        ///   Busca una cadena traducida similar a ¿Está seguro que desea ejecutar esta acción?.
         /// </summary>
         public static string AreYouSureRunOp {
             get {

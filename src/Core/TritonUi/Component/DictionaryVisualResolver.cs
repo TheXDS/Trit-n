@@ -1,8 +1,9 @@
-﻿using TheXDS.Triton.Ui.ViewModels;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using TheXDS.MCART.Types.Extensions;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.Triton.Ui.ViewModels;
 
 namespace TheXDS.Triton.Ui.Component
 {
@@ -14,7 +15,7 @@ namespace TheXDS.Triton.Ui.Component
     /// <typeparam name="T">
     /// Tipo de contenedor visual a implementar.
     /// </typeparam>
-    public class DictionaryVisualResolver<T> : IVisualResolver<T> where T : new()
+    public class DictionaryVisualResolver<T> : IVisualResolver<T> where T : notnull, new()
     {
         private readonly Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
@@ -39,8 +40,8 @@ namespace TheXDS.Triton.Ui.Component
         /// </exception>
         [DebuggerNonUserCode]
         public T ResolveVisual(PageViewModel viewModel)
-        {
-            return _mappings[viewModel.GetType()].New<T>();
+        {            
+            return ResolveVisual(viewModel.GetType());
         }
 
         /// <summary>
@@ -61,7 +62,32 @@ namespace TheXDS.Triton.Ui.Component
         [DebuggerNonUserCode]
         public T ResolveVisual<TViewModel>() where TViewModel : PageViewModel
         {
-            return _mappings[typeof(TViewModel)].New<T>();
+            return ResolveVisual(typeof(TViewModel));
+        }
+
+        /// <summary>
+        /// Resuelve el contenedor visual a utilizar para alojar al 
+        /// <see cref="PageViewModel"/> especificado.
+        /// </summary>
+        /// <param name="vmType">
+        /// Tipo <see cref="PageViewModel"/> que va a alojarse.
+        /// </param>
+        /// <returns>
+        /// Un contenedor visual fuertemente tipeado para el
+        /// <see cref="PageViewModel"/> especificado.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si se intenta resolver el contenedor visual para un
+        /// valor nulo.
+        /// </exception>
+        /// <exception cref="KeyNotFoundException">
+        /// Se produce si se intenta resolver el contenedor visual para un
+        /// tipo de <see cref="PageViewModel"/> que no ha sido registrado.
+        /// </exception>
+        [DebuggerNonUserCode, MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T ResolveVisual(Type vmType)
+        {
+            return _mappings[vmType].New<T>();
         }
 
         /// <summary>
@@ -74,7 +100,7 @@ namespace TheXDS.Triton.Ui.Component
         /// <typeparam name="TVisual">
         /// Tipo de contenedor visual a utilizar para mostrar el <see cref="PageViewModel"/> a registrar.
         /// </typeparam>
-        public void RegisterVisual<TViewModel, TVisual>() where TViewModel : PageViewModel where TVisual : T, new()
+        public void RegisterVisual<TViewModel, TVisual>() where TViewModel : PageViewModel where TVisual : notnull, T, new()
         {
             _mappings.Add(typeof(TViewModel), typeof(TVisual));
         }

@@ -52,7 +52,7 @@ namespace TheXDS.Triton.Ui.ViewModels
     /// Tipo de contenedor visual. Debe implementar
     /// <see cref="ICloseable"/>.
     /// </typeparam>
-    public class HostViewModel<T> : HostViewModel where T : ICloseable
+    public class HostViewModel<T> : HostViewModel where T : notnull
     {
         private readonly IVisualBuilder<T> _visualBuilder;
 

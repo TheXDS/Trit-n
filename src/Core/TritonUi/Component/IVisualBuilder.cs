@@ -21,14 +21,15 @@ namespace TheXDS.Triton.Ui.Component
         /// Un host visual para el <see cref="PageViewModel"/>
         /// especificado.
         /// </returns>
-        ICloseable Build(PageViewModel viewModel);
+        object Build(PageViewModel viewModel);
     }
 
     /// <summary>
     /// Define una serie de miembros a implementar por un tipo que permita
-    /// construir hosts visuales para un <see cref="PageViewModel"/>.
+    /// construir hosts visuales fuertemente tipeados para un
+    /// <see cref="PageViewModel"/>.
     /// </summary>
-    public interface IVisualBuilder<T> : IVisualBuilder where T : ICloseable
+    public interface IVisualBuilder<T> : IVisualBuilder where T : notnull
     {
         /// <summary>
         /// Construye un host visual para el <see cref="PageViewModel"/>
@@ -45,6 +46,6 @@ namespace TheXDS.Triton.Ui.Component
         new T Build(PageViewModel viewModel);
 
         /// <inheritdoc/>
-        ICloseable IVisualBuilder.Build(PageViewModel viewModel) => Build(viewModel);
+        object IVisualBuilder.Build(PageViewModel viewModel) => Build(viewModel);
     }
 }
