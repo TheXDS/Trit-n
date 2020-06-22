@@ -4,14 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:TheXDS.Triton.WpfClient"
     xmlns:vm="clr-namespace:TheXDS.Triton.WpfClient.ViewModels"
-    xmlns:vm2="clr-namespace:TheXDS.Triton.Ui.ViewModels;assembly=Triton.Ui"
     mc:Ignorable="d"    
     Title="MainWindow" Height="450" Width="600">
-    <Window.Resources>
-        <!--<ResourceDictionary Source="/Resources/Theme.xaml" />-->
-    </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>

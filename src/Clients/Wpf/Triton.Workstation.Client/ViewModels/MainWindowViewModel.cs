@@ -18,7 +18,6 @@ namespace TheXDS.Triton.WpfClient.ViewModels
 
         }
 
-
         private static IVisualBuilder<TabHost> CreateBuilder()
         {
             var r = new DictionaryVisualResolver<Page>();

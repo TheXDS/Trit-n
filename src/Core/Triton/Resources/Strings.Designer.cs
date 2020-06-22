@@ -106,6 +106,24 @@ namespace TheXDS.Triton.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El servicio solicitado no ha sido cargado..
+        /// </summary>
+        internal static string MissingService {
+            get {
+                return ResourceManager.GetString("MissingService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El servicio &apos;{0}&apos; no ha sido cargado..
+        /// </summary>
+        internal static string MissingXService {
+            get {
+                return ResourceManager.GetString("MissingXService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se ha producido un error en la red..
         /// </summary>
         internal static string NetworkFailure {

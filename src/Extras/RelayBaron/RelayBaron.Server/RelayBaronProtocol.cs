@@ -1,16 +1,24 @@
-﻿using TheXDS.MCART.Networking.Server;
+﻿using TheXDS.MCART.Networking.Legacy.Server;
 using TheXDS.Triton.Services;
 using static TheXDS.Triton.Services.CrudAction;
 
 namespace RelayBaron.Server
 {
-    internal class RelayBaronProtocol : ManagedCommandProtocol<Client, CrudAction, CrudAction>
+    /// <summary>
+    /// Protocolo de notificación de Crud que reenvía información sobre la
+    /// acción crud a todos los clientes conectados.
+    /// </summary>
+    public class RelayBaronProtocol : ManagedCommandProtocol<CrudAction, CrudAction>
     {
         static RelayBaronProtocol()
         {
             ScanTypeOnCtor = false;
         }
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="RelayBaronProtocol"/>.
+        /// </summary>
         public RelayBaronProtocol()
         {
             WireUp(Create, Relay);

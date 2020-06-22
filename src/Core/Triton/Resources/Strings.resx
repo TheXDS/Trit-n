@@ -132,6 +132,12 @@
   <data name="FailureUnknown" xml:space="preserve">
     <value>Se ha producido un error desconocido en la operación.</value>
   </data>
+  <data name="MissingService" xml:space="preserve">
+    <value>El servicio solicitado no ha sido cargado.</value>
+  </data>
+  <data name="MissingXService" xml:space="preserve">
+    <value>El servicio '{0}' no ha sido cargado.</value>
+  </data>
   <data name="NetworkFailure" xml:space="preserve">
     <value>Se ha producido un error en la red.</value>
   </data>

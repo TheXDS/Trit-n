@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS1591
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using TheXDS.Triton.Services;
@@ -8,12 +6,20 @@ using TheXDS.Triton.Models;
 
 namespace TheXDS.Triton.Tests
 {
+    /// <summary>
+    /// Servicio de pruebas que permite administrar el contexto de datos
+    /// <see cref="BlogContext"/>.
+    /// </summary>
     public class BlogService : Service<BlogContext>
     {
         /// <summary>
-        /// Obtiene una lista agrupada de todos los usuarios junto con sus 3 primeros posts.
+        /// Obtiene una lista agrupada de todos los usuarios junto con sus 3
+        /// primeros posts.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// Una lista agrupada de todos los usuarios junto con sus 3 primeros 
+        /// posts.
+        /// </returns>
         public IEnumerable<IGrouping<User, Post>> GetAllUsersFirst3Posts()
         {
             var t = GetReadTransaction();

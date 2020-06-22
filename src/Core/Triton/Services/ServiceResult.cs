@@ -245,6 +245,15 @@ namespace TheXDS.Triton.Services
         public static implicit operator ServiceResult(in FailureReason reason) => FailWith<ServiceResult>(reason);
 
         /// <summary>
+        /// Convierte implícitamente un <see cref="bool"/> en un
+        /// <see cref="ServiceResult"/>.
+        /// </summary>
+        /// <param name="success">
+        /// Valor que indica si la operación ha tenido éxito o no.
+        /// </param>
+        public static implicit operator ServiceResult(in bool success)=> success ? Ok : FailWith<ServiceResult>(FailureReason.Unknown);
+
+        /// <summary>
         /// Permite utilizar un <see cref="ServiceResult"/> en una
         /// expresión booleana.
         /// </summary>

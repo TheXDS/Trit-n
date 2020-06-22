@@ -8,6 +8,10 @@ namespace TheXDS.Triton.Models.Base
     /// </summary>
     public abstract class Model
     {
+        /// <summary>
+        /// Obtiene el Id de la entidad como una cadena.
+        /// </summary>
+        public abstract string IdAsString { get; }
     }
 
     /// <summary>
@@ -17,6 +21,9 @@ namespace TheXDS.Triton.Models.Base
     /// <typeparam name="T">Tipo de campo llave de la entidad.</typeparam>
     public abstract class Model<T> : Model where T : notnull, IComparable<T>, IEquatable<T>
     {
+        /// <inheritdoc/>
+        public sealed override string IdAsString => Id?.ToString() ?? string.Empty;
+
         /// <summary>
         /// Obtiene o establece el campo llave de esta entidad.
         /// </summary>

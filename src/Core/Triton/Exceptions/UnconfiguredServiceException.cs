@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Services.Base;
 using St = TheXDS.Triton.Resources.Strings;
 
