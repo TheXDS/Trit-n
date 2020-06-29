@@ -38,11 +38,42 @@ namespace TheXDS.Triton.Services
             return retval;
         }
 
+        /// <summary>
+        /// Obtiene la instancia del servicio del tipo especificado.
+        /// </summary>
+        /// <typeparam name="T">Tipo de servicio a invocar.</typeparam>
+        /// <returns>
+        /// Una instancia activa del servicio existente en este host.
+        /// </returns>
+        /// <exception cref="MissingServiceException">
+        /// Se produce si el tipo de servicio invocado no existe en este host.
+        /// </exception>
         public T Get<T>() where T : notnull, IService
         {
             return this.FirstOf<T>() ?? throw new MissingServiceException(typeof(T));
         }
 
+        /// <summary>
+        /// Indizador que obtiene o establece la instancia del servicio del
+        /// tipo especificado.
+        /// </summary>
+        /// <param name="type">
+        /// Tipo de servicio a obtener o establecer.
+        /// </param>
+        /// <returns>
+        /// Una instancia activa del servicio existente en este host.
+        /// </returns>
+        /// <exception cref="MissingServiceException">
+        /// Se produce si el tipo de servicio invocado no existe en este host.
+        /// </exception>
+        /// <exception cref="InvalidArgumentException">
+        /// Se produce si <paramref name="type"/> no es un tipo que implementa
+        /// <see cref="IService"/>.
+        /// </exception>
+        /// <exception cref="InvalidTypeException">
+        /// Se produce si el valor a establecer para el tipo de servicio
+        /// especificado no implementa el mismo.
+        /// </exception>
         public IService this[Type type]
         {
             get
@@ -56,6 +87,7 @@ namespace TheXDS.Triton.Services
                 value?.PushInto(this);
             }
         }
+
         private static void This_Contract(Type type, IService value)
         {
             if (!type.Implements<IService>()) throw new InvalidArgumentException(nameof(type));
