@@ -164,6 +164,63 @@ namespace TheXDS.Triton.CrudGen.Base
 
 
 
+        public static IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> ReadOnly<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return ListOptions(descriptor, EntityWidgetOptions.ReadOnly);
+        }
+        
+        public static IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> CreateOnly<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return ListOptions(descriptor, EntityWidgetOptions.Create);
+        }
+        
+        public static IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> SelectOnly<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return ListOptions(descriptor, EntityWidgetOptions.Select);
+        }
+        
+        public static IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> CreateAndSelect<TModel, TViewModel, TChild>(this IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return ListOptions(descriptor, EntityWidgetOptions.CreateAndSelect);
+        }
+
+        public static IPropertyDescriptor<TModel, TChild, TViewModel> ReadOnly<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, TChild, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return EntityOptions(descriptor, EntityWidgetOptions.ReadOnly);
+        }
+        
+        public static IPropertyDescriptor<TModel, TChild, TViewModel> CreateOnly<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, TChild, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return EntityOptions(descriptor, EntityWidgetOptions.Create);
+        }
+        
+        public static IPropertyDescriptor<TModel, TChild, TViewModel> SelectOnly<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, TChild, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return EntityOptions(descriptor, EntityWidgetOptions.Select);
+        }
+        
+        public static IPropertyDescriptor<TModel, TChild, TViewModel> CreateAndSelect<TModel, TChild, TViewModel>(this IPropertyDescriptor<TModel, TChild, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return EntityOptions(descriptor, EntityWidgetOptions.CreateAndSelect);
+        }
+
+        public static IPropertyDescriptor<TModel, Guid, TViewModel> NonEntityLink<TModel, TObject, TViewModel>(this IPropertyDescriptor<TModel, Guid, TViewModel> descriptor, IEnumerable<TObject> source) where TModel : Model where TViewModel : ViewModel<TModel> where TObject : IExposeGuid
+        {
+            return descriptor.SetCustomConfigurationValue(GetGuid(), source);
+        }
+
+        public static IPropertyDescriptor<TModel, TValue, TViewModel> Selector<TModel, TValue, TViewModel>(this IPropertyDescriptor<TModel, TValue, TViewModel> descriptor, IEnumerable<TValue> source) where TModel : Model where TViewModel : ViewModel<TModel>
+        {
+            return descriptor.SetCustomConfigurationValue(GetGuid(), source);
+        }
+
+        public static IPropertyDescriptor<TModel, TEntity, TViewModel> Link<TModel, TEntity, TViewModel>(this IPropertyDescriptor<TModel, TEntity, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TEntity : Model
+        {
+            //return descriptor.SetCustomConfigurationValue(GetGuid(), true);
+        }
+
+
+
 
 
         /// <summary>
@@ -267,11 +324,46 @@ namespace TheXDS.Triton.CrudGen.Base
             return Base64(descriptor, FileFilter.AllFiles);
         }
 
+        /// <summary>
+        /// Marca un campo de texto para funcionar como almacenamiento directo
+        /// de una imagen en Base64. Únicamente recomendable para imágenes muy
+        /// pequeñas.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo de modelo descrito.</typeparam>
+        /// <typeparam name="TViewModel">Tipo de ViewModel editor.</typeparam>
+        /// <param name="descriptor">
+        /// Instancia de descriptor de propiedad sobre la cual aplicar la
+        /// configuración.
+        /// </param>
+        /// <param name="extensions">
+        /// Descriptores de extensión de archivo por medio de los cuales
+        /// filtrar el tipo de archivo admitido por el cuadro de diálogo de
+        /// carga.
+        /// </param>
+        /// <returns>
+        /// La misma instancia que <paramref name="descriptor"/>, permitiendo
+        /// el uso de sintaxis Fluent.
+        /// </returns>
         public static IPropertyDescriptor<TModel, string, TViewModel> Base64Picture<TModel, TViewModel>(this IPropertyDescriptor<TModel, string, TViewModel> descriptor, FileFilter[] extensions) where TModel : Model where TViewModel : ViewModel<TModel>
         {
             return TextKind(descriptor, Base.TextKind.Base64Picture).SetCustomConfigurationValue(GetGuid(), extensions);
         }
 
+        /// <summary>
+        /// Marca un campo de texto para funcionar como almacenamiento directo
+        /// de una imagen en Base64. Únicamente recomendable para imágenes muy
+        /// pequeñas.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo de modelo descrito.</typeparam>
+        /// <typeparam name="TViewModel">Tipo de ViewModel editor.</typeparam>
+        /// <param name="descriptor">
+        /// Instancia de descriptor de propiedad sobre la cual aplicar la
+        /// configuración.
+        /// </param>
+        /// <returns>
+        /// La misma instancia que <paramref name="descriptor"/>, permitiendo
+        /// el uso de sintaxis Fluent.
+        /// </returns>
         public static IPropertyDescriptor<TModel, string, TViewModel> Base64Picture<TModel, TViewModel>(this IPropertyDescriptor<TModel, string, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel>
         {
             return Base64(descriptor, FileFilter.BitmapPictures);
@@ -377,6 +469,20 @@ namespace TheXDS.Triton.CrudGen.Base
         {
             return descriptor.SetCustomConfigurationValue(GetGuid(), kind);
         }
+
+        internal static IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> ListOptions<TModel, TViewModel, TChild>
+            (IPropertyDescriptor<TModel, ICollection<TChild>, TViewModel> descriptor, EntityWidgetOptions options)
+            where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return descriptor.SetCustomConfigurationValue(GetGuid(), options);
+        }
+
+        internal static IPropertyDescriptor<TModel, TChild, TViewModel> EntityOptions<TModel, TViewModel, TChild>
+            (IPropertyDescriptor<TModel, TChild, TViewModel> descriptor, EntityWidgetOptions options)
+            where TModel : Model where TViewModel : ViewModel<TModel> where TChild : Model
+        {
+            return descriptor.SetCustomConfigurationValue(GetGuid(), options);
+        }
     }
 
     /// <summary>
@@ -404,9 +510,15 @@ namespace TheXDS.Triton.CrudGen.Base
 
         /// <summary>
         /// Obtiene un filtro que permite seleccionar archivos de imagen de
+        /// vectores conocidas. Este campo es de solo lectura.
+        /// </summary>
+        public static readonly FileFilter VectorImages = new FileFilter(St.VectorImages, "svg", "wmf");
+
+        /// <summary>
+        /// Obtiene un filtro que permite seleccionar archivos de imagen de
         /// mapa de bits comunes. Este campo es de solo lectura.
         /// </summary>
-        public static readonly FileFilter AudioFiles = new FileFilter(St.AudioFiles, "wav", "mp3", "ogg", "aac", "aiff", "flac");
+        public static readonly FileFilter AudioFiles = new FileFilter(St.AudioFiles, "wav", "mp3", "ogg", "aac", "aiff", "flac", "wma");
 
         /// <summary>
         /// Obtiene un filtro que permite seleccionar documentos en formatos

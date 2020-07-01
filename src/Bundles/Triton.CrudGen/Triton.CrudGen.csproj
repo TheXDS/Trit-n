@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
-    <ProjectReference Include="..\..\Core\TritonUi\Triton.Ui.csproj" />
+    <ProjectReference Include="$(SolutionDir)Core\TritonUi\Triton.Ui.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Strings.Designer.cs">

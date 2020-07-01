@@ -1,4 +1,6 @@
-﻿namespace TheXDS.Triton.CrudGen.Base
+﻿using System;
+
+namespace TheXDS.Triton.CrudGen.Base
 {
     /// <summary>
     /// Describe el modo de nulabilidad a aplicar a una propiedad descrita.
@@ -28,5 +30,14 @@
         PicturePath,
         Base64,
         Base64Picture
+    }
+
+    [Flags]
+    internal enum EntityWidgetOptions : byte
+    {
+        ReadOnly = 0,
+        Select = 1,
+        Create = 2,
+        CreateAndSelect = Select | Create
     }
 }

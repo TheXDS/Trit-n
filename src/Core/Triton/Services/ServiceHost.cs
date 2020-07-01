@@ -20,7 +20,7 @@ namespace TheXDS.Triton.Services
         {
             foreach (var j in Enumerable.OfType<IDisposable>(this)) j.Dispose();
             base.Clear();
-        }
+        }                               
 
         /// <summary>
         /// Quita una intancia activa de servicio de este Host.
@@ -78,7 +78,7 @@ namespace TheXDS.Triton.Services
         {
             get
             {
-                return this.FirstOf(type) ?? throw new MissingServiceException(type);
+                return this.FirstOf(type ?? throw new ArgumentNullException(nameof(type))) ?? throw new MissingServiceException(type);
             }
             set
             {

@@ -74,9 +74,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{19F483
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Workstation.Client", "Clients\Wpf\Triton.Workstation.Client\Triton.Workstation.Client.csproj", "{98B2AA85-B823-4061-A720-615EAECC7EC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayBaron.Client", "Extras\RelayBaron\RelayBaron.Client\RelayBaron.Client.csproj", "{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelayBaron.Client", "Extras\RelayBaron\RelayBaron.Client\RelayBaron.Client.csproj", "{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelayBaron.Tests", "Extras\RelayBaron\RelayBaron.Tests\RelayBaron.Tests.csproj", "{F79BC780-5597-4EFC-80B7-E7A13D57BC8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelayBaron.Tests", "Extras\RelayBaron\RelayBaron.Tests\RelayBaron.Tests.csproj", "{F79BC780-5597-4EFC-80B7-E7A13D57BC8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Kickstart", "Bundles\Triton.Kickstart\Triton.Kickstart.csproj", "{217F26B5-8C4E-403C-9143-0FDA15D5B331}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -285,6 +287,18 @@ Global
 		{F79BC780-5597-4EFC-80B7-E7A13D57BC8B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F79BC780-5597-4EFC-80B7-E7A13D57BC8B}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
 		{F79BC780-5597-4EFC-80B7-E7A13D57BC8B}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Build-Release|Any CPU.ActiveCfg = Build-Release|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Build-Release|Any CPU.Build.0 = Build-Release|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Release|Any CPU.Build.0 = Release|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -312,6 +326,7 @@ Global
 		{98B2AA85-B823-4061-A720-615EAECC7EC9} = {F7D39A51-6793-455A-85BB-50AEA701DB3F}
 		{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5} = {221F9EF5-4751-46C6-8448-58C01B8A6C36}
 		{F79BC780-5597-4EFC-80B7-E7A13D57BC8B} = {221F9EF5-4751-46C6-8448-58C01B8A6C36}
+		{217F26B5-8C4E-403C-9143-0FDA15D5B331} = {AF055A8A-93F0-4BBD-8025-47B7108AFAB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A45987E-24AB-4E9E-9C1F-4C8D9B1F956A}
