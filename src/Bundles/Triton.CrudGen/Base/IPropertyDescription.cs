@@ -21,8 +21,40 @@ namespace TheXDS.Triton.CrudGen.Base
         Type Model { get; }
 
         /// <summary>
-        /// Obtiene un diccionario que contiene todos los valores configurados en la descripción de la propiedad.
+        /// Obtiene el valor predeterminado a establecer a esta instancia.
         /// </summary>
-        public IDictionary<Guid, object?> Configurations { get; }
+        object? DefaultValue { get; }
+
+        /// <summary>
+        /// Obtiene un valor que indica si los controles o widgets generados
+        /// para esta propiedad serán de solo lectura.
+        /// </summary>
+        bool ReadOnly { get; }
+
+        /// <summary>
+        /// Obtiene una etiqueta amigable para los controles o widgets
+        /// generados para la propiedad.
+        /// </summary>
+        string Label { get; }
+
+        /// <summary>
+        /// Obtiene un valor que indica un grupo de pertenencia para la
+        /// propiedad, o <see langword="null"/> si la propiedad no pertenece a
+        /// ningún grupo.
+        /// </summary>
+        string? Group { get; }
+        
+        /// <summary>
+        /// Obtiene un valor posicional para la propiedad, o
+        /// <see langword="null"/> si no se ha establecido un orden especìfico
+        /// para la misma.
+        /// </summary>
+        int? Position { get; }
+
+        /// <summary>
+        /// Obtiene un diccionario que contiene todos los valores configurados
+        /// en la descripción de la propiedad.
+        /// </summary>
+        IDictionary<Guid, object?> Configurations { get; }
     }
 }
