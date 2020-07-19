@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using TheXDS.MCART.Networking.Server;
+using TheXDS.MCART.Networking.Legacy.Server;
 
 namespace RelayBaron.Server
 {
