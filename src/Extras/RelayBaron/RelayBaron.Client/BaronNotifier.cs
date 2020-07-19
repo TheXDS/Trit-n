@@ -106,25 +106,6 @@ namespace RelayBaron.Client
         /// Registra una función a ser llamada al recibirse una notificación de
         /// acción crud correspondiente.
         /// </summary>
-        /// <typeparam name="T">
-        /// Modelo para el cual registrar la llamada.
-        /// </typeparam>
-        /// <param name="crudAction">
-        /// Acción para la cual registrar la llamada.
-        /// </param>
-        /// <param name="action">
-        /// Acción a llamar al recibir una notificación para el modelo y acción
-        /// especificadas.
-        /// </param>
-        public void Register<T>(CrudAction crudAction, Action<string> action) where T : Model
-        {
-            Register<T>(crudAction, (NotificationCallback)Delegate.CreateDelegate(typeof(NotificationCallback), action.Method));
-        }
-
-        /// <summary>
-        /// Registra una función a ser llamada al recibirse una notificación de
-        /// acción crud correspondiente.
-        /// </summary>
         /// <typeparam name="TModel">
         /// Modelo para el cual registrar la llamada.
         /// </typeparam>
