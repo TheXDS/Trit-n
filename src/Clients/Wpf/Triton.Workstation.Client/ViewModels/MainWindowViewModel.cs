@@ -15,7 +15,7 @@ namespace TheXDS.Triton.WpfClient.ViewModels
             AddPage(new TestViewModel());
             AddPage(new TestViewModel());
             AddPage(new TestViewModel());
-
+            
         }
 
         private static IVisualBuilder<TabHost> CreateBuilder()
@@ -32,6 +32,7 @@ namespace TheXDS.Triton.WpfClient.ViewModels
         {
         }
 
+        /// <inheritdoc/>
         protected override Page FallbackResolve(Exception ex)
         {
             return new FallbackErrorPage { Message = $"{ex.GetType().Name}{ex.Message.OrNull(": {0}")}" };

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.Services.Base;
-using TheXDS.MCART;
 
 namespace TheXDS.Triton.Services
 {
@@ -37,7 +34,7 @@ namespace TheXDS.Triton.Services
         /// </param>
         public static void Discover(this ServiceHost host, IEnumerable<IServiceSource> sources)
         {
-            foreach (var j in sources)
+            foreach (var j in sources.OrNull() ?? new[] { new ReflectionServiceSource() })
             {
                 host.AddRange(j.GetServices());
             }
@@ -59,30 +56,6 @@ namespace TheXDS.Triton.Services
             var h = new ServiceHost();
             h.Discover(sources);
             return h;
-        }
-    }
-
-    /// <summary>
-    /// Define una serie de miembros a implementar por un tipo que permita
-    /// instanciar servicios de Tritón de acuerdo a un criterio de exploración
-    /// personalizado.
-    /// </summary>
-    public interface IServiceSource
-    {
-        /// <summary>
-        /// Instancia y obtiene una colección de servicios por medio de este objeto.
-        /// </summary>
-        /// <returns>
-        /// Una colección de servicios instanciados por medio de este objeto.
-        /// </returns>
-        IEnumerable<IService> GetServices();
-    }
-
-    public class ReflectionServiceSource : IServiceSource
-    {
-        public IEnumerable<IService> GetServices()
-        {
-            return Objects.FindAllObjects<IService>();
         }
     }
 }

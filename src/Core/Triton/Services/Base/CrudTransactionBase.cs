@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Base;
@@ -128,8 +129,7 @@ namespace TheXDS.Triton.Services.Base
                 {
                     throw new InvalidCastException();
                 }
-
-                return _configuration.Epilog(action, result as Model);
+                return _configuration.Epilog(action, GetFromResult(result));
             }
             catch (InvalidCastException)
             { 
@@ -195,7 +195,7 @@ namespace TheXDS.Triton.Services.Base
                 if (_configuration.Prolog(action, entity) is { } r) return r.CastUp<ServiceResult<TModel?>>();
                 var result = await op.Throwable();
                 return _configuration.Epilog(action, result as Model ?? entity)?.CastUp<ServiceResult<TModel?>>()
-                    ?? new ServiceResult<TModel?>(result as TModel ?? entity);
+                    ?? new ServiceResult<TModel?>(result ?? entity);
             }
             catch (InvalidCastException)
             {
@@ -373,6 +373,16 @@ namespace TheXDS.Triton.Services.Base
             return TryCall(action, operation, new object?[] { entity }) ?? ServiceResult.Ok;
         }
 
+        private static Model? GetFromResult(object? result)
+        {
+            return result switch
+            {
+                Model m => m,
+                EntityEntry e => e.Entity as Model,
+                IQueryable<Model> q => q.Count() == 1 ? q.Single() : null,
+                _ => null
+            };
+        }
         private protected CrudTransactionBase(TransactionConfiguration configuration, T contextInstance)
         {
             _configuration = configuration;

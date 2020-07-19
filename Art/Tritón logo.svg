@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="Tritón logo2.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 470 128"
+   height="128mm"
+   width="470mm">
+  <title
+     id="title4613">Tritón logo</title>
+  <defs
+     id="defs2"><linearGradient
+   id="linearGradient4515"
+   inkscape:collect="always">
+  <stop
+     id="stop4511"
+     offset="0"
+     style="stop-color:#05291c;stop-opacity:1" />
+  <stop
+     id="stop4513"
+     offset="1"
+     style="stop-color:#00546f;stop-opacity:1" />
+</linearGradient>
+<linearGradient
+   gradientTransform="matrix(1.1954091,0,0,1.2468545,-46.027281,-15.571607)"
+   gradientUnits="userSpaceOnUse"
+   y2="78.445312"
+   x2="287.83932"
+   y1="78.445312"
+   x1="-105.3315"
+   id="linearGradient4517"
+   xlink:href="#linearGradient4515"
+   inkscape:collect="always" />
+
+
+      path
+         inkscape:connector-curvature=&quot;0&quot;
+         id=&quot;path4548&quot;
+         d=&quot;m -108.26211,56.628737 c -0.85172,2.815206 -1.44921,7.298893 -4.2237,8.902138 l 2.77449,-1.603466 c -0.005,8.37593 -0.33648,29.701086 -1.56721,32.727064 -1.39902,3.439737 -8.72116,6.636017 -13.51251,0.917797 -1.24372,-1.484316 -1.96593,-5.537388 1.92892,-19.99355 l 2.35631,1.522031 c -1.97599,-1.522135 -2.16737,-8.655847 -2.33283,-9.600887 -2.39859,9.150568 -7.58073,24.013325 -7.58073,27.57457 10e-6,7.992106 8.84554,10.773396 22.15726,10.773396 13.311733,0 22.157263,-2.78129 22.157263,-10.773396 1e-5,-3.561245 -5.18245,-18.424002 -7.58101,-27.57457 -0.16548,0.94504 -0.35655,8.078752 -2.33254,9.600887 l 2.35631,-1.522031 c 3.89484,14.456162 3.17264,18.509234 1.92892,19.99355 -4.79135,5.71822 -12.113503,2.52194 -13.512523,-0.917797 -1.23073,-3.025978 -1.56169,-24.351128 -1.56721,-32.727064 l 2.77449,1.603466 c -2.77448,-1.603245 -3.37197,-6.086932 -4.2237,-8.902138 z&quot;
+         style=&quot;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.15217328;stroke-opacity:1&quot; /&gt;
+    </defs>
+  <sodipodi:namedview
+     units="mm"
+     inkscape:document-rotation="0"
+     inkscape:window-maximized="1"
+     inkscape:window-y="154"
+     inkscape:window-x="-8"
+     inkscape:window-height="1027"
+     inkscape:window-width="1920"
+     guidetolerance="10000"
+     inkscape:guide-bbox="true"
+     showguides="true"
+     showgrid="false"
+     inkscape:current-layer="layer2"
+     inkscape:document-units="mm"
+     inkscape:cy="445.25447"
+     inkscape:cx="761.88891"
+     inkscape:zoom="0.5"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Tritón logo</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>César Andrés Morgan</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-nc/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-nc/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:prohibits
+           rdf:resource="http://creativecommons.org/ns#CommercialUse" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     sodipodi:insensitive="true"
+     transform="translate(171.94151,-18.238281)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Logotipo">
+    <g
+       sodipodi:insensitive="true"
+       transform="translate(-171.94151,18.238281)"
+       inkscape:label="Bg"
+       id="layer5"
+       inkscape:groupmode="layer">
+      <rect
+         y="18.238281"
+         x="-171.94151"
+         height="128"
+         width="470"
+         id="rect4509"
+         style="fill:url(#linearGradient4517);fill-opacity:1;stroke:none;stroke-width:0.32302;stroke-opacity:1"
+         transform="translate(171.94151,-18.238281)" />
+    </g>
+    <g
+       style="display:inline"
+       inkscape:label="Isotipo"
+       id="layer3"
+       inkscape:groupmode="layer">
+      <text
+         id="text4487"
+         y="90.203392"
+         x="97.121811"
+         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:50.8px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri, Light';font-variant-ligatures:normal;font-variant-caps:small-caps;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         xml:space="preserve"
+         transform="translate(1.1666666e-6)"><tspan
+           dx="0"
+           style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:50.8px;font-family:Calibri;-inkscape-font-specification:'Calibri, Light';font-variant-ligatures:normal;font-variant-caps:small-caps;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:26.4583px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           y="90.203392"
+           x="110.35096"
+           id="tspan4485"
+           sodipodi:role="line">[Tritón]</tspan></text>
+      <text
+         id="text4491"
+         y="111.04716"
+         x="96.651031"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         xml:space="preserve"
+         transform="translate(1.1666666e-6)"><tspan
+           id="tspan4493"
+           style="text-align:center;letter-spacing:12.5677px;text-anchor:middle;fill:#ffffff;stroke-width:0.264583"
+           y="111.04716"
+           x="102.93488"
+           sodipodi:role="line">MVVM Framework</tspan></text>
+    </g>
+    <g
+       sodipodi:insensitive="true"
+       style="display:inline"
+       inkscape:label="Logo"
+       id="layer4"
+       inkscape:groupmode="layer">
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.152173;stroke-opacity:1"
+         d="m -123.85233,51.24826 c -0.85172,2.81521 -1.44921,7.2989 -4.2237,8.90214 l 2.77449,-1.60347 c -0.005,8.37593 -0.33648,29.70109 -1.56721,32.72707 -1.39902,3.43974 -8.72116,6.63602 -13.51251,0.9178 -1.24372,-1.48432 -1.96593,-5.53739 1.92892,-19.99355 l 2.35631,1.52203 c -1.97599,-1.52214 -2.16737,-8.65585 -2.33283,-9.60089 -2.39859,9.15057 -7.58073,24.01333 -7.58073,27.57457 1e-5,7.99211 8.84554,10.7734 22.15726,10.7734 13.31174,0 22.15727,-2.78129 22.15727,-10.7734 1e-5,-3.56124 -5.18245,-18.424 -7.58101,-27.57457 -0.16548,0.94504 -0.35655,8.07875 -2.33254,9.60089 l 2.35631,-1.52203 c 3.89484,14.45616 3.17264,18.50923 1.92892,19.99355 -4.79135,5.71822 -12.11351,2.52194 -13.51253,-0.9178 -1.23073,-3.02598 -1.56169,-24.35113 -1.56721,-32.72707 l 2.77449,1.60347 c -2.77448,-1.60324 -3.37197,-6.08693 -4.2237,-8.90214 z"
+         id="path4548"
+         inkscape:connector-curvature="0"
+         transform="translate(1.1666666e-6)" />
+    </g>
+  </g>
+  <g
+     inkscape:label="Specs"
+     id="layer2"
+     inkscape:groupmode="layer">
+    <rect
+       y="155"
+       x="10"
+       height="10"
+       width="10"
+       id="rect30"
+       style="fill:#05291c;fill-opacity:1;stroke-width:0.396875" />
+    <text
+       id="text872"
+       y="150"
+       x="24.405724"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="150"
+         x="24.405724"
+         id="tspan870"
+         sodipodi:role="line">RGBA: #05291cff</tspan><tspan
+         id="tspan874"
+         style="stroke-width:0.264583"
+         y="163.22913"
+         x="24.405724"
+         sodipodi:role="line">HSL: 158, 78, 9</tspan><tspan
+         id="tspan876"
+         style="stroke-width:0.264583"
+         y="176.45825"
+         x="24.405724"
+         sodipodi:role="line">CMYK: 88, 0, 32, 84</tspan></text>
+    <rect
+       style="fill:#00546f;fill-opacity:1;stroke-width:0.396875"
+       id="rect30-4"
+       width="10"
+       height="10"
+       x="10"
+       y="204" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="24.405724"
+       y="198.9995"
+       id="text872-3"><tspan
+         sodipodi:role="line"
+         id="tspan870-2"
+         x="24.405724"
+         y="198.9995"
+         style="stroke-width:0.264583">RGBA: #00546fff</tspan><tspan
+         sodipodi:role="line"
+         x="24.405724"
+         y="212.22862"
+         style="stroke-width:0.264583"
+         id="tspan874-7">HSL: 195, 100, 22</tspan><tspan
+         sodipodi:role="line"
+         x="24.405724"
+         y="225.45775"
+         style="stroke-width:0.264583"
+         id="tspan876-0">CMYK: 100, 24, 0, 56</tspan></text>
+  </g>
+</svg>

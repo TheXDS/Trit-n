@@ -138,6 +138,9 @@
   <data name="TextFiles" xml:space="preserve">
     <value>Archivos de texto</value>
   </data>
+  <data name="VectorImages" xml:space="preserve">
+    <value>Imágenes de vectores</value>
+  </data>
   <data name="VideoFiles" xml:space="preserve">
     <value>Archivos de video</value>
   </data>

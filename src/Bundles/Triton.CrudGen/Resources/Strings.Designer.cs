@@ -124,6 +124,15 @@ namespace TheXDS.Triton.CrudGen.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Imágenes de vectores.
+        /// </summary>
+        internal static string VectorImages {
+            get {
+                return ResourceManager.GetString("VectorImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Archivos de video.
         /// </summary>
         internal static string VideoFiles {

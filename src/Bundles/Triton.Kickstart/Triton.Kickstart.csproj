@@ -3,6 +3,7 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\Triton\Triton.csproj" />
   </ItemGroup>
+
 </Project>
