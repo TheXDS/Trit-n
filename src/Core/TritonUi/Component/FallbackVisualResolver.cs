@@ -42,13 +42,16 @@ namespace TheXDS.Triton.Ui.Component
             }
             catch (Exception ex)
             {
-                return FallbackResolve(ex) ?? throw new InvalidReturnValueException((Func<Exception, TVisual>)FallbackResolve);
+                return FallbackResolve(viewModel, ex) ?? throw new InvalidReturnValueException((Func<PageViewModel, Exception, TVisual>)FallbackResolve);
             }
         }
 
         /// <summary>
         /// Inicia la resolución del contenido visual en caso de un error.
         /// </summary>
+        /// <param name="viewModel">
+        /// <see cref="PageViewModel"/> que no ha podido ser resuelto.
+        /// </param>
         /// <param name="ex">
         /// Excepción producida durante la resolución normal del contenedor
         /// visual.
@@ -56,7 +59,7 @@ namespace TheXDS.Triton.Ui.Component
         /// <returns>
         /// Un contenido visual resuelto a partir de la excepción producida.
         /// </returns>
-        protected abstract TVisual FallbackResolve(Exception ex);
+        protected abstract TVisual FallbackResolve(PageViewModel viewModel, Exception ex);
     }
 
     /// <summary>
@@ -86,7 +89,7 @@ namespace TheXDS.Triton.Ui.Component
         }
 
         /// <inheritdoc/>
-        protected override TVisual FallbackResolve(Exception ex)
+        protected override TVisual FallbackResolve(PageViewModel viewModel, Exception ex)
         {
             return new TFallback();
         }

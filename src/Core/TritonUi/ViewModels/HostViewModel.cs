@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TheXDS.MCART.Component;
+using TheXDS.MCART.Events;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Triton.Ui.Component;
@@ -13,6 +15,19 @@ namespace TheXDS.Triton.Ui.ViewModels
     /// </summary>
     public class HostViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Se produce cuando se ha agregado una página a la colección de
+        /// páginas de este host.
+        /// </summary>
+        public event EventHandler<ValueEventArgs<PageViewModel>> PageAdded;
+        
+        /// <summary>
+        /// Se produce cuando se ha cerrado una página en la colección de
+        /// páginas de este host.
+        /// </summary>
+        public event EventHandler<ValueEventArgs<PageViewModel>> PageClosed;
+        
+        
         private protected readonly ObservableCollection<PageViewModel> _pages = new ObservableCollection<PageViewModel>();
 
         /// <summary>
@@ -29,6 +44,7 @@ namespace TheXDS.Triton.Ui.ViewModels
         public virtual void AddPage(PageViewModel page)
         {
             page.PushInto(_pages).Host = this;
+            PageAdded?.Invoke(this,page);
         }
 
         /// <summary>
@@ -41,6 +57,7 @@ namespace TheXDS.Triton.Ui.ViewModels
         {
             page.Host = null;
             _pages.Remove(page);
+            PageClosed?.Invoke(this,page);
         }
     }
 

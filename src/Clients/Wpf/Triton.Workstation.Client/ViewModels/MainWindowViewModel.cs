@@ -33,7 +33,7 @@ namespace TheXDS.Triton.WpfClient.ViewModels
         }
 
         /// <inheritdoc/>
-        protected override Page FallbackResolve(Exception ex)
+        protected override Page FallbackResolve(PageViewModel viewModel, Exception ex)
         {
             return new FallbackErrorPage { Message = $"{ex.GetType().Name}{ex.Message.OrNull(": {0}")}" };
         }
