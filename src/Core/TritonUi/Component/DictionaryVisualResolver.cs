@@ -15,7 +15,7 @@ namespace TheXDS.Triton.Ui.Component
     /// <typeparam name="T">
     /// Tipo de contenedor visual a implementar.
     /// </typeparam>
-    public class DictionaryVisualResolver<T> : IVisualResolver<T> where T : notnull, new()
+    public class DictionaryVisualResolver<T> : IVisualResolver<T> where T : notnull
     {
         private readonly Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 

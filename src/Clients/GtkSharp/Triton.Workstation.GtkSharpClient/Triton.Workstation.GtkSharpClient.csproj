@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="GtkSharp" Version="3.22.25.56" />
+    <PackageReference Include="TheXDS.MCART.Gtk" Version="0.13.0-a008" />
   </ItemGroup>
 
 </Project>

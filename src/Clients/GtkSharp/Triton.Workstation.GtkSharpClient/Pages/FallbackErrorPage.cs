@@ -9,21 +9,17 @@ using UI = Gtk.Builder.ObjectAttribute;
 
 namespace TheXDS.Triton.Workstation.GtkSharpClient.Pages
 {
-    public class FallbackErrorPage : Bin
+    public class FallbackErrorPage : GtkTritonPage
     {
         [UI] private Label _lblTitle = null!;
         [UI] private Label _lblMessage = null!;
         
-        public FallbackErrorPage(string title, string message) : this(new Builder($"{nameof(FallbackErrorPage)}.glade"))
+        public FallbackErrorPage(string? title, string? message) : base(nameof(FallbackErrorPage))
         {
-            _lblTitle.Text = title;
-            _lblMessage.Text = title;
+            InitializeComponent();
+            _lblTitle.Text = title ?? string.Empty;
+            _lblMessage.Text = title ?? string.Empty;
             ShowAll();
-        }
-        
-        private FallbackErrorPage(Builder builder) : base(builder.GetObject(nameof(FallbackErrorPage)).Handle)
-        {
-            builder.Autoconnect(this);
         }
     }
 }

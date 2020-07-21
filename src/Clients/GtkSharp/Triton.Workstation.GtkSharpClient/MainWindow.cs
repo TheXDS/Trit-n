@@ -13,6 +13,8 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient
     internal class MainWindow : Window
     {
         private HostViewModel _viewModel = new HostViewModel();
+        private readonly Dictionary<PageViewModel, int> _openPages = new Dictionary<PageViewModel, int>();
+        private readonly IVisualResolver<GtkTritonPage> _resolver;
 
         [UI] private Notebook _tabRoot = null!;
 
@@ -21,17 +23,19 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient
         private MainWindow(Builder builder) : base(builder.GetObject(nameof(MainWindow)).Handle)
         {
             builder.Autoconnect(this);
+            var r = new DictionaryVisualResolver<GtkTritonPage>();
+            _resolver = new TestFvr(r);
             DeleteEvent += (_, e) => Application.Quit();
             
             _viewModel.PageAdded += AddVisualPage;
             _viewModel.PageClosed += CloseVisualPage;
-
-            var r = new DictionaryVisualResolver<Bin>();
+            
             r.RegisterVisual<TestViewModel, TestPage>();
             
             _viewModel.AddPage(new TestViewModel());
             _viewModel.AddPage(new TestViewModel());
             _viewModel.AddPage(new TestViewModel());
+            
         }
 
         private void CloseVisualPage(object? sender, ValueEventArgs<PageViewModel> e)
@@ -40,24 +44,23 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient
             _openPages.Remove(e.Value);
         }
 
-        private Dictionary<PageViewModel,int> _openPages = new Dictionary<PageViewModel, int>();
-        
+
         private void AddVisualPage(object? sender, ValueEventArgs<PageViewModel> e)
         {
-            var s = new Label($"Placeholder para el contenido de {e.Value.Title}. Color: {e.Value.AccentColor}"); 
+            var s = _resolver.ResolveVisual(e.Value);
             _openPages.Add(e.Value, _tabRoot.Page = _tabRoot.AppendPage(s, new Label(e.Value.Title)));
             s.Show();
         }
     }
     
-    public class TestFvr : FallbackVisualResolver<Widget>
+    public class TestFvr : FallbackVisualResolver<GtkTritonPage>
     {
-        public TestFvr(IVisualResolver<Widget> resolver) : base(resolver)
+        public TestFvr(IVisualResolver<GtkTritonPage> resolver) : base(resolver)
         {
         }
 
         /// <inheritdoc/>
-        protected override Widget FallbackResolve(PageViewModel viewModel, Exception ex)
+        protected override GtkTritonPage FallbackResolve(PageViewModel viewModel, Exception ex)
         {
             return new FallbackErrorPage("Error al resolver la página solicitada",$"{ex.GetType().Name}{ex.Message.OrNull(": {0}")}");
         }
