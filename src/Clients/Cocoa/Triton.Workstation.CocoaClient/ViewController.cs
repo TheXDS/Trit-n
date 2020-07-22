@@ -30,5 +30,10 @@ namespace Triton.Workstation.CocoaClient
                 // Update the view, if already loaded.
             }
         }
+
+        partial void btnClick(NSObject sender)
+        {
+            lblText.StringValue = DateTime.Now.ToLongDateString();
+        }
     }
 }
