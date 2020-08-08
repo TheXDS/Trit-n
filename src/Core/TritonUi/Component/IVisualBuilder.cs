@@ -1,5 +1,4 @@
-﻿using TheXDS.MCART.Component;
-using TheXDS.Triton.Ui.ViewModels;
+﻿using TheXDS.Triton.Ui.ViewModels;
 
 namespace TheXDS.Triton.Ui.Component
 {
@@ -29,7 +28,7 @@ namespace TheXDS.Triton.Ui.Component
     /// construir hosts visuales fuertemente tipeados para un
     /// <see cref="PageViewModel"/>.
     /// </summary>
-    public interface IVisualBuilder<T> : IVisualBuilder where T : notnull
+    public interface IVisualBuilder<out T> : IVisualBuilder where T : notnull
     {
         /// <summary>
         /// Construye un host visual para el <see cref="PageViewModel"/>
@@ -44,8 +43,7 @@ namespace TheXDS.Triton.Ui.Component
         /// especificado.
         /// </returns>
         new T Build(PageViewModel viewModel);
-
-        /// <inheritdoc/>
+        
         object IVisualBuilder.Build(PageViewModel viewModel) => Build(viewModel);
     }
 }

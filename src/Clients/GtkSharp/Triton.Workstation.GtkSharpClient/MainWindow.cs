@@ -52,11 +52,16 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient
             s.Show();
         }
     }
-    
+
     public class TestFvr : FallbackVisualResolver<GtkTritonPage>
     {
-        public TestFvr(IVisualResolver<GtkTritonPage> resolver) : base(resolver)
+        public TestFvr(IVisualResolver<GtkTritonPage> resolver) : base(resolver) { }
+
+        public override GtkTritonPage ResolveVisual(PageViewModel viewModel)
         {
+            var retVal = base.ResolveVisual(viewModel);
+            retVal.SetViewModel(viewModel);
+            return retVal;
         }
 
         /// <inheritdoc/>

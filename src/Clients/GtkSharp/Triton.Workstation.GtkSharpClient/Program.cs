@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Gtk;
 
 namespace TheXDS.Triton.Workstation.GtkSharpClient

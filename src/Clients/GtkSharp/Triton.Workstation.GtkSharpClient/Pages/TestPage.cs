@@ -4,7 +4,6 @@ using Gtk;
 using TheXDS.MCART.Events;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Ui.Component;
-using TheXDS.Triton.Ui.ViewModels;
 using UI = Gtk.Builder.ObjectAttribute;
 
 namespace TheXDS.Triton.Workstation.GtkSharpClient.Pages
@@ -26,32 +25,7 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient.Pages
         object? DataContext { get; set; }
     }
 
-    public abstract class GtkTritonPage : Bin, IDataContext
-    {
-        protected Builder Builder { get; }
-        public object? DataContext { get; set; }
-
-        public PageViewModel ViewModel { get; private set; }
-        
-        private GtkTritonPage(Builder builder, string id)  : base(builder.GetObject(id).Handle)
-        {
-            Builder = builder;
-        }
-
-        protected GtkTritonPage(string id) : this(new Builder($"{id}.glade"), id) { }
-
-        protected void InitializeComponent()
-        {
-             Builder.Autoconnect(this);
-        }
-
-        internal void SetViewModel(PageViewModel vm)
-        {
-            ViewModel = vm;
-        }
-    }
-    
-    public class TestPage : GtkTritonPage
+    public class TestPage : GtkTritonPage<TestViewModel>
     {
         [UI] private Label lblPageTitle = null!;
         [UI] private Entry txtName = null!;
@@ -65,7 +39,16 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient.Pages
         public TestPage() : base(nameof(TestPage))
         {
             InitializeComponent();
-            btnQuit.Bind(ViewModel.CloseCommand);
+
+            //lblPageTitle.Text = ViewModel?.Title;
+            
+
+            
+
+
+            btnQuit.Bind(() => ViewModel?.CloseCommand);
+            btnAdd.Bind(()=> ViewModel?.SumCommand);
+
         }
     }
 }

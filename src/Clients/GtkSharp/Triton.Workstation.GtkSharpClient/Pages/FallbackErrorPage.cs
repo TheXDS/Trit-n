@@ -18,7 +18,7 @@ namespace TheXDS.Triton.Workstation.GtkSharpClient.Pages
         {
             InitializeComponent();
             _lblTitle.Text = title ?? string.Empty;
-            _lblMessage.Text = title ?? string.Empty;
+            _lblMessage.Text = message ?? string.Empty;
             ShowAll();
         }
     }

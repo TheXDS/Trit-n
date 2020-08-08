@@ -15,6 +15,8 @@ namespace TheXDS.Triton.Ui.ViewModels
     /// </summary>
     public class HostViewModel : ViewModelBase
     {
+        private protected readonly ObservableCollection<PageViewModel> _pages = new ObservableCollection<PageViewModel>();
+        
         /// <summary>
         /// Se produce cuando se ha agregado una página a la colección de
         /// páginas de este host.
@@ -26,9 +28,6 @@ namespace TheXDS.Triton.Ui.ViewModels
         /// páginas de este host.
         /// </summary>
         public event EventHandler<ValueEventArgs<PageViewModel>> PageClosed;
-        
-        
-        private protected readonly ObservableCollection<PageViewModel> _pages = new ObservableCollection<PageViewModel>();
 
         /// <summary>
         /// Enumera las páginas abiertas activas de esta instancia.

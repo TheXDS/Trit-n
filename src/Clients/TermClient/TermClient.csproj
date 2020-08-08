@@ -4,6 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.13.0-a008" />
+    <PackageReference Include="TheXDS.MCART" Version="0.13.0-a009" />
   </ItemGroup>
 </Project>
