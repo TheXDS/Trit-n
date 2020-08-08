@@ -72,17 +72,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lights", "Clients\Wpf\Theme
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{19F4834E-2A5C-49B3-AE5F-16D390EC1B31}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Workstation.Client", "Clients\Wpf\Triton.Workstation.Client\Triton.Workstation.Client.csproj", "{98B2AA85-B823-4061-A720-615EAECC7EC9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelayBaron.Client", "Extras\RelayBaron\RelayBaron.Client\RelayBaron.Client.csproj", "{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelayBaron.Tests", "Extras\RelayBaron\RelayBaron.Tests\RelayBaron.Tests.csproj", "{F79BC780-5597-4EFC-80B7-E7A13D57BC8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Kickstart", "Bundles\Triton.Kickstart\Triton.Kickstart.csproj", "{217F26B5-8C4E-403C-9143-0FDA15D5B331}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Kickstart", "Bundles\Triton.Kickstart\Triton.Kickstart.csproj", "{217F26B5-8C4E-403C-9143-0FDA15D5B331}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GtkSharp", "GtkSharp", "{5F9909C7-B00C-42B7-B53D-644DC8F64FF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Workstation.GtkSharpClient", "Clients\GtkSharp\Triton.Workstation.GtkSharpClient\Triton.Workstation.GtkSharpClient.csproj", "{47E2D5EF-FA40-4D51-A86F-4254C5F3F2DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Workstation.GtkSharpClient", "Clients\GtkSharp\Triton.Workstation.GtkSharpClient\Triton.Workstation.GtkSharpClient.csproj", "{47E2D5EF-FA40-4D51-A86F-4254C5F3F2DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Workstation.WpfClient", "Clients\Wpf\Triton.Workstation.WpfClient\Triton.Workstation.WpfClient.csproj", "{37442BEE-7AAB-46C9-AEBD-C928F519F84C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -255,18 +255,6 @@ Global
 		{786F7E5D-49CC-48BC-859D-8C4D7C411B9A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{786F7E5D-49CC-48BC-859D-8C4D7C411B9A}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
 		{786F7E5D-49CC-48BC-859D-8C4D7C411B9A}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Build-Release|Any CPU.ActiveCfg = Build-Release|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Build-Release|Any CPU.Build.0 = Build-Release|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
-		{98B2AA85-B823-4061-A720-615EAECC7EC9}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
 		{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5}.Build-Release|Any CPU.ActiveCfg = Build-Release|Any CPU
 		{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5}.Build-Release|Any CPU.Build.0 = Build-Release|Any CPU
 		{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -315,6 +303,18 @@ Global
 		{47E2D5EF-FA40-4D51-A86F-4254C5F3F2DD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{47E2D5EF-FA40-4D51-A86F-4254C5F3F2DD}.Release-Windows|Any CPU.ActiveCfg = Debug|Any CPU
 		{47E2D5EF-FA40-4D51-A86F-4254C5F3F2DD}.Release-Windows|Any CPU.Build.0 = Debug|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Build-Release|Any CPU.ActiveCfg = Build-Release|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Build-Release|Any CPU.Build.0 = Build-Release|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -339,12 +339,12 @@ Global
 		{F7D39A51-6793-455A-85BB-50AEA701DB3F} = {D7131B96-202D-46EE-A490-C01C7A7A1B12}
 		{786F7E5D-49CC-48BC-859D-8C4D7C411B9A} = {19F4834E-2A5C-49B3-AE5F-16D390EC1B31}
 		{19F4834E-2A5C-49B3-AE5F-16D390EC1B31} = {F7D39A51-6793-455A-85BB-50AEA701DB3F}
-		{98B2AA85-B823-4061-A720-615EAECC7EC9} = {F7D39A51-6793-455A-85BB-50AEA701DB3F}
 		{A2DDF46D-6552-4EA0-8BC8-B40D54B6CAC5} = {221F9EF5-4751-46C6-8448-58C01B8A6C36}
 		{F79BC780-5597-4EFC-80B7-E7A13D57BC8B} = {221F9EF5-4751-46C6-8448-58C01B8A6C36}
 		{217F26B5-8C4E-403C-9143-0FDA15D5B331} = {AF055A8A-93F0-4BBD-8025-47B7108AFAB2}
 		{5F9909C7-B00C-42B7-B53D-644DC8F64FF7} = {D7131B96-202D-46EE-A490-C01C7A7A1B12}
 		{47E2D5EF-FA40-4D51-A86F-4254C5F3F2DD} = {5F9909C7-B00C-42B7-B53D-644DC8F64FF7}
+		{37442BEE-7AAB-46C9-AEBD-C928F519F84C} = {F7D39A51-6793-455A-85BB-50AEA701DB3F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A45987E-24AB-4E9E-9C1F-4C8D9B1F956A}

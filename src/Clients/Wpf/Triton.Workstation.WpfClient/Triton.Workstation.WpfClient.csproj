@@ -6,7 +6,7 @@
     <AssemblyName>TritonWorkstation</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a007" />
+    <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a009" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Component\" />

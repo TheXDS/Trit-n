@@ -8,6 +8,7 @@ using TheXDS.MCART.ViewModel;
 using System.Linq.Expressions;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.CrudGen.ViewModels;
+using TheXDS.Triton.Ui.Component;
 
 namespace TheXDS.Triton.CrudGen
 {
