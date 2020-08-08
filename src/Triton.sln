@@ -86,6 +86,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terminal", "Terminal", "{94
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Workstation.TermClient", "Clients\Terminal\Triton.Workstation.TermClient\Triton.Workstation.TermClient.csproj", "{C54151FE-1A0F-452F-B03A-283C454C1329}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.CrudGen.Wpf", "Clients\Wpf\Triton.CrudGen.Wpf\Triton.CrudGen.Wpf.csproj", "{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Build-Release|Any CPU = Build-Release|Any CPU
@@ -317,6 +319,18 @@ Global
 		{C54151FE-1A0F-452F-B03A-283C454C1329}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C54151FE-1A0F-452F-B03A-283C454C1329}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
 		{C54151FE-1A0F-452F-B03A-283C454C1329}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Build-Release|Any CPU.ActiveCfg = Build-Release|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Build-Release|Any CPU.Build.0 = Build-Release|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -348,6 +362,7 @@ Global
 		{37442BEE-7AAB-46C9-AEBD-C928F519F84C} = {F7D39A51-6793-455A-85BB-50AEA701DB3F}
 		{94E350AA-583D-4899-B01A-C716080C52F6} = {D7131B96-202D-46EE-A490-C01C7A7A1B12}
 		{C54151FE-1A0F-452F-B03A-283C454C1329} = {94E350AA-583D-4899-B01A-C716080C52F6}
+		{47D83DD1-465E-4DAC-9269-C8C8C62AEEC9} = {F7D39A51-6793-455A-85BB-50AEA701DB3F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A45987E-24AB-4E9E-9C1F-4C8D9B1F956A}

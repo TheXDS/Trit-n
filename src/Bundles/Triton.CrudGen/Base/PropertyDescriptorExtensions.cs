@@ -214,11 +214,6 @@ namespace TheXDS.Triton.CrudGen.Base
             return descriptor.SetCustomConfigurationValue(GetGuid(), source);
         }
 
-        public static IPropertyDescriptor<TModel, TEntity, TViewModel> Link<TModel, TEntity, TViewModel>(this IPropertyDescriptor<TModel, TEntity, TViewModel> descriptor) where TModel : Model where TViewModel : ViewModel<TModel> where TEntity : Model
-        {
-            //return descriptor.SetCustomConfigurationValue(GetGuid(), true);
-        }
-
 
 
 

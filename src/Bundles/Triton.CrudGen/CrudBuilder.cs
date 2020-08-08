@@ -21,12 +21,42 @@ namespace TheXDS.Triton.CrudGen
     /// Contexto en el cual se comprobará la posibilidad de ejecutar una acción
     /// Crud.
     /// </param>
+    /// <returns>
+    /// <see langword="true"/> si la acción Crud puede ejecutarse en el estado
+    /// actual, <see langword="false"/> en caso contrario.
+    /// </returns>
     public delegate bool EntityCrudActionCheck(CrudViewModel vmContext);
+
+    /// <summary>
+    /// Define un delegado para un método que determina si la acción de Crud
+    /// solicitada se puede realizar basada en la información de estado
+    /// provista por el <typeparamref name="TModel"/> activo.
+    /// </summary>
+    /// <typeparam name="TModel">
+    /// Tipo de modelo que está siendo editado en un
+    /// <see cref="CrudViewModel"/> activo.
+    /// </typeparam>
+    /// <param name="entity">
+    /// Entidad que está siendo editada en el <see cref="CrudViewModel"/>
+    /// activo.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> si la acción Crud puede ejecutarse en el estado
+    /// actual, <see langword="false"/> en caso contrario.
+    /// </returns>
     public delegate bool EntityCrudActionCheck<TModel>(TModel entity) where TModel : Model;
     
-    
+    /// <summary>
+    /// Define una serie de miembros a implementar por un tipo que permita
+    /// construir un <see cref="PageViewModel"/> utilizando un conjunto de
+    /// propiedades configuradas.
+    /// </summary>
     public interface ICrudBuilder
     {
+        /// <summary>
+        /// Construye un <see cref="PageViewModel"/>.
+        /// </summary>
+        /// <returns></returns>
         PageViewModel Build();
     }
     
