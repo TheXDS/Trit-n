@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Examples.BookstoreExample.Models
 {
-    public class Book : Model<string>, INameable
+    public class Book : Model<string>
     {
         public string Name { get; set; }
         public ICollection<BookAuthor> Authors { get; set; } = new List<BookAuthor>();

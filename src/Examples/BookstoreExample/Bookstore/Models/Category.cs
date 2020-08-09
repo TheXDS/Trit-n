@@ -1,9 +1,8 @@
-﻿using TheXDS.MCART.Types.Base;
-using TheXDS.Triton.Models.Base;
+﻿using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Examples.BookstoreExample.Models
 {
-    public class Category : Model<int>, INameable
+    public class Category : Model<int>
     {
         public string Name { get; set; }
     }
