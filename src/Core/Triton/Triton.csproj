@@ -5,6 +5,7 @@
   <ItemGroup>    
     <PackageReference Include="TheXDS.MCART" Version="0.13.0-a009" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
+    <ProjectReference Include="..\Triton.Models\Triton.Models.csproj" />
     <Compile Update="Resources\Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
