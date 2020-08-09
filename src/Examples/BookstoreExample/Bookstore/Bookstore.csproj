@@ -2,6 +2,5 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <TritonComponent>models</TritonComponent>
-  
   </PropertyGroup>
 </Project>
