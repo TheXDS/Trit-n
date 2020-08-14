@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TheXDS.MCART" Version="0.13.0-a010" />
-    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.13.0-a009" />
+    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="0.13.0-a010" />
     <PackageReference Include="TheXDS.MCART.UI" Version="0.13.0-a010" />
   </ItemGroup>
   <ItemGroup>
