@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GtkSharp" Version="3.22.25.125" />
+    <PackageReference Include="GtkSharp" Version="3.22.25.128" />
     <PackageReference Include="TheXDS.MCART.Gtk" Version="0.13.0-a009" />
   </ItemGroup>
 
