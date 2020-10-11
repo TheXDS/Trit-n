@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -14,7 +15,7 @@ namespace TheXDS.Triton.Services.Base
     /// Define una serie de miembros a implementar por un tipo que permita
     /// realizar operaciones de lectura sobre una base de datos.
     /// </summary>
-    public interface ICrudReadTransaction : IDisposableEx
+    public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     {
         /// <summary>
         /// Obtiene una entidad cuyo campo llave sea igual al valor
@@ -89,9 +90,7 @@ namespace TheXDS.Triton.Services.Base
         /// </exception>
         ServiceResult<TModel?> Read<TModel>(object key) where TModel : Model
         {
-            var t = key?.GetType() ?? throw new ArgumentNullException(nameof(key));            
-            if (!ChkIdType<TModel>(t)) return FailureReason.BadQuery;
-            return (ServiceResult<TModel?>)GetReadMethod(typeof(TModel), t).Invoke(this, new[] { key })!;
+            return DoReadAsync<TModel, ServiceResult<TModel?>>(key, p => p);
         }
 
         /// <summary>
@@ -123,20 +122,48 @@ namespace TheXDS.Triton.Services.Base
         /// </returns>
         Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>;
 
+        /// <summary>
+        /// Obtiene una entidad cuyo campo llave sea igual al valor
+        /// especificado.
+        /// </summary>
+        /// <typeparam name="TModel">
+        /// Modelo de la entidad a obtener.
+        /// </typeparam>
+        /// <param name="key">
+        /// Llave de la entidad a obtener.
+        /// </param>
+        /// <returns>
+        /// Una tarea que, al finalizar, contiene el resultado reportado de la
+        /// operación ejecutada por el servicio subyacente, incluyendo como
+        /// valor de resultado a la entidad obtenida en la operación de
+        /// lectura. Si no existe una entidad con el campo llave especificado,
+        /// el valor de resultado será <see langword="null"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si <paramref name="key"/> es <see langword="null"/>.
+        /// </exception>
+        Task<ServiceResult<TModel?>> ReadAsync<TModel>(object key) where TModel : Model
+        {
+            return DoReadAsync<TModel, Task<ServiceResult<TModel?>>>(key, p => Task.FromResult(p));
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool ChkIdType<T>(Type idType)
         {
             return typeof(Model<>).MakeGenericType(idType).IsAssignableFrom(typeof(T));
         }
 
-        private MethodInfo GetReadMethod(Type tModel, Type tKey)
+        [DebuggerNonUserCode]
+        private TResult DoReadAsync<TModel, TResult>(object key, Func<ServiceResult<TModel?>, TResult> failureTransform, [CallerMemberName]string name = null!) where TModel : Model
         {
-            foreach (var j in GetType().GetMethods().Where(p => p.Name == "Read"))
+            var t = key?.GetType() ?? throw new ArgumentNullException(nameof(key));
+            if (!ChkIdType<TModel>(t)) return failureTransform.Invoke(new ServiceResult<TModel?>(FailureReason.BadQuery));
+            foreach (var j in GetType().GetMethods().Where(p => p.Name == name))
             {
                 var args = j.GetGenericArguments();
                 var para = j.GetParameters();
                 if (para.Length == 1 && !para[0].IsOut && args.Length == 2 && args[0].BaseType!.Implements(typeof(Model<>)) && !args[1].IsByRef)
-                    return j.MakeGenericMethod(tModel, tKey);
+                    return (TResult)j.MakeGenericMethod(typeof(TModel), t).Invoke(this, new[] { key })!;
             }
             throw new TamperException();
         }

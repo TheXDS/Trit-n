@@ -18,7 +18,7 @@ namespace TheXDS.Triton.Services.Base
     /// <typeparam name="T">
     /// Tipo de contexto de datos a utilizar dentro de la transacción.
     /// </typeparam>
-    public abstract class CrudTransactionBase<T> : Disposable where T : DbContext, new()
+    public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbContext, new()
     {
         /// <summary>
         /// Obtiene la configuración disponible para esta transacción.
@@ -31,13 +31,16 @@ namespace TheXDS.Triton.Services.Base
         /// </summary>
         protected readonly T _context;
 
-        /// <summary>
-        /// Elimina el estado administrado y libera los recursos no 
-        /// administrados utilizados por esta instancia.
-        /// </summary>
+        /// <inheritdoc/>
         protected override void OnDispose()
         {
             _context.Dispose();
+        }
+
+        /// <inheritdoc/>
+        protected override async ValueTask OnDisposeAsync()
+        {
+            await _context.DisposeAsync();
         }
 
         /// <summary>
@@ -383,6 +386,7 @@ namespace TheXDS.Triton.Services.Base
                 _ => null
             };
         }
+
         private protected CrudTransactionBase(TransactionConfiguration configuration, T contextInstance)
         {
             _configuration = configuration;

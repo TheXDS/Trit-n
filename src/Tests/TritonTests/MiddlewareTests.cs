@@ -46,7 +46,7 @@ namespace TheXDS.Triton.Tests
             
             Assert.False(prologDidRun);
             Assert.False(epilogDidRun);
-            j.Create(new Post("Test", "Middleware test!", u));
+            Assert.True(j.Create(new Post("Test", "Middleware test!", u)).Success);
             Assert.True(prologDidRun);
             Assert.True(epilogDidRun);
 

@@ -2,9 +2,9 @@
 
 using NUnit.Framework;
 using System.Linq;
+using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models;
-using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Triton.Tests
@@ -25,6 +25,23 @@ namespace TheXDS.Triton.Tests
                 Assert.IsInstanceOf<ICrudWriteTransaction>(t);
             }
             using (var t = _srv.GetReadWriteTransaction())
+            {
+                Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
+            }
+        }
+
+        [Test]
+        public async Task GetAsyncTransactionTest()
+        {
+            await using (var t = _srv.GetReadTransaction())
+            {
+                Assert.IsInstanceOf<ICrudReadTransaction>(t);
+            }
+            await using (var t = _srv.GetWriteTransaction())
+            {
+                Assert.IsInstanceOf<ICrudWriteTransaction>(t);
+            }
+            await using (var t = _srv.GetReadWriteTransaction())
             {
                 Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
             }
@@ -55,15 +72,19 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
-        public void CreateAndVerifyTransactionTest()
+        public async Task CreateAndVerifyTransactionTest()
         {
             using (var t = _srv.GetWriteTransaction())
             {
                 var createResult = t.Create(new User("user4", "User 4"));
+
                 Assert.IsTrue(createResult.Success);
                 Assert.IsNull(createResult.Reason);
             }
-            using (var t = _srv.GetReadTransaction())
+
+            // Realizar prueba post-disposal para comprobar correctamente el guardado.
+
+            await using (var t = _srv.GetReadTransaction())
             {
                 var readResult = t.Read<User, string>("user4", out var u);
 
@@ -75,9 +96,9 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
-        public void ReadTransactionTest()
+        public void SimpleReadTransactionTest()
         {
-            using var t = _srv.GetReadWriteTransaction();
+            using var t = _srv.GetReadTransaction();
 
             Post? post = t.Read<Post, long>(1L);
             Assert.IsInstanceOf<Post>(post);
@@ -89,13 +110,17 @@ namespace TheXDS.Triton.Tests
         }
 
         [Test]
-        public void FailToReadTest()
+        public async Task FullyAsyncReadTransactionTest()
         {
-            using var t = _srv.GetReadWriteTransaction();
-            var post = t.Read<Post, long>(999L);
-            Assert.IsFalse(post.Success);
-            Assert.AreEqual(FailureReason.NotFound, post.Reason);
-            Assert.IsNull(post.ReturnValue);
+            await using var t = _srv.GetReadTransaction();
+
+            Post? post = await t.ReadAsync<Post, long>(1L);
+            Assert.IsInstanceOf<Post>(post);
+            Assert.AreEqual("Test", post!.Title);
+
+            Comment? comment = await t.ReadAsync<Comment>(1L);
+            Assert.IsInstanceOf<Comment>(comment);
+            Assert.AreEqual("It works!", comment!.Content);
         }
 
         [Test]

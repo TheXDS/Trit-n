@@ -8,7 +8,7 @@ namespace TheXDS.Triton.Services.Base
     /// realizar operaciones de lectura y de escritura basadas en
     /// transacción sobre una base de datos.
     /// </summary>
-    public interface ICrudReadWriteTransaction : ICrudReadTransaction, ICrudWriteTransaction, IDisposableEx
+    public interface ICrudReadWriteTransaction : ICrudReadTransaction, ICrudWriteTransaction
     {
     }
 

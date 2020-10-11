@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.Networking.Legacy" Version="0.13.0-a010" />
+    <PackageReference Include="TheXDS.MCART.Networking.Legacy" Version="0.13.0-a011" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)Bundles\Triton.CrudNotify\Triton.CrudNotify.csproj" />
