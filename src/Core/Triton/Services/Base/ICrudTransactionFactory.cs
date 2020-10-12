@@ -21,7 +21,7 @@ namespace TheXDS.Triton.Services.Base
         /// <returns>
         /// Una transacción desechable para lectura/escritura de datos.
         /// </returns>
-        ICrudReadWriteTransaction<T> ManufactureReadWriteTransaction<T>(TransactionConfiguration configuration) where T : DbContext, new()
+        ICrudReadWriteTransaction ManufactureReadWriteTransaction<T>(TransactionConfiguration configuration) where T : DbContext, new()
         {
             return new CrudTransaction<T>(configuration);
         }
