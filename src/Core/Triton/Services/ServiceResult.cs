@@ -16,14 +16,17 @@ namespace TheXDS.Triton.Services
             return reason switch
             {
                 FailureReason.Unknown => St.FailureUnknown,
+                FailureReason.Tamper => St.Tamper,
                 FailureReason.Forbidden => St.FailureForbidden,
                 FailureReason.ServiceFailure => St.ServiceFailure,
                 FailureReason.NetworkFailure => St.NetworkFailure,
                 FailureReason.DbFailure => St.DbFailure,
                 FailureReason.ValidationError => St.ValidationError,
                 FailureReason.ConcurrencyFailure => St.ConcurrencyFailure,
+                FailureReason.NotFound => St.EntityNotFound,
                 FailureReason.BadQuery => St.BadQuery,
-                FailureReason f => f.NameOf() ?? f.ToString("X").PadLeft(8, '0')
+                FailureReason.QueryOverLimit => St.QueryOverLimit,
+                FailureReason f => f.NameOf() ?? f.ToString("X").PadLeft(8, '0'),
             };
         }
 

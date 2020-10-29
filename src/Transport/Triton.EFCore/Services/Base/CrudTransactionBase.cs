@@ -118,7 +118,7 @@ namespace TheXDS.Triton.Services.Base
             result = default!;
             try
             {
-                if (_configuration.Prolog(action, args?[0] as Model) is { } r) return r;
+                if (_configuration.RunProlog(action, args?[0] as Model) is { } r) return r;
 
                 if (op.Method.ReturnType == typeof(void))
                 {
@@ -132,7 +132,7 @@ namespace TheXDS.Triton.Services.Base
                 {
                     throw new InvalidCastException();
                 }
-                return _configuration.Epilog(action, GetFromResult(result));
+                return _configuration.RunEpilog(action, GetFromResult(result));
             }
             catch (InvalidCastException)
             { 
@@ -195,9 +195,9 @@ namespace TheXDS.Triton.Services.Base
         {
             try
             {
-                if (_configuration.Prolog(action, entity) is { } r) return r.CastUp<ServiceResult<TModel?>>();
+                if (_configuration.RunProlog(action, entity) is { } r) return r.CastUp<ServiceResult<TModel?>>();
                 var result = await op.Throwable();
-                return _configuration.Epilog(action, result as Model ?? entity)?.CastUp<ServiceResult<TModel?>>()
+                return _configuration.RunEpilog(action, result as Model ?? entity)?.CastUp<ServiceResult<TModel?>>()
                     ?? new ServiceResult<TModel?>(result ?? entity);
             }
             catch (InvalidCastException)

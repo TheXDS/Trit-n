@@ -6,7 +6,7 @@ namespace TheXDS.Triton.Services.Base
     /// Define una serie de miembros a implementar por un tipo que permita
     /// fabricar transacciones de lectura y escritura.
     /// </summary>
-    public interface ICrudTransactionFactory
+    public interface ICrudTransactionFactory<T> where T : TransactionConfiguration
     {
         /// <summary>
         /// Fabrica una transacción de lectura/escritura.

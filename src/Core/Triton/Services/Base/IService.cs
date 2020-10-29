@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace TheXDS.Triton.Services.Base
+﻿namespace TheXDS.Triton.Services.Base
 {
     /// <summary>
     /// Define una serie de miembros a implementar por un servicio que
     /// provea de funcionalidad extendida para generar transacciones de
     /// lectura/escritura.
     /// </summary>
-    public interface IService: IExposeConfiguration<IServiceConfiguration>
+    public interface IService
     {
         /// <summary>
         /// Obtiene una transacción que permite leer información de la base
@@ -17,7 +15,7 @@ namespace TheXDS.Triton.Services.Base
         /// Una transacción que permite leer información de la base de 
         /// datos.
         /// </returns>
-        ICrudReadTransaction GetReadTransaction() => GetReadWriteTransaction();
+        ICrudReadTransaction GetReadTransaction() => GetTransaction();
 
         /// <summary>
         /// Obtiene una transacción que permite escribir información en la
@@ -27,7 +25,7 @@ namespace TheXDS.Triton.Services.Base
         /// Una transacción que permite escribir información en la base de
         /// datos.
         /// </returns>
-        ICrudWriteTransaction GetWriteTransaction() => GetReadWriteTransaction();
+        ICrudWriteTransaction GetWriteTransaction() => GetTransaction();
 
         /// <summary>
         /// Obtiene una transacción que permite leer y escribir información
@@ -37,12 +35,6 @@ namespace TheXDS.Triton.Services.Base
         /// Una transacción que permite leer y escribir información en la
         /// base de datos.
         /// </returns>
-        ICrudReadWriteTransaction GetReadWriteTransaction();
-        
-        /// <summary>
-        /// Obtiene una referencia al tipo de contexto para el cual este
-        /// servicio generará transacciones.
-        /// </summary>
-        Type ContextType { get; }        
+        ICrudReadWriteTransaction GetTransaction();
     }
 }

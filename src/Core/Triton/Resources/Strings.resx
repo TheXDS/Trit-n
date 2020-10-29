@@ -126,6 +126,9 @@
   <data name="DbFailure" xml:space="preserve">
     <value>El servidor de datos ha devuelto un error.</value>
   </data>
+  <data name="EntityNotFound" xml:space="preserve">
+    <value>No se ha encontrado la entidad.</value>
+  </data>
   <data name="FailureForbidden" xml:space="preserve">
     <value>Se ha denegado el acceso a este recurso.</value>
   </data>
@@ -144,8 +147,14 @@
   <data name="OperationCompletedSuccessfully" xml:space="preserve">
     <value>La operación se ha completado satisfactoriamente.</value>
   </data>
+  <data name="QueryOverLimit" xml:space="preserve">
+    <value>La consulta solicitada devuelve demasiados datos. Filtre o reduzca los resultados antes de ejecutar la consulta.</value>
+  </data>
   <data name="ServiceFailure" xml:space="preserve">
     <value>El servicio ha encontrado un error.</value>
+  </data>
+  <data name="Tamper" xml:space="preserve">
+    <value>Se ha detectado el uso malicioso de la API de Tritón.</value>
   </data>
   <data name="UnconfiguredServiceError" xml:space="preserve">
     <value>Se ha intentado utilizar un servicio sin configurarlo primero.</value>

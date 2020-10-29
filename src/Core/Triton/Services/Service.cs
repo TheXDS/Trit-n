@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using System.Runtime.CompilerServices;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Exceptions;
@@ -8,84 +8,76 @@ using TheXDS.Triton.Services.Base;
 namespace TheXDS.Triton.Services
 {
     /// <summary>
-    /// Clase base para todos los servicios. Provee de la funcionalidad
-    /// básica de instanciación de contexto de datos y provee acceso a la 
-    /// configuración del servicio.
+    /// Clase base para implementación simple de servicios. Permite establecer
+    /// o descubrir la configuración de transacción a utilizar.
     /// </summary>
-    /// <typeparam name="TContext">
-    /// Tipo de contexto de datos a instanciar.
-    /// </typeparam>
-    public abstract class Service<TContext> : IService where TContext : DbContext, new()
+    public abstract class Service : IService
     {
-        /// <summary>
-        /// Obtiene una referencia al tipo de contexto para el cual este
-        /// servicio generará transacciones.
-        /// </summary>
-        public Type ContextType => typeof(TContext);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static T FindT<T>() where T : class => Objects.FindFirstObject<T>() ?? throw new MissingTypeException(typeof(T));
 
         /// <summary>
-        /// Obtiene una referencia a la configuración activa para este
+        /// Inicializa una nueva instancia de la clase 
+        /// <see cref="Service"/>, buscando automáticamente la
+        /// configuración de transacciones a utilizar.
+        /// </summary>
+        protected Service() : this(FindT<ITransactionFactory>())
+        {
+        }
+
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase 
+        /// <see cref="Service"/>, buscando automáticamente la
+        /// configuración de transacciones a utilizar.
+        /// </summary>
+        /// <param name="factory">Fábrica de transacciones a utilizar.</param>
+        protected Service(ITransactionFactory factory) : this(new TransactionConfiguration(), factory)
+        {
+        }
+
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase 
+        /// <see cref="Service"/>, buscando automáticamente la
+        /// configuración de transacciones a utilizar.
+        /// </summary>
+        /// <param name="transactionConfiguration">
+        /// Configuración a utilizar para las transacciones generadas por este
         /// servicio.
-        /// </summary>
-        public IServiceConfiguration Configuration { get; }
-
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase 
-        /// <see cref="Service{TContext}"/>, buscando automáticamente la
-        /// configuración a utilizar.
-        /// </summary>
-        protected Service() : this(Objects.FindFirstObject<IServiceConfiguration>() ?? throw new MissingTypeException(typeof(IServiceConfiguration)))
-        {
-        }
-
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase 
-        /// <see cref="Service{TContext}"/>, especificando la configuración
-        /// a utilizar.
-        /// </summary>
-        /// <param name="settings">
-        /// Configuración a utilizar para este servicio.
         /// </param>
-        protected Service(IServiceConfiguration settings)
+        protected Service(TransactionConfiguration transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
         {
-            if (settings is null) throw new ArgumentNullException(nameof(settings));
-            Configuration = settings;
         }
 
         /// <summary>
-        /// Obtiene una transacción para lectura de datos.
+        /// Inicializa una nueva instancia de la clase 
+        /// <see cref="Service"/>, especificando la configuración a utilizar.
         /// </summary>
-        /// <returns>
-        /// Una transacción para lectura de datos.
-        /// </returns>
-        public ICrudReadTransaction GetReadTransaction()
+        /// <param name="transactionConfiguration">
+        /// Configuración a utilizar para las transacciones generadas por este
+        /// servicio.
+        /// </param>
+        /// <param name="factory">Fábrica de transacciones a utilizar.</param>
+        protected Service(TransactionConfiguration transactionConfiguration, ITransactionFactory factory)
         {
-            return Configuration.CrudTransactionFactory.ManufactureReadTransaction<TContext>(Configuration.TransactionConfiguration);
+            Configuration = transactionConfiguration ?? throw new ArgumentNullException(nameof(transactionConfiguration));
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <summary>
-        /// Obtiene una transacción para escritura de datos.
+        /// Obtiene la configuración predeterminada a utilizar al crear
+        /// transacciones.
         /// </summary>
-        /// <returns>
-        /// Una transacción para escritura de datos.
-        /// </returns>
-        public ICrudWriteTransaction GetWriteTransaction()
-        {
-            return Configuration.CrudTransactionFactory.ManufactureWriteTransaction<TContext>(Configuration.TransactionConfiguration);
-        }
+        public TransactionConfiguration Configuration { get; }
 
         /// <summary>
-        /// Obtiene una transacción para lectura y escritura de datos.
+        /// Obtiene la fábrica de transacciones a utilizar por el servicio.
         /// </summary>
-        /// <returns>
-        /// Una transacción para lectura y escritura de datos.
-        /// </returns>
-        public ICrudReadWriteTransaction<TContext> GetReadWriteTransaction()
-        {
-            return Configuration.CrudTransactionFactory.ManufactureReadWriteTransaction<TContext>(Configuration.TransactionConfiguration);
-        }
+        private readonly ITransactionFactory _factory;
 
-        ICrudReadWriteTransaction IService.GetReadWriteTransaction() => GetReadWriteTransaction();
+        ICrudReadTransaction IService.GetReadTransaction() => _factory.GetReadTransaction(Configuration);
+        ICrudWriteTransaction IService.GetWriteTransaction() => _factory.GetWriteTransaction(Configuration);
+        ICrudReadWriteTransaction IService.GetTransaction() => _factory.GetTransaction(Configuration);
+
 
         /// <summary>
         /// Ejecuta una operación en el contexto de una transacción de lectura.
@@ -102,7 +94,7 @@ namespace TheXDS.Triton.Services
         [Sugar] 
         protected T WithReadTransaction<T>(Func<ICrudReadTransaction, T> action)
         {
-            var t = GetReadTransaction();
+            var t = ((IService)this).GetReadTransaction();
             try
             {
                 return action(t);

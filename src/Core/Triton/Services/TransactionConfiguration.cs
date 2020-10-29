@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using TheXDS.MCART.Types;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models.Base;
 
@@ -12,8 +11,73 @@ namespace TheXDS.Triton.Services
     /// </summary>
     public class TransactionConfiguration
     {
-        private readonly OpenList<Func<CrudAction, Model?, ServiceResult?>> _prologs = new OpenList<Func<CrudAction, Model?, ServiceResult?>>();
-        private readonly OpenList<Func<CrudAction, Model?, ServiceResult?>> _epilogs = new OpenList<Func<CrudAction, Model?, ServiceResult?>>();
+        private class MiddlewareActionList : IMiddlewareActionList, IEnumerable<MiddlewareAction>
+        {
+            private readonly List<MiddlewareAction> _list = new List<MiddlewareAction>();
+            private int _tail = 0;
+
+            public void AddFirst(MiddlewareAction item)
+            {
+                _list.Insert(1, item);
+                _tail++;
+            }
+
+            public void Add(MiddlewareAction item)
+            {
+                _list.Insert(_tail++, item);
+            }
+
+            public void AddLast(MiddlewareAction item)
+            {
+                _list.Add(item);
+            }
+
+            public IEnumerator<MiddlewareAction> GetEnumerator() => _list.GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_list).GetEnumerator();
+        }
+
+        /// <summary>
+        /// Enumeración que describe la posición en la cual se agregará una
+        /// acción de Middleware de Crud.
+        /// </summary>
+        public enum ActionPosition : byte
+        {
+            /// <summary>
+            /// Posición predeterminada.
+            /// </summary>
+            Default,
+            /// <summary>
+            /// Asegurar primera acción.
+            /// </summary>
+            Early,
+            /// <summary>
+            /// Asegurar última acción.
+            /// </summary>
+            Late
+        }
+
+        private readonly MiddlewareActionList _prologs = new MiddlewareActionList();
+        private readonly MiddlewareActionList _epilogs = new MiddlewareActionList();
+
+        /// <summary>
+        /// Agrega las acciones de un Middleware a ejecutar durante una
+        /// operación Crud.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de Middleware a agregar.
+        /// </typeparam>
+        /// <param name="middleware">Middleware que será agregado.</param>
+        /// <returns>
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
+        /// </returns>
+        public TransactionConfiguration Attach<T>(T middleware) where T : ITransactionMiddleware
+        {   
+            _prologs.Add(middleware.PrologAction);
+            _epilogs.Add(middleware.EpilogAction);
+            return this;
+        }
 
         /// <summary>
         /// Agrega las acciones de un Middleware a ejecutar durante una
@@ -29,30 +93,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public TransactionConfiguration Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
         {
-            middleware = new T();
-            _prologs.Add(middleware.BeforeAction);
-            _epilogs.Add(middleware.AfterAction);
-            return this;
-        }
-
-        /// <summary>
-        /// Agrega con prioridad las acciones de un Middleware a ejecutar
-        /// durante una operación Crud.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <param name="middleware">Middleware que ha sido agregado.</param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration PriorityAttach<T>(out T middleware) where T : ITransactionMiddleware, new()
-        {
-            middleware = new T();
-            _prologs.Insert(1, middleware.BeforeAction);
-            _epilogs.AddTail(middleware.AfterAction);
-            return this;
+            return Attach(middleware = new T());            
         }
 
         /// <summary>
@@ -72,19 +113,78 @@ namespace TheXDS.Triton.Services
         }
 
         /// <summary>
+        /// Agrega las acciones de un Middleware a ejecutar durante una operación Crud, especificando la posición en la cual cada acción deberá insertarse.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de Middleware a agregar.
+        /// </typeparam>
+        /// <param name="middleware">Middleware que será agregado.</param>
+        /// <param name="prologPosition">
+        /// Posición en la cual agregar el prólogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <param name="epilogPosition">
+        /// Posición en la cual agregar el epílogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <returns>
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
+        /// </returns>
+        public TransactionConfiguration AttachAt<T>(T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware
+        {
+            AttachAt(_prologs, middleware.PrologAction, prologPosition);
+            AttachAt(_epilogs, middleware.EpilogAction, epilogPosition);
+            return this;
+        }
+
+        /// <summary>
         /// Agrega con prioridad las acciones de un Middleware a ejecutar
         /// durante una operación Crud.
         /// </summary>
         /// <typeparam name="T">
         /// Tipo de Middleware a agregar.
         /// </typeparam>
+        /// <param name="middleware">Middleware que ha sido agregado.</param>
+        /// <param name="prologPosition">
+        /// Posición en la cual agregar el prólogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <param name="epilogPosition">
+        /// Posición en la cual agregar el epílogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
         /// <returns>
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration PriorityAttach<T>() where T : ITransactionMiddleware, new()
+        public TransactionConfiguration AttachAt<T>(out T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
         {
-            return PriorityAttach<T>(out _);
+            return AttachAt(middleware = new T(), prologPosition, epilogPosition);            
+        }
+
+        /// <summary>
+        /// Agrega con prioridad las acciones de un Middleware a ejecutar
+        /// durante una operación Crud.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de Middleware a agregar.
+        /// </typeparam>
+        /// <param name="prologPosition">
+        /// Posición en la cual agregar el prólogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <param name="epilogPosition">
+        /// Posición en la cual agregar el epílogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <returns>
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
+        /// </returns>
+        public TransactionConfiguration AttachAt<T>(in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
+        {
+            return AttachAt<T>(out _, prologPosition, epilogPosition);
         }
 
         /// <summary>
@@ -98,7 +198,7 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration AddProlog(Func<CrudAction, Model?, ServiceResult?> func)
+        public TransactionConfiguration AddProlog(MiddlewareAction func)
         {
             _prologs.Add(func);
             return this;
@@ -115,9 +215,9 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration AddFirstProlog(Func<CrudAction, Model?, ServiceResult?> func)
+        public TransactionConfiguration AddFirstProlog(MiddlewareAction func)
         {
-            _prologs.Insert(1, func);
+            _prologs.AddFirst(func);
             return this;
         }
 
@@ -132,9 +232,9 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration AddLastProlog(Func<CrudAction, Model?, ServiceResult?> func)
+        public TransactionConfiguration AddLastProlog(MiddlewareAction func)
         {
-            _prologs.AddTail(func);
+            _prologs.AddLast(func);
             return this;
         }
 
@@ -149,7 +249,7 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration AddEpilog(Func<CrudAction, Model?, ServiceResult?> func)
+        public TransactionConfiguration AddEpilog(MiddlewareAction func)
         {
             _epilogs.Add(func);
             return this;
@@ -166,9 +266,9 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration AddFirstEpilog(Func<CrudAction, Model?, ServiceResult?> func)
+        public TransactionConfiguration AddFirstEpilog(MiddlewareAction func)
         {
-            _epilogs.Insert(1, func);
+            _epilogs.AddFirst(func);
             return this;
         }
 
@@ -183,9 +283,9 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        public TransactionConfiguration AddLastEpilog(Func<CrudAction, Model?, ServiceResult?> func)
+        public TransactionConfiguration AddLastEpilog(MiddlewareAction func)
         {
-            _epilogs.AddTail(func);
+            _epilogs.AddLast(func);
             return this;
         }
 
@@ -201,10 +301,10 @@ namespace TheXDS.Triton.Services
         /// Entidad sobre la cual se ejecutará la acción.
         /// </param>
         /// <returns>
-        /// Un <see cref="ServiceResult"/> con el resultado del preámbulo,
-        /// o <see langword="null"/> si la operación puede continuar.
+        /// Un <see cref="ServiceResult"/> con el resultado del prólogo que ha,
+        /// fallado o <see langword="null"/> si la operación puede continuar.
         /// </returns>
-        public ServiceResult? Prolog(CrudAction action, Model? entity) => Run(_prologs, action, entity);
+        public ServiceResult? RunProlog(in CrudAction action, Model? entity) => Run(_prologs, action, entity);
 
         /// <summary>
         /// Realiza comprobaciones adicionales después de ejecutar una
@@ -218,12 +318,27 @@ namespace TheXDS.Triton.Services
         /// Entidad sobre la cual se ha ejecutado la acción.
         /// </param>
         /// <returns>
-        /// Un <see cref="ServiceResult"/> con el resultado del epílogo,
-        /// o <see langword="null"/> si la operación puede continuar.
+        /// Un <see cref="ServiceResult"/> con el resultado del epílogo que ha,
+        /// fallado o <see langword="null"/> si la operación puede continuar.
         /// </returns>
-        public ServiceResult? Epilog(CrudAction action, Model? entity) => Run(_epilogs, action, entity);
+        public ServiceResult? RunEpilog(in CrudAction action, Model? entity) => Run(_epilogs, action, entity);
 
-        private static ServiceResult? Run(IEnumerable<Func<CrudAction,Model?,ServiceResult?>> collection, CrudAction action, Model? entity)
+        private void AttachAt(IMiddlewareActionList list, MiddlewareAction action, in ActionPosition position)
+        {
+            switch (position)
+            {
+                case ActionPosition.Default:
+                    list.Add(action);
+                    break;
+                case ActionPosition.Early:
+                    list.AddFirst(action);
+                    break;
+                case ActionPosition.Late:
+                    list.AddLast(action);
+                    break;
+            }
+        }
+        private static ServiceResult? Run(IEnumerable<MiddlewareAction> collection, in CrudAction action, Model? entity)
         {
             foreach (var j in collection)
             {

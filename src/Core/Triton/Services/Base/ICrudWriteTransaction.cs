@@ -84,7 +84,7 @@ namespace TheXDS.Triton.Services.Base
         /// El resultado reportado de la operación ejecutada por el
         /// servicio subyacente.
         /// </returns>
-        ServiceResult Commit();
+        ServiceResult Commit() => CommitAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
         /// <summary>
         /// Guarda todos los cambios realizados de forma asíncrona.

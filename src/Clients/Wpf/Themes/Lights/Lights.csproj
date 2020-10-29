@@ -5,6 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentWPF" Version="0.8.0" />
-    <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a010" />
+    <PackageReference Include="TheXDS.MCART.WPF" Version="0.13.0-a011" />
   </ItemGroup>
 </Project>

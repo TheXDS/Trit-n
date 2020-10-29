@@ -1,15 +1,20 @@
 ﻿namespace TheXDS.Triton.Services
 {
     /// <summary>
-    /// Enumera las posibles causas de fallo conocidas para una
+    /// Enumera las posibles causas de falla conocidas para una
     /// operación de servicio.
     /// </summary>
     public enum FailureReason
     {
         /// <summary>
-        /// Fallo desconocido.
+        /// Falla desconocida.
         /// </summary>
         Unknown,
+
+        /// <summary>
+        /// Llamada malintencionada de API
+        /// </summary>
+        Tamper,
 
         /// <summary>
         /// Operación no permitida.
@@ -49,6 +54,11 @@
         /// <summary>
         /// Query malformado (error de app cliente)
         /// </summary>
-        BadQuery
+        BadQuery,
+
+        /// <summary>
+        /// Query que devolvería demasiados datos.
+        /// </summary>
+        QueryOverLimit
     }
 }

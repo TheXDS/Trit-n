@@ -65,7 +65,10 @@ namespace TheXDS.Triton.Services.Base
         /// entidad con el campo llave especificado, el valor de resultado
         /// será <see langword="null"/>.
         /// </returns>
-        ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>;
+        ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
+        {
+            return ReadAsync<TModel, TKey>(key).ConfigureAwait(false).GetAwaiter().GetResult();
+        }
 
         /// <summary>
         /// Obtiene una entidad cuyo campo llave sea igual al valor
@@ -89,7 +92,7 @@ namespace TheXDS.Triton.Services.Base
         /// </exception>
         ServiceResult<TModel?> Read<TModel>(object key) where TModel : Model
         {
-            return DoReadAsync<TModel, ServiceResult<TModel?>>(key, p => p);
+            return DynamicRead<TModel, ServiceResult<TModel?>>(key, p => p);
         }
 
         /// <summary>
@@ -143,7 +146,7 @@ namespace TheXDS.Triton.Services.Base
         /// </exception>
         Task<ServiceResult<TModel?>> ReadAsync<TModel>(object key) where TModel : Model
         {
-            return DoReadAsync<TModel, Task<ServiceResult<TModel?>>>(key, p => Task.FromResult(p));
+            return DynamicRead<TModel, Task<ServiceResult<TModel?>>>(key, p => Task.FromResult(p));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -153,7 +156,7 @@ namespace TheXDS.Triton.Services.Base
         }
 
         [DebuggerNonUserCode]
-        private TResult DoReadAsync<TModel, TResult>(object key, Func<ServiceResult<TModel?>, TResult> failureTransform, [CallerMemberName]string name = null!) where TModel : Model
+        private TResult DynamicRead<TModel, TResult>(object key, Func<ServiceResult<TModel?>, TResult> failureTransform, [CallerMemberName]string name = null!) where TModel : Model
         {
             var t = key?.GetType() ?? throw new ArgumentNullException(nameof(key));
             if (!ChkIdType<TModel>(t)) return failureTransform.Invoke(new ServiceResult<TModel?>(FailureReason.BadQuery));

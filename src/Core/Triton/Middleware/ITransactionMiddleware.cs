@@ -26,7 +26,7 @@ namespace TheXDS.Triton.Middleware
         /// correctamente, o un <see cref="ServiceResult"/> que describa
         /// una falla en caso que esta ocurra.
         /// </returns>
-        ServiceResult? BeforeAction(CrudAction action, Model? entity) => null;
+        ServiceResult? PrologAction(CrudAction action, Model? entity) => null;
 
         /// <summary>
         /// Define una serie de acciones a realizar después de la operación
@@ -45,6 +45,6 @@ namespace TheXDS.Triton.Middleware
         /// correctamente, o un <see cref="ServiceResult"/> que describa
         /// una falla en caso que esta ocurra.
         /// </returns>
-        ServiceResult? AfterAction(CrudAction action, Model? entity) => null;
+        ServiceResult? EpilogAction(CrudAction action, Model? entity) => null;
     }
 }

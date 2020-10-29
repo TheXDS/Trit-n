@@ -33,7 +33,7 @@ namespace TheXDS.Triton.Services
         /// <returns>
         /// Una transacción para lectura y escritura de datos.
         /// </returns>
-        public ICrudReadWriteTransaction GetReadWriteTransaction()
+        public ICrudReadWriteTransaction GetTransaction()
         {
             return Configuration.CrudTransactionFactory.ManufactureReadWriteTransaction<TContext>(Configuration.TransactionConfiguration);
         }

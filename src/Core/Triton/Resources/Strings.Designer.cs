@@ -88,6 +88,15 @@ namespace TheXDS.Triton.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No se ha encontrado la entidad..
+        /// </summary>
+        internal static string EntityNotFound {
+            get {
+                return ResourceManager.GetString("EntityNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se ha denegado el acceso a este recurso..
         /// </summary>
         internal static string FailureForbidden {
@@ -142,11 +151,29 @@ namespace TheXDS.Triton.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a La consulta solicitada devuelve demasiados datos. Filtre o reduzca los resultados antes de ejecutar la consulta..
+        /// </summary>
+        internal static string QueryOverLimit {
+            get {
+                return ResourceManager.GetString("QueryOverLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El servicio ha encontrado un error..
         /// </summary>
         internal static string ServiceFailure {
             get {
                 return ResourceManager.GetString("ServiceFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha detectado el uso malicioso de la API de Tritón..
+        /// </summary>
+        internal static string Tamper {
+            get {
+                return ResourceManager.GetString("Tamper", resourceCulture);
             }
         }
         
