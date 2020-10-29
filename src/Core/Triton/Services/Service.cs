@@ -11,7 +11,7 @@ namespace TheXDS.Triton.Services
     /// Clase base para implementación simple de servicios. Permite establecer
     /// o descubrir la configuración de transacción a utilizar.
     /// </summary>
-    public abstract class Service : IService
+    public class Service : IService
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static T FindT<T>() where T : class => Objects.FindFirstObject<T>() ?? throw new MissingTypeException(typeof(T));
@@ -21,7 +21,7 @@ namespace TheXDS.Triton.Services
         /// <see cref="Service"/>, buscando automáticamente la
         /// configuración de transacciones a utilizar.
         /// </summary>
-        protected Service() : this(FindT<ITransactionFactory>())
+        public Service() : this(FindT<ITransactionFactory>())
         {
         }
 
@@ -31,7 +31,7 @@ namespace TheXDS.Triton.Services
         /// configuración de transacciones a utilizar.
         /// </summary>
         /// <param name="factory">Fábrica de transacciones a utilizar.</param>
-        protected Service(ITransactionFactory factory) : this(new TransactionConfiguration(), factory)
+        public Service(ITransactionFactory factory) : this(new TransactionConfiguration(), factory)
         {
         }
 
@@ -44,7 +44,7 @@ namespace TheXDS.Triton.Services
         /// Configuración a utilizar para las transacciones generadas por este
         /// servicio.
         /// </param>
-        protected Service(TransactionConfiguration transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
+        public Service(TransactionConfiguration transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
         {
         }
 
@@ -57,7 +57,7 @@ namespace TheXDS.Triton.Services
         /// servicio.
         /// </param>
         /// <param name="factory">Fábrica de transacciones a utilizar.</param>
-        protected Service(TransactionConfiguration transactionConfiguration, ITransactionFactory factory)
+        public Service(TransactionConfiguration transactionConfiguration, ITransactionFactory factory)
         {
             Configuration = transactionConfiguration ?? throw new ArgumentNullException(nameof(transactionConfiguration));
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
