@@ -5,14 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models;
+using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Triton.Tests
 {
     public partial class CrudOpsTests
     {
-        private static readonly BlogService _srv = new BlogService();
-
         [Test]
         public void GetTransactionTest()
         {
@@ -24,7 +23,7 @@ namespace TheXDS.Triton.Tests
             {
                 Assert.IsInstanceOf<ICrudWriteTransaction>(t);
             }
-            using (var t = _srv.GetReadWriteTransaction())
+            using (var t = _srv.GetTransaction())
             {
                 Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
             }
@@ -41,7 +40,7 @@ namespace TheXDS.Triton.Tests
             {
                 Assert.IsInstanceOf<ICrudWriteTransaction>(t);
             }
-            await using (var t = _srv.GetReadWriteTransaction())
+            await using (var t = _srv.GetTransaction())
             {
                 Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
             }
@@ -64,7 +63,7 @@ namespace TheXDS.Triton.Tests
             }
             Assert.True(t.IsDisposed);
 
-            using (t = _srv.GetReadWriteTransaction())
+            using (t = _srv.GetTransaction())
             {
                 Assert.False(t.IsDisposed);
             }
@@ -121,24 +120,6 @@ namespace TheXDS.Triton.Tests
             Comment? comment = await t.ReadAsync<Comment>(1L);
             Assert.IsInstanceOf<Comment>(comment);
             Assert.AreEqual("It works!", comment!.Content);
-        }
-
-        [Test]
-        public void RelatedDataEagerLoadingTest()
-        {
-            var q = _srv.GetAllUsersFirst3Posts().ToList();
-
-            /* -= Según la base de datos de prueba: =-
-             * Existen 3 usuarios, y únicamente el primer usuario debe tener un
-             * Post. Los demás usuarios no deben tener ninguno.
-             * 
-             * Por la forma en que el Query está construido, solo se debe
-             * obtener al primer usuario y a su correspondiente post.
-             */
-
-            Assert.AreEqual(1, q.Count);
-            Assert.AreEqual("user1", q[0].Key.Id);
-            Assert.AreEqual(1, q[0].Count());
         }
 
         [Test]

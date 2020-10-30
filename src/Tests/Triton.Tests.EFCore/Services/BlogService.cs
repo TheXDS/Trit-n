@@ -10,8 +10,16 @@ namespace TheXDS.Triton.Tests
     /// Servicio de pruebas que permite administrar el contexto de datos
     /// <see cref="BlogContext"/>.
     /// </summary>
-    public class BlogService : Service<BlogContext>
+    public class BlogService : Service
     {
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="BlogService"/>.
+        /// </summary>
+        public BlogService() : base(new EfCoreTransFactory<BlogContext>())
+        {
+        }
+
         /// <summary>
         /// Obtiene una lista agrupada de todos los usuarios junto con sus 3
         /// primeros posts.
@@ -22,20 +30,14 @@ namespace TheXDS.Triton.Tests
         /// </returns>
         public IEnumerable<IGrouping<User, Post>> GetAllUsersFirst3Posts()
         {
-            var t = GetReadTransaction();
-            try
-            {
-                return t.All<User>()
+            return WithReadTransaction(t =>
+                t.All<User>()
                     .Include(p => p.Posts)
                     .ThenInclude(p => p.Author)
                     .SelectMany(p => p.Posts.Take(3).OrderBy(q => q.CreationTime))
                     .ToList()
-                    .GroupBy(p => p.Author);
-            }
-            finally
-            {
-                t.Dispose();
-            }
+                    .GroupBy(p => p.Author)
+            );
         }
     }
 }

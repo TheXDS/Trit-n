@@ -52,6 +52,11 @@
         NotFound,
 
         /// <summary>
+        /// La acción causaría una duplicación de entidades.
+        /// </summary>
+        EntityDuplication,
+
+        /// <summary>
         /// Query malformado (error de app cliente)
         /// </summary>
         BadQuery,

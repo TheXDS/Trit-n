@@ -31,7 +31,7 @@ namespace TheXDS.Triton.Models
         {
             optionsBuilder
                 .UseInMemoryDatabase(GetType().FullName)
-                .UseLoggerFactory(_m);                
+                .UseLoggerFactory(_m);
         }
 
         /// <summary>

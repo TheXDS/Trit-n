@@ -74,10 +74,35 @@ namespace TheXDS.Triton.Services
         /// </summary>
         private readonly ITransactionFactory _factory;
 
-        ICrudReadTransaction IService.GetReadTransaction() => _factory.GetReadTransaction(Configuration);
-        ICrudWriteTransaction IService.GetWriteTransaction() => _factory.GetWriteTransaction(Configuration);
-        ICrudReadWriteTransaction IService.GetTransaction() => _factory.GetTransaction(Configuration);
+        /// <summary>
+        /// Obtiene una transacción que permite leer información de la base
+        /// de datos.
+        /// </summary>
+        /// <returns>
+        /// Una transacción que permite leer información de la base de 
+        /// datos.
+        /// </returns>
+        public ICrudReadTransaction GetReadTransaction() => _factory.GetReadTransaction(Configuration);
 
+        /// <summary>
+        /// Obtiene una transacción que permite escribir información en la
+        /// base de datos.
+        /// </summary>
+        /// <returns>
+        /// Una transacción que permite escribir información en la base de
+        /// datos.
+        /// </returns>
+        public ICrudWriteTransaction GetWriteTransaction() => _factory.GetWriteTransaction(Configuration);
+
+        /// <summary>
+        /// Obtiene una transacción que permite leer y escribir información
+        /// en la base de datos.
+        /// </summary>
+        /// <returns>
+        /// Una transacción que permite leer y escribir información en la
+        /// base de datos.
+        /// </returns>
+        public ICrudReadWriteTransaction GetTransaction() => _factory.GetTransaction(Configuration);
 
         /// <summary>
         /// Ejecuta una operación en el contexto de una transacción de lectura.
@@ -94,7 +119,7 @@ namespace TheXDS.Triton.Services
         [Sugar] 
         protected T WithReadTransaction<T>(Func<ICrudReadTransaction, T> action)
         {
-            var t = ((IService)this).GetReadTransaction();
+            var t = GetReadTransaction();
             try
             {
                 return action(t);

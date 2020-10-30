@@ -62,7 +62,10 @@ namespace TheXDS.Triton.Models
         /// <param name="title">Tìtulo del post.</param>
         /// <param name="content">Contenido del post.</param>
         /// <param name="author">Autor del post.</param>
-        public Post(string title, string content, User author) : this(title, content, DateTime.Now) { }
+        public Post(string title, string content, User author) : this(title, content, DateTime.Now)
+        {
+            Author = author;
+        }
 
         /// <summary>
         /// Inicializa una nueva instancia del modelo <see cref="Post"/>,

@@ -59,7 +59,6 @@ namespace TheXDS.Triton.Models
         {
         }
 
-
         /// <summary>
         /// Inicializa una nueva instancia del modelo <see cref="Comment"/>,
         /// especificando el valor de los campos que no pueden ser
@@ -86,6 +85,5 @@ namespace TheXDS.Triton.Models
             Content = content;
             Timestamp = timestamp;
         }
-
     }
 }

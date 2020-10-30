@@ -8,10 +8,8 @@ using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Tests
 {
-    public class MiddlewareTests
+    public partial class MiddlewareTests
     {
-        private static readonly BlogService _srv = new BlogService();
-
         [Test]
         public void RunMiddlewareTest()
         {
@@ -19,30 +17,34 @@ namespace TheXDS.Triton.Tests
 
             ServiceResult? TestProlog(CrudAction arg1, Model? arg2)
             {
-                if (prologDidRun) return null;
-                Assert.AreEqual(CrudAction.Create, arg1);
-                Assert.IsInstanceOf<Post>(arg2);
-                Assert.AreEqual("0", arg2!.IdAsString);
-                prologDidRun = true;
+                if (!prologDidRun)
+                {
+                    Assert.AreEqual(CrudAction.Create, arg1);
+                    Assert.IsInstanceOf<Post>(arg2);
+                    Assert.AreEqual("0", arg2!.IdAsString);
+                    prologDidRun = true;
+                }
                 return null;
             }
 
             ServiceResult? TestEpilog(CrudAction arg1, Model? arg2)
             {
-                if (epilogDidRun) return null;
-                Assert.AreEqual(CrudAction.Create, arg1);
-                Assert.IsInstanceOf<Post>(arg2);
-                Assert.AreNotEqual("0", arg2!.IdAsString);
-                epilogDidRun = true;
+                if (!epilogDidRun)
+                {
+                    Assert.AreEqual(CrudAction.Create, arg1);
+                    Assert.IsInstanceOf<Post>(arg2);
+                    Assert.AreNotEqual("0", arg2!.IdAsString);
+                    epilogDidRun = true;
+                }
                 return null;
             }
 
-            using var j = _srv.GetReadWriteTransaction();
+            using var j = _srv.GetTransaction();
 
             var u = j.All<User>().First();
 
-            _srv.Configuration.TransactionConfiguration.AddProlog(TestProlog);
-            _srv.Configuration.TransactionConfiguration.AddEpilog(TestEpilog);
+            _srv.Configuration.AddProlog(TestProlog);
+            _srv.Configuration.AddEpilog(TestEpilog);
             
             Assert.False(prologDidRun);
             Assert.False(epilogDidRun);
