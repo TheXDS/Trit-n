@@ -13,6 +13,12 @@ namespace TheXDS.Triton.Middleware
     /// </summary>
     public static class ReadOnlySimulator
     {
+        /// <summary>
+        /// Obtiene o establece un valor que indica si se ejecutarán los
+        /// epílogos luego de bloquear la operación de la transacción.
+        /// </summary>
+        public static bool RunEpilogs { get; set; } = true;
+
         private static TransactionConfiguration? _config;
 
         /// <summary>
@@ -35,7 +41,7 @@ namespace TheXDS.Triton.Middleware
         private static ServiceResult? SkipActualCall(CrudAction arg1, Model? arg2)
         {
             if (arg1 == CrudAction.Read) return null;
-            return (_config ?? throw new TamperException()).Epilog(arg1, arg2) ?? ServiceResult.Ok;
+            return (RunEpilogs ? (_config ?? throw new TamperException()).RunEpilog(arg1, arg2) : null) ?? ServiceResult.Ok;
         }
     }
 }
