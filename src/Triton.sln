@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Diagnostics", "C:\Us
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.CrudNotify", "C:\Users\xds_x\source\repos\thexds\Triton\src\Bundles\Triton.CrudNotify\Triton.CrudNotify.csproj", "{DB49349A-CD91-494D-AF1E-393184006996}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Faker", "C:\Users\xds_x\source\repos\thexds\Triton\src\Bundles\Triton.Faker\Triton.Faker.csproj", "{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{8ecfeedf-ce5b-4aba-b72f-99eb3652f908}*SharedItemsImports = 13
@@ -147,6 +149,18 @@ Global
 		{DB49349A-CD91-494D-AF1E-393184006996}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB49349A-CD91-494D-AF1E-393184006996}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
 		{DB49349A-CD91-494D-AF1E-393184006996}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Build-Release|Any CPU.ActiveCfg = Build-Release|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Build-Release|Any CPU.Build.0 = Build-Release|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release-Windows|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release-Windows|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,6 +175,7 @@ Global
 		{8ECFEEDF-CE5B-4ABA-B72F-99EB3652F908} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 		{300F1D78-4A71-49EE-9F96-724088510E55} = {0C91A362-44B0-4474-B156-F611C8281B1B}
 		{DB49349A-CD91-494D-AF1E-393184006996} = {0C91A362-44B0-4474-B156-F611C8281B1B}
+		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B} = {0C91A362-44B0-4474-B156-F611C8281B1B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A45987E-24AB-4E9E-9C1F-4C8D9B1F956A}

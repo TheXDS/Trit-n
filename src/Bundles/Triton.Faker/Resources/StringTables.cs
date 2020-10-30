@@ -7,10 +7,10 @@ namespace TheXDS.Triton.Resources
     {
         private static readonly StringUnpacker _u = new StringUnpacker(typeof(StringTables).Assembly, typeof(StringTables).FullName!);
 
-        private static string[]? _femaleNames;
-        private static string[]? _maleNames;
-        private static string[]? _surnames;
-        private static string[]? _lorem;
+        private static string[]? _femaleNames = null;
+        private static string[]? _maleNames = null;
+        private static string[]? _surnames = null;
+        private static string[]? _lorem = null;
 
         public static string[] FemaleNames => Unpack(ref _femaleNames);
         public static string[] MaleNames => Unpack(ref _maleNames);
