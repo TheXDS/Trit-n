@@ -6,8 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     mc:Ignorable="d"
     xmlns:vc ="clr-namespace:TheXDS.MCART.ValueConverters;assembly=MCART.WPF"
-    xmlns:cmp="clr-namespace:TheXDS.Triton.Ui.Component;assembly=Triton.Ui"    
-    d:DataContext="{d:DesignInstance cmp:TestViewModel}"
+    xmlns:vm="clr-namespace:TheXDS.Triton.Ui.ViewModels"    
+    d:DataContext="{d:DesignInstance vm:TestViewModel}"
     Title="TestPage">
     <Page.Resources>
         <vc:McartColorConverter x:Key="McartColorConverter"/>
@@ -41,6 +41,7 @@
                     Resultado: <Run Text="{Binding Result, Mode=OneWay}"/>
                 </TextBlock>
                 <Separator Margin="0,10"/>
+                <CheckBox Margin="0,10" IsChecked="{Binding CloseableToggle}">Página cerrable</CheckBox>
                 <Button Grid.Row="2" Command="{Binding OkTkxByeCommand, Mode=OneWay}">OkThxBye!</Button>
             </StackPanel>
         </Viewbox>

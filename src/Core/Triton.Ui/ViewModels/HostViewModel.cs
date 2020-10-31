@@ -21,13 +21,13 @@ namespace TheXDS.Triton.Ui.ViewModels
         /// Se produce cuando se ha agregado una página a la colección de
         /// páginas de este host.
         /// </summary>
-        public event EventHandler<ValueEventArgs<PageViewModel>> PageAdded;
+        public event EventHandler<ValueEventArgs<PageViewModel>>? PageAdded;
         
         /// <summary>
         /// Se produce cuando se ha cerrado una página en la colección de
         /// páginas de este host.
         /// </summary>
-        public event EventHandler<ValueEventArgs<PageViewModel>> PageClosed;
+        public event EventHandler<ValueEventArgs<PageViewModel>>? PageClosed;
 
         /// <summary>
         /// Enumera las páginas abiertas activas de esta instancia.

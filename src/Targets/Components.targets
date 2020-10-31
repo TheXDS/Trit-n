@@ -3,19 +3,9 @@
   <ItemGroup Condition="'$(TritonComponent)'=='transport'">
     <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
   </ItemGroup>
-  
-  
-  
-    
-  
-  
-  <ItemGroup Condition="'$(TritonClient)'=='true'">
-    <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
-    <ProjectReference Include="$(SolutionDir)Core\TritonUi\Triton.Ui.csproj" />
-  </ItemGroup>
 
   <ItemGroup Condition="'$(TritonComponent)'=='ui'">
-    <ProjectReference Include="$(SolutionDir)Core\TritonUI\Triton.UI.csproj" />
+    <ProjectReference Include="$(SolutionDir)Core\Triton.UI\Triton.UI.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TritonComponent)'=='service'">

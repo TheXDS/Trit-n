@@ -1,71 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Windows;
-using System.Windows.Data;
+﻿using System.Windows;
+using TheXDS.MCART.Math;
 using TheXDS.MCART.Types;
-using TheXDS.MCART.Types.Extensions;
+using MC = System.Windows.Media.Color;
 
 namespace TheXDS.Triton.WpfClient
 {
+    /// <summary>
+    /// Representa un color con transparencia ajustable.
+    /// </summary>
     public class TransparentColor : DependencyObject
     {
-        public static readonly DependencyProperty BaseColorProperty =
-            DependencyProperty.Register(nameof(BaseColor), typeof(Color?), typeof(TransparentColor), new PropertyMetadata(null,OnBaseColorChanged,CoerceProperColor));
+        /// <summary>
+        /// Identifica a la propiedad de dependencia <see cref="BaseColor"/>.
+        /// </summary>
+        public static readonly DependencyProperty BaseColorProperty = 
+            DependencyProperty.Register(nameof(BaseColor), typeof(Color?), typeof(TransparentColor), new FrameworkPropertyMetadata(null));
 
-        private static object CoerceProperColor(DependencyObject d, object baseValue)
+        /// <summary>
+        /// Identifica a la propiedad de dependencia
+        /// <see cref="Transparency"/>.
+        /// </summary>
+        public static readonly DependencyProperty TransparencyProperty = 
+            DependencyProperty.Register(nameof(Transparency), typeof(float), typeof(TransparentColor), new FrameworkPropertyMetadata(1f, (o, d) => { }, (d, v) => ((float)v).Clamp(0f, 1f)));
+
+        /// <summary>
+        /// Identifica a la propiedad de dependencia <see cref="UseAlpha"/>.
+        /// </summary>
+        public static readonly DependencyProperty UseAlphaProperty =
+            DependencyProperty.Register(nameof(UseAlpha), typeof(bool), typeof(TransparentColor), new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// Obtiene o establece el color base a devolver.
+        /// </summary>
+        public Color? BaseColor
         {
-            throw new NotImplementedException();
-        }
-
-        private static void OnBaseColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-        }
-
-        public static readonly DependencyProperty TransparencyProperty = DependencyProperty.Register(nameof(Transparency), typeof(float), typeof(TransparentColor), new PropertyMetadata(1f));
-
-        public Color BaseColor
-        {
-            get => (Color)GetValue(BaseColorProperty);
+            get => (Color?)GetValue(BaseColorProperty);
             set => SetValue(BaseColorProperty, value);
         }
 
+        /// <summary>
+        /// Obtiene o establece el nivel de transparencia a devolver para el color base.
+        /// </summary>
         public float Transparency
         {
             get { return (float)GetValue(TransparencyProperty); }
             set { SetValue(TransparencyProperty, value); }
         }
 
-        public static implicit operator System.Windows.Media.Color(TransparentColor color)
+        /// <summary>
+        /// Obtiene o establece un valor que indica si se tomará en cuenta el Alpha del color base para calcular la transparencia.
+        /// </summary>
+        public bool UseAlpha
+        {
+            get => (bool)GetValue(UseAlphaProperty);
+            set => SetValue(UseAlphaProperty, value);
+        }
+
+        /// <summary>
+        /// Convierte implícitamente un <see cref="TransparentColor"/> en un <see cref="MC"/>.
+        /// </summary>
+        /// <param name="color"></param>
+        public static implicit operator MC(TransparentColor color)
         {
             var bc = color.BaseColor;
             
-            return new System.Windows.Media.Color()
+            return new MC()
             {
-                ScA = color.Transparency,
-                ScR = bc.ScR,
-                ScG = bc.ScG,
-                ScB = bc.ScB,
+                ScA = color.Transparency * (color.UseAlpha ? bc?.ScA ?? 1f : 1f),
+                ScR = bc?.ScR ?? 0f,
+                ScG = bc?.ScG ?? 0f,
+                ScB = bc?.ScB ?? 0f,
             };
-        }
-    }
-
-    public class TransparentColorAdapter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is TransparentColor c)
-            {
-                if (targetType == typeof(System.Windows.Media.Color)) return (System.Windows.Media.Color)c;
-            }
-
-            return targetType.Default();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

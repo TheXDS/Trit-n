@@ -1,8 +1,8 @@
-﻿using TheXDS.Triton.Ui.ViewModels;
+﻿using System.Net.PeerToPeer;
 using System.Windows.Input;
 using TheXDS.MCART.ViewModel;
 
-namespace TheXDS.Triton.Ui.Component
+namespace TheXDS.Triton.Ui.ViewModels
 {
     /// <summary>
     /// ViewModel de prueba de generación de UI.
@@ -26,6 +26,17 @@ namespace TheXDS.Triton.Ui.Component
             AccentColor = MCART.Resources.Colors.Pick();
             SumCommand = new SimpleCommand(OnSum);
             OkTkxByeCommand = new SimpleCommand(Close);
+        }
+
+        /// <summary>
+        /// Expone de manera pública el valor
+        /// <see cref="PageViewModel.Closeable"/>.
+        /// </summary>
+        /// <value>El valor de <see cref="PageViewModel.Closeable"/>.</value>
+        public bool CloseableToggle
+        {
+            get => Closeable;
+            set => Closeable = value;
         }
 
         /// <summary>
