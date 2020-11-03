@@ -3,7 +3,7 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>    
-    <PackageReference Include="TheXDS.MCART" Version="0.13.0-a011" />
+    <PackageReference Include="TheXDS.MCART" Version="0.13.0-a012" />
     <ProjectReference Include="..\Triton.Models\Triton.Models.csproj" />
     <Compile Update="Resources\Strings.Designer.cs">
       <DesignTime>True</DesignTime>

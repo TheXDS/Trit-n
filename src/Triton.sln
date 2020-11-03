@@ -20,7 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{7DE3
 		Targets\Components.targets = Targets\Components.targets
 		Targets\GlobalDirectives.targets = Targets\GlobalDirectives.targets
 		Targets\PackageInfo.props = Targets\PackageInfo.props
-		Targets\Packages.targets = Targets\Packages.targets
 		Targets\PackageVersion.props = Targets\PackageVersion.props
 		Targets\Publish.targets = Targets\Publish.targets
 		Targets\Triton.xsd = Targets\Triton.xsd
