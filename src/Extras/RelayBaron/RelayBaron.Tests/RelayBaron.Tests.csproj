@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -16,9 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Tests\Triton.Tests.Common\Triton.Tests.Common.csproj" />
     <ProjectReference Include="..\RelayBaron.Client\RelayBaron.Client.csproj" />
     <ProjectReference Include="..\RelayBaron.Server\RelayBaron.Server.csproj" />
   </ItemGroup>
+
+  <Import Project="D:\source\thexds\Triton\src\Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
 
 </Project>

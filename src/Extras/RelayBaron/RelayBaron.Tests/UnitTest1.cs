@@ -5,6 +5,7 @@ using TheXDS.Triton.Tests;
 using TheXDS.Triton.Models;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Triton.InMemory.Services;
 
 namespace RelayBaron.Tests
 {
@@ -27,14 +28,14 @@ namespace RelayBaron.Tests
 
     public class ClientTests
     {
-        private static readonly BlogService srv = new BlogService();
+        private static readonly Service srv = new Service(new InMemoryTransFactory());
 
         [Test]
         public void RegisterActionsTest()
         {
-            void CreateNewPost(string id)
+            static void CreateNewPost(string id)
             {
-                using var t = srv.GetReadWriteTransaction();
+                using var t = srv.GetTransaction();
                 var u = t.Read<User, string>(id).ReturnValue!;
                 t.Create(
                     new Post(
@@ -46,9 +47,9 @@ namespace RelayBaron.Tests
                 t.Commit();
             }
 
-            void CreateFirstComment(long id)
+            static void CreateFirstComment(long id)
             {
-                using var t = srv.GetReadWriteTransaction();
+                using var t = srv.GetTransaction();
                 var u = t.Read<Post, long>(id).ReturnValue!;
                 if (!u.Comments.Any())
                 {

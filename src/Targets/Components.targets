@@ -4,10 +4,6 @@
     <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TritonComponent)'=='ui'">
-    <ProjectReference Include="$(SolutionDir)Core\Triton.UI\Triton.UI.csproj" />
-  </ItemGroup>
-  
   <ItemGroup Condition="'$(TritonComponent)'=='service'">
     <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
   </ItemGroup>

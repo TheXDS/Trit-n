@@ -10,5 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)**\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\InMemoryCrudTransaction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\InMemoryTransFactory.cs" />
   </ItemGroup>
 </Project>
