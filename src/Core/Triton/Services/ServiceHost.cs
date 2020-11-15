@@ -7,6 +7,7 @@ using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Exceptions;
 using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Resources;
 
 namespace TheXDS.Triton.Services
 {
@@ -146,7 +147,7 @@ namespace TheXDS.Triton.Services
         /// </exception>
         public T Get<T>() where T : notnull, IService
         {
-            return this.FirstOf<T>() ?? throw new MissingServiceException(typeof(T));
+            return this.FirstOf<T>() ?? throw Errors.MissingService<T>();
         }
 
         /// <summary>

@@ -343,6 +343,23 @@ namespace TheXDS.Triton.Services
                 Message = Message
             };
         }
+
+        /// <inheritdoc/>
+        public override bool Equals([AllowNull] object obj)
+        {
+            return obj switch
+            {
+                ServiceResult s => Equals(s),
+                Exception ex => Equals(ex),
+                _ => false
+            };
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Success, Message, Reason);
+        }
     }
 
     /// <summary>

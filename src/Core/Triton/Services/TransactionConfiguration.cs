@@ -323,7 +323,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult? RunEpilog(in CrudAction action, Model? entity) => Run(_epilogs, action, entity);
 
-        private void AttachAt(IMiddlewareActionList list, MiddlewareAction action, in ActionPosition position)
+        private static void AttachAt(IMiddlewareActionList list, MiddlewareAction action, in ActionPosition position)
         {
             switch (position)
             {

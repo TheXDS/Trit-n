@@ -1,3 +1,5 @@
+#pragma warning disable CS1591
+
 using NUnit.Framework;
 using RelayBaron.Client;
 using TheXDS.Triton.Services;

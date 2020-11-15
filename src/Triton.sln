@@ -62,7 +62,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RelayBaron.Tests", "C:\User
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{3f1122d8-5f78-4969-8401-4245bc2cf2ef}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{8ecfeedf-ce5b-4aba-b72f-99eb3652f908}*SharedItemsImports = 13
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{bd0378a6-4cf9-474b-b9c8-85952639c516}*SharedItemsImports = 5
 	EndGlobalSection

@@ -18,7 +18,7 @@ namespace RelayBaron.Server
             }
         }
 
-        private static void OnExit(object sender, ConsoleCancelEventArgs e)
+        private static void OnExit(object? sender, ConsoleCancelEventArgs e)
         {
             _srv.Stop();   
             Environment.Exit(0);
