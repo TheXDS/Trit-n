@@ -18,9 +18,17 @@ namespace TheXDS.Triton.InMemory.Services
     /// </summary>
     public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     {
-        private static readonly List<Model> Models = new List<Model>();
+        private static readonly List<Model> Store = new List<Model>();
 
         private readonly List<Model> _temp = new List<Model>();
+
+        /// <summary>
+        /// Limpia la base de datos en memoria.
+        /// </summary>
+        public static void Wipe()
+        {
+            Store.Clear();
+        }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -54,9 +62,9 @@ namespace TheXDS.Triton.InMemory.Services
         /// </returns>
         public QueryServiceResult<TModel> All<TModel>() where TModel : Model
         {
-            lock (((ICollection)Models).SyncRoot)
+            lock (((ICollection)Store).SyncRoot)
             {
-                return new QueryServiceResult<TModel>(Models.Concat(_temp).Distinct().OfType<TModel>().AsQueryable());
+                return new QueryServiceResult<TModel>(Store.Concat(_temp).Distinct().OfType<TModel>().AsQueryable());
             }
         }
         
@@ -66,8 +74,10 @@ namespace TheXDS.Triton.InMemory.Services
         /// <returns></returns>
         public Task<ServiceResult> CommitAsync()
         {
-            Models.AddRange(_temp.Where(p => !Models.Contains(p)));
+            Configuration.RunProlog(CrudAction.Commit, null);
+            Store.AddRange(_temp.Where(p => !Store.Contains(p)));
             _temp.Clear();
+            Configuration.RunEpilog(CrudAction.Commit, null);
             return Task.FromResult(ServiceResult.Ok);
         }
 
@@ -84,8 +94,10 @@ namespace TheXDS.Triton.InMemory.Services
         /// </returns>
         public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
         {
-            if (Models.Concat(_temp).Contains(newEntity)) return FailureReason.EntityDuplication;
+            Configuration.RunProlog(CrudAction.Create, newEntity);
+            if (Store.Concat(_temp).Contains(newEntity)) return FailureReason.EntityDuplication;
             _temp.Add(newEntity);
+            Configuration.RunEpilog(CrudAction.Create, newEntity);
             return ServiceResult.Ok;
         }
 
@@ -102,7 +114,9 @@ namespace TheXDS.Triton.InMemory.Services
         /// </returns>
         public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
         {
-            return !Models.Remove(entity) || _temp.Remove(entity) ? new ServiceResult(FailureReason.NotFound) : ServiceResult.Ok;
+            Configuration.RunProlog(CrudAction.Delete, entity);
+            Configuration.RunEpilog(CrudAction.Delete, entity);
+            return !Store.Remove(entity) || _temp.Remove(entity) ? new ServiceResult(FailureReason.NotFound) : ServiceResult.Ok;
         }
 
         /// <summary>
@@ -123,7 +137,9 @@ namespace TheXDS.Triton.InMemory.Services
             where TModel : Model<TKey>
             where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return Models.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
+            Configuration.RunProlog(CrudAction.Delete, null);
+            Configuration.RunEpilog(CrudAction.Delete, null);
+            return Store.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
                 ? Delete(e)
                 : new ServiceResult(FailureReason.NotFound);
         }
@@ -146,7 +162,9 @@ namespace TheXDS.Triton.InMemory.Services
             where TModel : Model<TKey>
             where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
         {
-            return Task.FromResult(Models.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
+            Configuration.RunProlog(CrudAction.Read, null);
+            Configuration.RunEpilog(CrudAction.Read, null);
+            return Task.FromResult(Store.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
                 ? new ServiceResult<TModel?>(e)
                 : new ServiceResult<TModel?>(FailureReason.NotFound));
         }
@@ -165,7 +183,9 @@ namespace TheXDS.Triton.InMemory.Services
         /// </returns>
         public ServiceResult Update<TModel>(TModel entity) where TModel : Model
         {
-            return Models.Concat(_temp).Contains(entity) ? ServiceResult.Ok : new ServiceResult(FailureReason.NotFound);
+            Configuration.RunProlog(CrudAction.Update, entity);
+            Configuration.RunEpilog(CrudAction.Update, entity);
+            return Store.Concat(_temp).Contains(entity) ? ServiceResult.Ok : new ServiceResult(FailureReason.NotFound);
         }
 
         /// <summary>

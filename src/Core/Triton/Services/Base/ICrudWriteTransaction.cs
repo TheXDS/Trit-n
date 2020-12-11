@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
+using System.Linq;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -26,6 +27,54 @@ namespace TheXDS.Triton.Services.Base
         /// servicio subyacente.
         /// </returns>
         ServiceResult Create<TModel>(TModel newEntity) where TModel : Model;
+
+
+        /// <summary>
+        /// Crea un conjunto de entidades en la base de datos.
+        /// </summary>
+        /// <param name="entities">
+        /// Conjunto de entidades a ser agregadas a la base de datos.
+        /// </param>
+        /// <returns>
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
+        /// </returns>
+        ServiceResult CreateMany(params Model[] entities)
+        {
+            foreach (var g in entities.GroupBy(p => p.GetType()))
+            {
+                var m = GetType().GetMethod(nameof(Create), new Type[] { g.Key })!;
+                foreach (var j in g)
+                {
+                    var r = (ServiceResult)m.Invoke(this,new object[] { j })!;
+                    if (!r.Success) return r;
+                }
+            }
+            return ServiceResult.Ok;
+        }
+
+        /// <summary>
+        /// Crea un conjunto de entidades en la base de datos.
+        /// </summary>
+        /// <typeparam name="TModel">
+        /// Modelo de las nuevas entidades.
+        /// </typeparam>
+        /// <param name="entities">
+        /// Conjunto de entidades a ser agregadas a la base de datos.
+        /// </param>
+        /// <returns>
+        /// El resultado reportado de la operación ejecutada por el
+        /// servicio subyacente.
+        /// </returns>
+        ServiceResult CreateMany<TModel>(params TModel[] entities) where TModel : Model
+        {
+            foreach (var j in entities)
+            {
+                var r = Create(j);
+                if (!r.Success) return r;
+            }
+            return ServiceResult.Ok;
+        }
 
         /// <summary>
         /// Elimina a una entidad de la base de datos.

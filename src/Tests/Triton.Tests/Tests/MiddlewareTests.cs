@@ -2,6 +2,7 @@
 
 using NUnit.Framework;
 using System.Linq;
+using TheXDS.Triton.InMemory.Services;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
@@ -10,7 +11,9 @@ namespace TheXDS.Triton.Tests
 {
     public partial class MiddlewareTests
     {
-        [Test]
+        private readonly Service _srv = new Service(new InMemoryTransFactory());
+        
+        //[Test]
         public void RunMiddlewareTest()
         {
             bool prologDidRun = false, epilogDidRun = false;
