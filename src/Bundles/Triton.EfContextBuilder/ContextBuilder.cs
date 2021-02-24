@@ -47,21 +47,16 @@ namespace Triton.EfContextBuilder
             var t = Factory.NewType<DbContext>("DynamicDbContext");
             foreach (var j in models)
             {
-                t.Builder.AddAutoProperty($"{j.Name}s", typeof(DbSet<>).MakeGenericType(j));
+                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es":"s")}", typeof(DbSet<>).MakeGenericType(j));
             }
             if (staticCallback is { Method: MethodInfo callback })
             {
                 if (!callback.IsStatic) throw new InvalidOperationException();
                 if (typeof(DbContext).GetMethod("OnConfiguring", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(DbContextOptionsBuilder) }, null) is { } oc)
                 {
-                    var m = t.Builder.DefineMethod(oc.Name, MethodAttributes.Family | MethodAttributes.Virtual, null, new[] { typeof(DbContextOptionsBuilder) });
-                    t.Builder.DefineMethodOverride(m, oc);
-                    var il = m.GetILGenerator();
-                    il.LoadArg1();
-                    il.Call(callback).Return();
+                    t.Builder.AddOverride(oc).Il.LoadArg1().Call(callback).Return();
                 }
             }
-            
             return t;
         }
 

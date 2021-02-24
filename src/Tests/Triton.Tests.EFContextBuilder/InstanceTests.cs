@@ -23,7 +23,7 @@ namespace Triton.Tests.EFContextBuilder
             TestContextSets(b);
         }
 
-        private void TestContextSets(DbContext context)
+        private static void TestContextSets(DbContext context)
         {
             Assert.IsInstanceOf<DbSet<User>>(context.Set<User>());
             Assert.IsInstanceOf<DbSet<Comment>>(context.Set<Comment>());
