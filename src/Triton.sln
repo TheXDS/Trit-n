@@ -44,17 +44,23 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Triton.Tests.Shared", "Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bundles", "Bundles", "{0C91A362-44B0-4474-B156-F611C8281B1B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Diagnostics", "C:\Users\xds_x\source\repos\thexds\Triton\src\Bundles\Triton.Diagnostics\Triton.Diagnostics.csproj", "{300F1D78-4A71-49EE-9F96-724088510E55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Diagnostics", "Bundles\Triton.Diagnostics\Triton.Diagnostics.csproj", "{300F1D78-4A71-49EE-9F96-724088510E55}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.CrudNotify", "C:\Users\xds_x\source\repos\thexds\Triton\src\Bundles\Triton.CrudNotify\Triton.CrudNotify.csproj", "{DB49349A-CD91-494D-AF1E-393184006996}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.CrudNotify", "Bundles\Triton.CrudNotify\Triton.CrudNotify.csproj", "{DB49349A-CD91-494D-AF1E-393184006996}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Faker", "C:\Users\xds_x\source\repos\thexds\Triton\src\Bundles\Triton.Faker\Triton.Faker.csproj", "{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Faker", "Bundles\Triton.Faker\Triton.Faker.csproj", "{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests", "Tests\Triton.Tests\Triton.Tests.csproj", "{9F06A204-134A-44D5-B35C-F5CC52BB7810}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.EFContextBuilder", "Tests\Triton.Tests.EFContextBuilder\Triton.Tests.EFContextBuilder.csproj", "{8558D568-1D6A-471E-8BC7-2B64AABB7E26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.EfContextBuilder", "Bundles\Triton.EfContextBuilder\Triton.EfContextBuilder.csproj", "{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{7BB81112-849A-40BA-B5AB-1513F717F168}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
+		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -199,6 +205,7 @@ Global
 		{9F06A204-134A-44D5-B35C-F5CC52BB7810} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 		{8558D568-1D6A-471E-8BC7-2B64AABB7E26} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 		{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7} = {0C91A362-44B0-4474-B156-F611C8281B1B}
+		{7BB81112-849A-40BA-B5AB-1513F717F168} = {73D6D032-1D9C-4CA7-98FB-19060055DD6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A45987E-24AB-4E9E-9C1F-4C8D9B1F956A}
