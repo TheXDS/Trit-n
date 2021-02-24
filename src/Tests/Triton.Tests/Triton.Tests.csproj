@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
     <ProjectReference Include="$(SolutionDir)\Core\Triton\Triton.csproj" />
   </ItemGroup>
   <Import Project="..\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
