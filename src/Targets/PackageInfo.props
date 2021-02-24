@@ -11,7 +11,7 @@
     <PackageTags>triton entity mcart database dynamic</PackageTags>
     <RepositoryUrl>https://github.com/TheXDS/Triton/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>Tritón Framework es una herramienta de rápido desarrollo de software con conexiones a datos mediante Entity Framework.</Description>
+    <Description>Tritón Framework es una herramienta de rápido desarrollo de software con conexiones a datos mediante Entity Framework u otros proveedores de datos.</Description>
   </PropertyGroup>
   <PropertyGroup Condition="'$(VersionSuffix)'==''">
     <ActualPkgVersion>$(VersionPrefix)</ActualPkgVersion>

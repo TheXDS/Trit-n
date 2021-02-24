@@ -17,12 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{7DE3
 	ProjectSection(SolutionItems) = preProject
 		Targets\BuildPaths.props = Targets\BuildPaths.props
 		Targets\CompileOptions.targets = Targets\CompileOptions.targets
-		Targets\Components.targets = Targets\Components.targets
 		Targets\GlobalDirectives.targets = Targets\GlobalDirectives.targets
 		Targets\PackageInfo.props = Targets\PackageInfo.props
 		Targets\PackageVersion.props = Targets\PackageVersion.props
-		Targets\Publish.targets = Targets\Publish.targets
-		Targets\Triton.xsd = Targets\Triton.xsd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3344971D-A100-47A5-A94C-5AD7556909BF}"
@@ -30,9 +27,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Models", "Core\Triton.Models\Triton.Models.csproj", "{C5489EA9-48EC-427A-8916-820F2D0A2D0D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transport", "Transport", "{28F78FBF-F25F-4E65-9C99-0B4CB1F328EA}"
-	ProjectSection(SolutionItems) = preProject
-		Transport\Directory.Build.targets = Transport\Directory.Build.targets
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.EFCore", "Transport\Triton.EFCore\Triton.EFCore.csproj", "{CCCC192F-0BF3-46B4-85CC-B5F0F603BE64}"
 EndProject
