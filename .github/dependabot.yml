@@ -1,0 +1,36 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Microsoft.EntityFrameworkCore.SqlServer
+    versions:
+    - 5.0.2
+    - 5.0.4
+  - dependency-name: Microsoft.EntityFrameworkCore
+    versions:
+    - 5.0.2
+    - 5.0.4
+  - dependency-name: Microsoft.EntityFrameworkCore.InMemory
+    versions:
+    - 5.0.2
+    - 5.0.4
+  - dependency-name: Microsoft.NET.Test.Sdk
+    versions:
+    - 16.9.1
+  - dependency-name: TheXDS.MCART
+    versions:
+    - 0.13.0-a016
+    - 0.13.0-a021
+    - 0.14.0
+  - dependency-name: TheXDS.MCART.Ext.TypeFactory
+    versions:
+    - 0.13.0
+    - 0.14.0
+  - dependency-name: NUnit
+    versions:
+    - 3.13.0
