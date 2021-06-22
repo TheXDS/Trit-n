@@ -150,7 +150,7 @@ namespace TheXDS.Triton.Services.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool ChkIdType<T>(Type idType)
+        private static bool ChkIdType<T>(Type idType)
         {
             return typeof(Model<>).MakeGenericType(idType).IsAssignableFrom(typeof(T));
         }

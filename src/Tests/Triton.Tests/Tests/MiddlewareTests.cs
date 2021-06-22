@@ -11,7 +11,7 @@ namespace TheXDS.Triton.Tests
 {
     public partial class MiddlewareTests
     {
-        private readonly Service _srv = new Service(new InMemoryTransFactory());
+        private readonly Service _srv = new(new InMemoryTransFactory());
         
         //[Test]
         public void RunMiddlewareTest()
@@ -34,6 +34,7 @@ namespace TheXDS.Triton.Tests
             {
                 if (!epilogDidRun)
                 {
+                    Assert.True(prologDidRun);
                     Assert.AreEqual(CrudAction.Create, arg1);
                     Assert.IsInstanceOf<Post>(arg2);
                     Assert.AreNotEqual("0", arg2!.IdAsString);

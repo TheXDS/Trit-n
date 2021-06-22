@@ -1,11 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 using TheXDS.MCART.Resources;
 
-namespace TheXDS.Triton.Resources
+namespace TheXDS.Triton.Faker.Resources
 {
     internal static class StringTables
     {
-        private static readonly StringUnpacker _u = new StringUnpacker(typeof(StringTables).Assembly, typeof(StringTables).FullName!);
+        private static readonly StringUnpacker _u = new(typeof(StringTables).Assembly, typeof(StringTables).FullName!);
 
         private static string[]? _femaleNames = null;
         private static string[]? _maleNames = null;
@@ -19,7 +19,7 @@ namespace TheXDS.Triton.Resources
 
         private static string[] Unpack(ref string[]? array, [CallerMemberName]string id = null!)
         {
-            return array ??= _u.Unpack(id.ToLower()).Split(',');
+            return array ??= _u.Unpack(id.ToLower(), new DeflateGetter()).Split(',');
         }
     }
 }

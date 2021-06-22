@@ -11,7 +11,7 @@ namespace TheXDS.Triton.Middleware
     /// </summary>
     public static class CrudNotifier
     {
-        private static readonly List<ICrudNotifier> _notifiers = new List<ICrudNotifier>();
+        private static readonly List<ICrudNotifier> _notifiers = new();
         
         /// <summary>
         /// Agrega una nueva instancia de un servicio de notificación de

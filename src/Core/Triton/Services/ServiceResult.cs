@@ -26,7 +26,7 @@ namespace TheXDS.Triton.Services
                 FailureReason.NotFound => St.EntityNotFound,
                 FailureReason.BadQuery => St.BadQuery,
                 FailureReason.QueryOverLimit => St.QueryOverLimit,
-                FailureReason f => f.NameOf() ?? f.ToString("X").PadLeft(8, '0'),
+                _ => reason.NameOf() ?? reason.ToString("X").PadLeft(8, '0'),
             };
         }
 
@@ -478,14 +478,14 @@ namespace TheXDS.Triton.Services
         /// Excepción desde la cual obtener el mensaje y un código de error
         /// asociado.
         /// </param>
-        public static implicit operator ServiceResult<T>(Exception ex) => new ServiceResult<T>(ex);
+        public static implicit operator ServiceResult<T>(Exception ex) => new(ex);
 
         /// <summary>
         /// Convierte implícitamente un <see cref="string"/> en un
         /// <see cref="ServiceResult{T}"/>.
         /// </summary>
         /// <param name="message">Mensaje descriptivo del resultado.</param>
-        public static implicit operator ServiceResult<T>(string message) => new ServiceResult<T>(message);
+        public static implicit operator ServiceResult<T>(string message) => new(message);
 
         /// <summary>
         /// Convierte implícitamente un <see cref="FailureReason"/> en un
@@ -494,6 +494,6 @@ namespace TheXDS.Triton.Services
         /// <param name="reason">
         /// Motivo por el cual la operación ha fallado.
         /// </param>
-        public static implicit operator ServiceResult<T>(in FailureReason reason) => new ServiceResult<T>(reason);
+        public static implicit operator ServiceResult<T>(in FailureReason reason) => new(reason);
     }
 }

@@ -3,12 +3,23 @@ using System.Linq;
 using System.Text;
 using TheXDS.MCART.Math;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.Resources;
-using static TheXDS.MCART.Common;
+using TheXDS.Triton.Faker.Resources;
 using static TheXDS.Triton.Fakers.Globals;
 
 namespace TheXDS.Triton.Fakers
 {
+    /// <summary>
+    /// Objeto que describe una ubicación física completa.
+    /// </summary>
+    public record Address(string AddressLine, string? AddressLine2, string City, string Country, ushort Zip)
+    {
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $@"{string.Join(System.Environment.NewLine, new[] { AddressLine, AddressLine2, $"{City}, {Country} {Zip}" }.NotNull())}";
+        }
+    }
+
     /// <summary>
     /// Contiene funciones auxiliares de generación de texto aleatorio.
     /// </summary>
@@ -18,14 +29,33 @@ namespace TheXDS.Triton.Fakers
         /// Genera una dirección física aleatoria.
         /// </summary>
         /// <returns>Una dirección física aleatoria.</returns>
-        public static string FakeAddress()
+        public static Address GetAddress()
         {
-            var l = new List<string>();
-            if (_rnd.CoinFlip()) l.Add(_rnd.Next(1, 300).ToString());
-            if (_rnd.CoinFlip()) l.Add(new[] { "N", "NE", "E", "SE", "S", "SW", "W", "NW" }.Pick());
-            l.Add(_rnd.CoinFlip() ? StringTables.Surnames.Pick() : new[] { "1st", "2nd", "3rd" }.Concat(Sequence(4, 100).Select(p => $"{p}th")).Pick());
-            l.Add(new[] { "Ave.", "Road", "Street", "Highway" }.Pick());
-            return string.Join(' ', l);
+            static string RndAddress()
+            {
+                var l = new List<string>();
+                if (_rnd.CoinFlip()) l.Add(_rnd.Next(1, 300).ToString());
+                if (_rnd.CoinFlip()) l.Add(new[] { "N", "NE", "E", "SE", "S", "SW", "W", "NW" }.Pick());
+                l.Add(_rnd.CoinFlip() ? Capitalize(StringTables.Surnames.Pick()) : GetOrdinal(_rnd.Next(1, 130)));
+                l.Add(new[] { "Ave.", "Road", "Street", "Highway" }.Pick());
+                return string.Join(' ', l);
+            }
+            static string? RndLine2() => _rnd.CoinFlip() ? $"{new[] { "#", "Apt.", "House" }.Pick()} {_rnd.Next(1, 9999)}" : null;
+            static string RndCity() => string.Join(' ', new string?[] { Capitalize(StringTables.Surnames.Pick()), _rnd.CoinFlip() ? "City" : null }.NotNull());
+            static string RndCountry() => new System.Globalization.RegionInfo(System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).Pick().Name).EnglishName;
+
+            return new(RndAddress(), RndLine2(), RndCity(), RndCountry(), (ushort)_rnd.Next(10001, 99999));
+        }
+
+        private static string GetOrdinal(int value)
+        {
+            return value.ToString().Last() switch
+            {
+                '1' => $"{value}st",
+                '2' => $"{value}nd",
+                '3' => $"{value}rd",
+                _ => $"{value}th"
+            };
         }
 
         /// <summary>
@@ -38,9 +68,39 @@ namespace TheXDS.Triton.Fakers
         /// </returns>
         public static string Lorem(in int words)
         {
-            const double delta = 0.3;  // Delta de variación, en %
-            const double wps = 8;      // Palabras por oración
-            const double spp = 6;      // Oraciones por párrafo.
+            return Lorem(words, 7, 4);
+        }
+
+        /// <summary>
+        /// Obtiene un texto aleatorio de tipo Lorem con la cantidad de
+        /// palabras especificadas.
+        /// </summary>
+        /// <param name="words">Cantidad de palabras a generar.</param>
+        /// <param name="wordsPerSentence">Palabras por oración.</param>
+        /// <param name="sentencesPerParagraph">Oraciones por párrafo.</param>
+        /// <returns>
+        /// Un texto aleatorio de tipo Lorem Ipsum.
+        /// </returns>
+        public static string Lorem(in int words, in int wordsPerSentence, in int sentencesPerParagraph)
+        {
+            return Lorem(words, wordsPerSentence, sentencesPerParagraph, 0.3);
+        }
+
+        /// <summary>
+        /// Obtiene un texto aleatorio de tipo Lorem con la cantidad de
+        /// palabras especificadas.
+        /// </summary>
+        /// <param name="words">Cantidad de palabras a generar.</param>
+        /// <param name="wordsPerSentence">Palabras por oración.</param>
+        /// <param name="sentencesPerParagraph">Oraciones por párrafo.</param>
+        /// <param name="delta">Delta de variación, en %</param>
+        /// <returns>
+        /// Un texto aleatorio de tipo Lorem Ipsum.
+        /// </returns>
+        public static string Lorem(in int words, in int wordsPerSentence, in int sentencesPerParagraph, in double delta)
+        {
+            double wps = wordsPerSentence;
+            double spp = sentencesPerParagraph;
 
             var text = new StringBuilder();
             
@@ -57,24 +117,36 @@ namespace TheXDS.Triton.Fakers
 
                 if (swc > wps.Variate(delta))
                 {
-                    text.Append(". ");
-                    swc = 0;
-                    psc++;
+                    if (_rnd.CoinFlip())
+                    {
+                        text.Append('.');
+                        psc++;
+                        swc = 0;
+                    }
+                    else
+                    {
+                        text.Append(',');
+                        swc = 1;
+                    }
+                    if (psc > spp.Variate(delta))
+                    {
+                        text.AppendLine();
+                        psc = 0;
+                        swc = 0;
+                    }
+                    else
+                    {
+                        text.Append(' ');
+                    }
                 }
-                if (psc > spp.Variate(delta))
+                else
                 {
-                    text.AppendLine(".");
-                    psc = 0;
-                    swc = 0;
+                    text.Append(' ');
                 }
+
             } while (twc < words);
 
-            return text.ToString();
-        }
-
-        private static string Capitalize(string value)
-        {
-            return value.Substring(0, 1).ToUpper() + value.Substring(1).ToLower();
+            return swc != 0 ? $"{text.ToString().TrimEnd()}." : text.ToString();
         }
     }
 }

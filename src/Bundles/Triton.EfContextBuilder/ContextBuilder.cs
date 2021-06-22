@@ -2,12 +2,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using TheXDS.MCART;
+using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
 
-namespace Triton.EfContextBuilder
+namespace TheXDS.Triton
 {
     /// <summary>
     /// Contiene métodos para gestionar la generación dinámica de contextos de

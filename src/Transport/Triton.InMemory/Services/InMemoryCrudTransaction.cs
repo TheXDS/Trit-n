@@ -18,9 +18,9 @@ namespace TheXDS.Triton.InMemory.Services
     /// </summary>
     public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     {
-        private static readonly List<Model> Models = new List<Model>();
+        private static readonly List<Model> Models = new();
 
-        private readonly List<Model> _temp = new List<Model>();
+        private readonly List<Model> _temp = new();
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase

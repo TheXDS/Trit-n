@@ -48,7 +48,7 @@ namespace TheXDS.Triton.Tests
 
     public class CrudOpsTests
     {
-        private readonly Service _srv = new Service(new InMemoryTransFactory());
+        private readonly Service _srv = new(new InMemoryTransFactory());
 
         [Test]
         public void GetTransactionTest()

@@ -46,7 +46,7 @@ namespace TheXDS.Triton.Services.Base
                 var m = GetType().GetMethod(nameof(Create), new Type[] { g.Key })!;
                 foreach (var j in g)
                 {
-                    var r = (ServiceResult)m.Invoke(this,new object[] { j })!;
+                    var r = (ServiceResult)m.Invoke(this, new object[] { j })!;
                     if (!r.Success) return r;
                 }
             }

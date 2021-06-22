@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TheXDS.Triton.Models;
-using Triton.EfContextBuilder;
+using TheXDS.Triton;
 
 namespace Triton.Tests.EFContextBuilder
 {
@@ -18,13 +18,18 @@ namespace Triton.Tests.EFContextBuilder
         [Test]
         public void ParametricInstancingBuilderTest()
         {
-            var b = ContextBuilder.Build(new[] { typeof(Comment), typeof(Post), typeof(User) }, ConfigTest).New();
-            Assert.IsInstanceOf<DbContext>(b);
-            TestContextSets(b);
+            TestContext(ContextBuilder.Build(new[] { typeof(Comment), typeof(Post), typeof(User) }, ConfigTest).New());
         }
 
-        private static void TestContextSets(DbContext context)
+        [Test]
+        public void AutomaticInstancingBuilderTest()
         {
+            TestContext(ContextBuilder.Build(ConfigTest).New());
+        }
+
+        private static void TestContext(DbContext context)
+        {
+            Assert.IsInstanceOf<DbContext>(context);
             Assert.IsInstanceOf<DbSet<User>>(context.Set<User>());
             Assert.IsInstanceOf<DbSet<Comment>>(context.Set<Comment>());
             Assert.IsInstanceOf<DbSet<Post>>(context.Set<Post>());

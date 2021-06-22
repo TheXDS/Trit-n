@@ -18,9 +18,9 @@ namespace TheXDS.Triton.InMemory.Services
     /// </summary>
     public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     {
-        private static readonly List<Model> Store = new List<Model>();
+        private static readonly List<Model> Store = new();
 
-        private readonly List<Model> _temp = new List<Model>();
+        private readonly List<Model> _temp = new();
 
         /// <summary>
         /// Limpia la base de datos en memoria.

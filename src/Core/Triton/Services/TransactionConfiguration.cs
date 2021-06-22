@@ -13,7 +13,7 @@ namespace TheXDS.Triton.Services
     {
         private class MiddlewareActionList : IMiddlewareActionList, IEnumerable<MiddlewareAction>
         {
-            private readonly List<MiddlewareAction> _list = new List<MiddlewareAction>();
+            private readonly List<MiddlewareAction> _list = new();
             private int _tail = 0;
 
             public void AddFirst(MiddlewareAction item)
@@ -57,8 +57,8 @@ namespace TheXDS.Triton.Services
             Late
         }
 
-        private readonly MiddlewareActionList _prologs = new MiddlewareActionList();
-        private readonly MiddlewareActionList _epilogs = new MiddlewareActionList();
+        private readonly MiddlewareActionList _prologs = new();
+        private readonly MiddlewareActionList _epilogs = new();
 
         /// <summary>
         /// Agrega las acciones de un Middleware a ejecutar durante una

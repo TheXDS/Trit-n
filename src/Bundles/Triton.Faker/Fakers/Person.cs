@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.Resources;
+using TheXDS.Triton.Faker.Resources;
 using static TheXDS.Triton.Fakers.Globals;
 
 namespace TheXDS.Triton.Fakers
@@ -57,8 +58,8 @@ namespace TheXDS.Triton.Fakers
 
         private Person(string firstName, string surname, Gender gender, DateTime birth)
         {
-            FirstName = firstName;
-            Surname = surname;
+            FirstName = Capitalize(firstName);
+            Surname = Capitalize(surname);
             Gender = gender;
             Birth = birth;
         }
@@ -158,8 +159,9 @@ namespace TheXDS.Triton.Fakers
         /// Un nombre de usuario aleatorio basado en las propiedades de la 
         /// persona especificada.
         /// </returns>
-        public static string FakeUsername(Person person)
+        public static string FakeUsername(Person? person)
         {
+            person ??= Someone();
             var sb = new StringBuilder();
             var rounds = _rnd.Next(1, 4);
             sb.Append(new[] { person.Surname, person.FirstName, StringTables.Lorem.Pick() }.Pick());
@@ -190,5 +192,52 @@ namespace TheXDS.Triton.Fakers
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Genera una dirección de correo electrónico aleatoria para el objeto
+        /// <see cref="Person"/> especificado.
+        /// </summary>
+        /// <param name="person">
+        /// Persona para la cual generar la dirección de correo.
+        /// </param>
+        /// <returns>
+        /// Una dirección de correo con un formato válido. Subsecuentes
+        /// llamadas a este método podrán obtener direcciones de correo del
+        /// mismo dominio.
+        /// </returns>
+        public static string FakeEmail(Person? person)
+        {
+            return $"{FakeUsername(person ?? Someone())}@{(fakeDomains ??=LoadDomains()).Pick()}";
+        }
+
+        /// <summary>
+        /// Genera una dirección de correo totalmente aleatoria.
+        /// </summary>
+        /// <returns>
+        /// Una dirección de correo con un formato válido. Subsecuentes
+        /// llamadas a este método podrán obtener direcciones de correo del
+        /// mismo dominio.
+        /// </returns>
+        public static string FakeEmail()
+        {
+            return $"{FakeUsername()}@{(fakeDomains ??= LoadDomains()).Pick()}";
+        }
+
+        private static string[] LoadDomains()
+        {
+            string[] top = { "com", "net", "edu", "gov" };
+            List<string> domains = new();
+            while (domains.Count < 5)
+            {
+                domains.Add($"{GetName()}{GetName()}.{top.Pick()}");
+            }return domains.ToArray();
+        }
+
+        private static string GetName()
+        {
+            return new[] { StringTables.MaleNames, StringTables.FemaleNames, StringTables.Surnames, StringTables.Lorem }.Pick().Pick();
+        }
+
+        private static string[]? fakeDomains;
     }
 }

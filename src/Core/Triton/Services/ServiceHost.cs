@@ -16,7 +16,7 @@ namespace TheXDS.Triton.Services
     /// </summary>
     public class ServiceHost : ICollection<IService>
     {
-        private readonly List<IService> _services = new List<IService>();
+        private readonly List<IService> _services = new();
 
         /// <summary>
         /// Obtiene la cuenta de servicios hospedados en esta instancia.
@@ -124,11 +124,11 @@ namespace TheXDS.Triton.Services
             {
                 switch (item)
                 {
-                    case IDisposable i:
-                        i.Dispose();
-                        break;
                     case IAsyncDisposable a:
                         await a.DisposeAsync().ConfigureAwait(false);
+                        break;
+                    case IDisposable i:
+                        i.Dispose();
                         break;
                 }
             }

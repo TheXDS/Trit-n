@@ -16,8 +16,8 @@ namespace TheXDS.Triton.Middleware
     /// </summary>
     public class PerformanceMonitor : INotifyPropertyChanged, ITransactionMiddleware
     {
-        private readonly List<double> _events = new List<double>();
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly List<double> _events = new();
+        private readonly Stopwatch _stopwatch = new();
         
         /// <summary>
         /// Ocurre cuando se ha producido la acción Crud
@@ -55,11 +55,11 @@ namespace TheXDS.Triton.Middleware
         public double MaxMs => Get(Enumerable.Max);
 
         /// <summary>
-        /// Reinicia los contadores de desempeño de esta instancia.
+        /// Reinicia los contadores de rendimiento de esta instancia.
         /// </summary>
         public void Reset() => _events.Clear();
 
-        private double Get(Func<List<double>, double> func)
+        private double Get(Func<IEnumerable<double>, double> func)
         {
             return _events.Any() ? func(_events) : double.NaN;
         }

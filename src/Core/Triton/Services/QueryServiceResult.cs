@@ -35,7 +35,7 @@ namespace TheXDS.Triton.Services
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
-        /// <see cref="QueryServiceResult{T}"/> exioso sin resultados.
+        /// <see cref="QueryServiceResult{T}"/> exitoso sin resultados.
         /// </summary>
         public QueryServiceResult()
         {
@@ -112,14 +112,14 @@ namespace TheXDS.Triton.Services
         /// Excepción desde la cual obtener el mensaje y un código de error
         /// asociado.
         /// </param>
-        public static implicit operator QueryServiceResult<T>(Exception ex) => new QueryServiceResult<T>(ex);
+        public static implicit operator QueryServiceResult<T>(Exception ex) => new(ex);
 
         /// <summary>
         /// Convierte implícitamente un <see cref="string"/> en un
         /// <see cref="ServiceResult{T}"/>.
         /// </summary>
         /// <param name="message">Mensaje descriptivo del resultado.</param>
-        public static implicit operator QueryServiceResult<T>(string message) => new QueryServiceResult<T>(message);
+        public static implicit operator QueryServiceResult<T>(string message) => new(message);
 
         /// <summary>
         /// Convierte implícitamente un <see cref="FailureReason"/> en un
@@ -128,6 +128,6 @@ namespace TheXDS.Triton.Services
         /// <param name="reason">
         /// Motivo por el cual la operación ha fallado.
         /// </param>
-        public static implicit operator QueryServiceResult<T>(in FailureReason reason) => new QueryServiceResult<T>(reason);
+        public static implicit operator QueryServiceResult<T>(in FailureReason reason) => new(reason);
     }
 }
