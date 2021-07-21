@@ -49,11 +49,12 @@ namespace TheXDS.Triton.Fakers
 
         private static string GetOrdinal(int value)
         {
+            var l = value.ToString().PadLeft(2, '0')[..2];
             return value.ToString().Last() switch
             {
-                '1' => $"{value}st",
-                '2' => $"{value}nd",
-                '3' => $"{value}rd",
+                '1' when l != "11" => $"{value}st",
+                '2' when l != "12" => $"{value}nd",
+                '3' when l != "13" => $"{value}rd",
                 _ => $"{value}th"
             };
         }
@@ -122,21 +123,21 @@ namespace TheXDS.Triton.Fakers
                         text.Append('.');
                         psc++;
                         swc = 0;
+                        if (psc > spp.Variate(delta))
+                        {
+                            text.AppendLine();
+                            psc = 0;
+                            swc = 0;
+                        }
+                        else
+                        {
+                            text.Append(' ');
+                        }
                     }
                     else
                     {
-                        text.Append(',');
+                        text.Append(", ");
                         swc = 1;
-                    }
-                    if (psc > spp.Variate(delta))
-                    {
-                        text.AppendLine();
-                        psc = 0;
-                        swc = 0;
-                    }
-                    else
-                    {
-                        text.Append(' ');
                     }
                 }
                 else

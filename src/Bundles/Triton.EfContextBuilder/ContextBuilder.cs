@@ -22,7 +22,7 @@ namespace TheXDS.Triton
         /// </summary>
         static ContextBuilder()
         {
-            Factory = new TypeFactory($"{ReflectionHelpers.GetEntryPoint()?.DeclaringType?.Namespace ?? ReflectionHelpers.GetCallingMethod()?.DeclaringType?.Namespace ?? typeof(ContextBuilder).Namespace!}._generated", true);
+            Factory = new TypeFactory($"{ReflectionHelpers.GetEntryPoint()?.DeclaringType?.Namespace ?? ReflectionHelpers.GetCallingMethod()?.DeclaringType?.Namespace ?? typeof(ContextBuilder).Namespace ?? nameof(ContextBuilder)}._generated", true);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace TheXDS.Triton
             var t = Factory.NewType<DbContext>("DynamicDbContext");
             foreach (var j in models)
             {
-                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es":"s")}", typeof(DbSet<>).MakeGenericType(j));
+                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
             }
             if (staticCallback is { Method: MethodInfo callback })
             {

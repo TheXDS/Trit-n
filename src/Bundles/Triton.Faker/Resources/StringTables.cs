@@ -12,9 +12,25 @@ namespace TheXDS.Triton.Faker.Resources
         private static string[]? _surnames = null;
         private static string[]? _lorem = null;
 
+        /// <summary>
+        /// Obtiene un arreglo de nombres femeninos conocidos.
+        /// </summary>
         public static string[] FemaleNames => Unpack(ref _femaleNames);
+
+        /// <summary>
+        /// Obtiene un arreglo de nombres masculinos conocidos.
+        /// </summary>
         public static string[] MaleNames => Unpack(ref _maleNames);
+
+        /// <summary>
+        /// Obtiene un arreglo de apellidos conocidos.
+        /// </summary>
         public static string[] Surnames => Unpack(ref _surnames);
+
+        /// <summary>
+        /// Obtiene un arreglo de palabas en latín para la generación de texto
+        /// de tipo Lorem Ipsum.
+        /// </summary>
         public static string[] Lorem => Unpack(ref _lorem);
 
         private static string[] Unpack(ref string[]? array, [CallerMemberName]string id = null!)

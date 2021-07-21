@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using TheXDS.MCART.Events;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services;
+﻿using TheXDS.MCART.Math;
 
 namespace TheXDS.Triton.Middleware
 {
@@ -14,80 +6,50 @@ namespace TheXDS.Triton.Middleware
     /// Middleware que permite obtener información específica sobre el
     /// tiempo que toma ejecutar acciones Crud.
     /// </summary>
-    public class PerformanceMonitor : INotifyPropertyChanged, ITransactionMiddleware
+    public class PerformanceMonitor : PerformanceMonitorBase
     {
-        private readonly List<double> _events = new();
-        private readonly Stopwatch _stopwatch = new();
-        
-        /// <summary>
-        /// Ocurre cuando se ha producido la acción Crud
-        /// <see cref="CrudAction.Commit"/>.
-        /// </summary>
-        public event EventHandler<ValueEventArgs<double>>? Elapsed;
+        private int evt;
+        private double avg;
+        private double min;
+        private double max;
+
+        /// <inheritdoc/>
+        public override int EventCount => evt;
+
+        /// <inheritdoc/>
+        public override double AverageMs => avg;
+
+        /// <inheritdoc/>
+        public override double MinMs => min;
+
+        /// <inheritdoc/>
+        public override double MaxMs => max;
 
         /// <summary>
-        /// Ocurre cuando el valor de una propiedad ha cambiado.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="PerformanceMonitor"/>.
         /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        /// <summary>
-        /// Obtiene la cantidad de eventos de guardado registrados por esta
-        /// instancia.
-        /// </summary>
-        public int EventCount => _events.Count;
-
-        /// <summary>
-        /// Obtiene el tiempo promedio en milisegundos que han tomado las
-        /// operaciones de guardado.
-        /// </summary>
-        public double AverageMs => Get(Enumerable.Average);
-
-        /// <summary>
-        /// Obtiene la cantidad de tiempo en milisegundos que ha tomado la
-        /// operación de guardado más corta.
-        /// </summary>
-        public double MinMs => Get(Enumerable.Min);
-
-        /// <summary>
-        /// Obtiene la cantidad de tiempo en milisegundos que ha tomado la
-        /// operación de guardado más larga.
-        /// </summary>
-        public double MaxMs => Get(Enumerable.Max);
-
-        /// <summary>
-        /// Reinicia los contadores de rendimiento de esta instancia.
-        /// </summary>
-        public void Reset() => _events.Clear();
-
-        private double Get(Func<IEnumerable<double>, double> func)
+        public PerformanceMonitor()
         {
-            return _events.Any() ? func(_events) : double.NaN;
+            Reset();
         }
 
-        internal ServiceResult? BeforeAction(CrudAction arg1, Model? _)
+        /// <inheritdoc/>
+        protected override void OnReset()
         {
-            if (arg1.HasFlag(CrudAction.Commit)) _stopwatch.Restart();
-            return null;
+            avg = double.NaN;
+            evt = 0;
+            min = double.NaN;
+            max = double.NaN;
         }
 
-        internal ServiceResult? AfterAction(CrudAction arg1, Model? _)
+        /// <inheritdoc/>
+        protected override void RegisterEvent(double milliseconds)
         {
-            if (arg1.HasFlag(CrudAction.Commit))
-            {
-                _stopwatch.Stop();
-                Elapsed?.Invoke(this, _stopwatch.Elapsed.TotalMilliseconds.PushInto(_events));
-
-                Notify(nameof(EventCount));
-                Notify(nameof(AverageMs));
-                Notify(nameof(MinMs));
-                Notify(nameof(MaxMs));
-            }
-            return null;
-        }
-
-        private void Notify(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (!avg.IsValid()) avg = 0.0;
+            if (milliseconds > max || !max.IsValid()) max = milliseconds;
+            else if (milliseconds < min || !min.IsValid()) min = milliseconds;
+            avg = (avg * evt + milliseconds) / ++evt;
         }
     }
 }
