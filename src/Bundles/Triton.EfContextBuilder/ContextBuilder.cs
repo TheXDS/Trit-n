@@ -6,6 +6,8 @@ using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
+using TheXDS.Triton.Services;
+using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Triton
 {
@@ -33,7 +35,7 @@ namespace TheXDS.Triton
         /// Modelos de datos a incorporar como parte del contexto de datos a
         /// generar.
         /// </param>
-        /// <param name="staticCallback">
+        /// <param name="setupCallback">
         /// Método a invocar para configurar externamente el contexto de datos
         /// generado.
         /// </param>
@@ -41,7 +43,7 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
-        public static TypeBuilder<DbContext> Build(Type[] models, Action<DbContextOptionsBuilder>? staticCallback)
+        public static TypeBuilder<DbContext> Build(Type[] models, Action<DbContextOptionsBuilder>? setupCallback)
         {
             if (models.Any(p => !p.Implements<Model>())) throw new ArgumentException(null, nameof(models));
             var t = Factory.NewType<DbContext>("DynamicDbContext");
@@ -49,7 +51,7 @@ namespace TheXDS.Triton
             {
                 t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
             }
-            if (staticCallback is { Method: MethodInfo callback })
+            if (setupCallback is { Method: MethodInfo callback })
             {
                 if (!callback.IsStatic) throw new InvalidOperationException();
                 if (typeof(DbContext).GetMethod("OnConfiguring", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(DbContextOptionsBuilder) }, null) is { } oc)
@@ -97,5 +99,22 @@ namespace TheXDS.Triton
         /// nuevo contexto de datos.
         /// </returns>
         public static TypeBuilder<DbContext> Build(Action<DbContextOptionsBuilder>? configurationCallback) => Build(Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
+
+        /// <summary>
+        /// Obtiene un <see cref="ITransactionFactory"/> conectado a un
+        /// contexto de datos de Entity Framework Core generado dinámicamente.
+        /// </summary>
+        /// <param name="type">
+        /// Constructor de tipos utilizado para generar un contexto de datos de
+        /// Entity Framework Core.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="ITransactionFactory"/> conectado a un contexto de
+        /// datos de Entity Framework Core generado dinámicamente.
+        /// </returns>
+        public static ITransactionFactory GetEfTransFactory(this TypeBuilder<DbContext> type)
+        {
+            return typeof(EfCoreTransFactory<>).MakeGenericType(type.Builder.CreateType()!).New<ITransactionFactory>();
+        }
     }
 }
