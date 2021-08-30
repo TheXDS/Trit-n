@@ -58,7 +58,7 @@ namespace TheXDS.Triton.Services.Base
             return ex switch
             {
                 null => throw new ArgumentNullException(nameof(ex)),
-                DataNotFoundException _ => NotFound,
+                NullReferenceException _ => NotFound,
                 TaskCanceledException _ => NetworkFailure,
                 DbUpdateConcurrencyException _ => ConcurrencyFailure,
                 DbUpdateException _ => DbFailure,
