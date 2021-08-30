@@ -46,7 +46,7 @@ namespace TheXDS.Triton
         public static TypeBuilder<DbContext> Build(Type[] models, Action<DbContextOptionsBuilder>? setupCallback)
         {
             if (models.Any(p => !p.Implements<Model>())) throw new ArgumentException(null, nameof(models));
-            var t = Factory.NewType<DbContext>("DynamicDbContext");
+            var t = Factory.NewType<DbContext>($"DynamicDbContext_{models.Aggregate(0, (a, j) => a ^ j.GetHashCode())}");
             foreach (var j in models)
             {
                 t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
