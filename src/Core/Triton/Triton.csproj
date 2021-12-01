@@ -3,7 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>    
-    <PackageReference Include="TheXDS.MCART" Version="0.15.0.1" />
+    <PackageReference Include="TheXDS.MCART" Version="0.15.1" />
     <ProjectReference Include="..\Triton.Models\Triton.Models.csproj" />
     <Compile Update="Resources\Strings.Designer.cs">
       <DesignTime>True</DesignTime>
