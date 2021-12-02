@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using static TheXDS.MCART.Types.Extensions.EnumExtensions;
-using St = TheXDS.Triton.Resources.Strings;
+using St = TheXDS.Triton.Resources.Strings.Common;
 
 namespace TheXDS.Triton.Services
 {

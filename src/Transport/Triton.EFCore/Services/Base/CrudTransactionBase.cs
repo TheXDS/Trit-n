@@ -58,7 +58,7 @@ namespace TheXDS.Triton.Services.Base
             return ex switch
             {
                 null => throw new ArgumentNullException(nameof(ex)),
-                DataNotFoundException _ => NotFound,
+                //DataNotFoundException _ => NotFound,
                 TaskCanceledException _ => NetworkFailure,
                 DbUpdateConcurrencyException _ => ConcurrencyFailure,
                 DbUpdateException _ => DbFailure,
@@ -196,7 +196,7 @@ namespace TheXDS.Triton.Services.Base
             try
             {
                 if (_configuration.RunProlog(action, entity) is { } r) return r.CastUp<ServiceResult<TModel?>>();
-                var result = await op.Throwable();
+                var result = await op;
                 return _configuration.RunEpilog(action, result as Model ?? entity)?.CastUp<ServiceResult<TModel?>>()
                     ?? new ServiceResult<TModel?>(result ?? entity);
             }

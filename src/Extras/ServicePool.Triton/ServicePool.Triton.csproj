@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.Ext.TypeFactory" Version="0.15.1" />
+    <PackageReference Include="TheXDS.ServicePool" Version="0.1.0-a002" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
     <ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
   </ItemGroup>
 

@@ -9,7 +9,7 @@ namespace TheXDS.Triton.Services
     /// Objeto que provee de configuración y otros servicios a las
     /// transacciones Crud.
     /// </summary>
-    public class TransactionConfiguration
+    public class TransactionConfiguration : IMiddlewareConfigurator
     {
         private class MiddlewareActionList : IMiddlewareActionList, IEnumerable<MiddlewareAction>
         {
@@ -60,230 +60,83 @@ namespace TheXDS.Triton.Services
         private readonly MiddlewareActionList _prologs = new();
         private readonly MiddlewareActionList _epilogs = new();
 
-        /// <summary>
-        /// Agrega las acciones de un Middleware a ejecutar durante una
-        /// operación Crud.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <param name="middleware">Middleware que será agregado.</param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration Attach<T>(T middleware) where T : ITransactionMiddleware
-        {   
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator Attach<T>(T middleware) where T : ITransactionMiddleware
+        {
             _prologs.Add(middleware.PrologAction);
             _epilogs.Add(middleware.EpilogAction);
             return this;
         }
 
-        /// <summary>
-        /// Agrega las acciones de un Middleware a ejecutar durante una
-        /// operación Crud.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <param name="middleware">Middleware que ha sido agregado.</param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
         {
-            return Attach(middleware = new T());            
+            return Attach(middleware = new T());
         }
 
-        /// <summary>
-        /// Agrega las acciones de un Middleware a ejecutar durante una
-        /// operación Crud.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration Attach<T>() where T : ITransactionMiddleware, new()
-        {            
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator Attach<T>() where T : ITransactionMiddleware, new()
+        {
             return Attach<T>(out _);
         }
 
-        /// <summary>
-        /// Agrega las acciones de un Middleware a ejecutar durante una operación Crud, especificando la posición en la cual cada acción deberá insertarse.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <param name="middleware">Middleware que será agregado.</param>
-        /// <param name="prologPosition">
-        /// Posición en la cual agregar el prólogo del 
-        /// <see cref="ITransactionMiddleware"/>.
-        /// </param>
-        /// <param name="epilogPosition">
-        /// Posición en la cual agregar el epílogo del 
-        /// <see cref="ITransactionMiddleware"/>.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AttachAt<T>(T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware
         {
             AttachAt(_prologs, middleware.PrologAction, prologPosition);
             AttachAt(_epilogs, middleware.EpilogAction, epilogPosition);
             return this;
         }
 
-        /// <summary>
-        /// Agrega con prioridad las acciones de un Middleware a ejecutar
-        /// durante una operación Crud.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <param name="middleware">Middleware que ha sido agregado.</param>
-        /// <param name="prologPosition">
-        /// Posición en la cual agregar el prólogo del 
-        /// <see cref="ITransactionMiddleware"/>.
-        /// </param>
-        /// <param name="epilogPosition">
-        /// Posición en la cual agregar el epílogo del 
-        /// <see cref="ITransactionMiddleware"/>.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AttachAt<T>(out T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AttachAt<T>(out T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
         {
-            return AttachAt(middleware = new T(), prologPosition, epilogPosition);            
+            return AttachAt(middleware = new T(), prologPosition, epilogPosition);
         }
 
-        /// <summary>
-        /// Agrega con prioridad las acciones de un Middleware a ejecutar
-        /// durante una operación Crud.
-        /// </summary>
-        /// <typeparam name="T">
-        /// Tipo de Middleware a agregar.
-        /// </typeparam>
-        /// <param name="prologPosition">
-        /// Posición en la cual agregar el prólogo del 
-        /// <see cref="ITransactionMiddleware"/>.
-        /// </param>
-        /// <param name="epilogPosition">
-        /// Posición en la cual agregar el epílogo del 
-        /// <see cref="ITransactionMiddleware"/>.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AttachAt<T>(in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AttachAt<T>(in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
         {
             return AttachAt<T>(out _, prologPosition, epilogPosition);
         }
 
-        /// <summary>
-        /// Agrega una acción a ejecutar durante el prólogo de una
-        /// operación Crud.
-        /// </summary>
-        /// <param name="func">
-        /// Función a agregar al prólogo.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AddProlog(MiddlewareAction func)
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AddProlog(MiddlewareAction func)
         {
             _prologs.Add(func);
             return this;
         }
 
-        /// <summary>
-        /// Agrega una acción a ejecutar al inicio del prólogo de una
-        /// operación Crud.
-        /// </summary>
-        /// <param name="func">
-        /// Función a agregar al prólogo.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AddFirstProlog(MiddlewareAction func)
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AddFirstProlog(MiddlewareAction func)
         {
             _prologs.AddFirst(func);
             return this;
         }
 
-        /// <summary>
-        /// Agrega una acción a ejecutar al final del prólogo de una
-        /// operación Crud.
-        /// </summary>
-        /// <param name="func">
-        /// Función a agregar al prólogo.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AddLastProlog(MiddlewareAction func)
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AddLastProlog(MiddlewareAction func)
         {
             _prologs.AddLast(func);
             return this;
         }
 
-        /// <summary>
-        /// Agrega una acción a ejecutar durante el epílogo de una
-        /// operación Crud.
-        /// </summary>
-        /// <param name="func">
-        /// Función a agregar al epílogo.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AddEpilog(MiddlewareAction func)
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AddEpilog(MiddlewareAction func)
         {
             _epilogs.Add(func);
             return this;
         }
 
-        /// <summary>
-        /// Agrega una acción a ejecutar al inicio del epílogo de una
-        /// operación Crud.
-        /// </summary>
-        /// <param name="func">
-        /// Función a agregar al epílogo.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AddFirstEpilog(MiddlewareAction func)
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AddFirstEpilog(MiddlewareAction func)
         {
             _epilogs.AddFirst(func);
             return this;
         }
 
-        /// <summary>
-        /// Agrega una acción a ejecutar al final del epílogo de una
-        /// operación Crud.
-        /// </summary>
-        /// <param name="func">
-        /// Función a agregar al epílogo.
-        /// </param>
-        /// <returns>
-        /// La misma instancia de <see cref="TransactionConfiguration"/>
-        /// para poder utilizar sintaxis Fluent.
-        /// </returns>
-        public TransactionConfiguration AddLastEpilog(MiddlewareAction func)
+        /// <inheritdoc/>
+        public IMiddlewareConfigurator AddLastEpilog(MiddlewareAction func)
         {
             _epilogs.AddLast(func);
             return this;
