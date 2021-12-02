@@ -9,7 +9,7 @@ namespace TheXDS.Triton.Services
     /// Objeto que provee de configuración y otros servicios a las
     /// transacciones Crud.
     /// </summary>
-    public class TransactionConfiguration : IMiddlewareConfigurator
+    public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunner
     {
         private class MiddlewareActionList : IMiddlewareActionList, IEnumerable<MiddlewareAction>
         {
@@ -198,6 +198,11 @@ namespace TheXDS.Triton.Services
                 if (j.Invoke(action, entity) is { } r) return r;
             }
             return null;
+        }
+
+        IMiddlewareRunner IMiddlewareConfigurator.GetRunner()
+        {
+            return this;
         }
     }
 }

@@ -43,7 +43,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo el
         /// uso de sintaxis Fluent.
         /// </returns>
-        public static TransactionConfiguration UseJournal<T>(this TransactionConfiguration config) where T : notnull, IJournalMiddleware, new()
+        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config) where T : notnull, IJournalMiddleware, new()
         {
             return config.UseJournal(new T(), default);
         }
@@ -64,7 +64,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo el
         /// uso de sintaxis Fluent.
         /// </returns>
-        public static TransactionConfiguration UseJournal<T>(this TransactionConfiguration config, T journalSingleton) where T : notnull, IJournalMiddleware, new()
+        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton) where T : notnull, IJournalMiddleware, new()
         {
             return config.UseJournal(journalSingleton, default);
         }
@@ -87,7 +87,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo el
         /// uso de sintaxis Fluent.
         /// </returns>
-        public static TransactionConfiguration UseJournal<T>(this TransactionConfiguration config, Settings configuration) where T : notnull, IJournalMiddleware, new()
+        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, Settings configuration) where T : notnull, IJournalMiddleware, new()
         {
             return config.UseJournal(new T(), configuration);
         }
@@ -113,7 +113,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo el
         /// uso de sintaxis Fluent.
         /// </returns>
-        public static TransactionConfiguration UseJournal<T>(this TransactionConfiguration config, T journalSingleton, Settings configuration) where T : notnull, IJournalMiddleware
+        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton, Settings configuration) where T : notnull, IJournalMiddleware
         {
 
             return config.AddLastEpilog((a, m) =>

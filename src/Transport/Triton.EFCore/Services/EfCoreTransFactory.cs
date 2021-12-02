@@ -25,7 +25,7 @@ namespace TheXDS.Triton.Services
         /// <see cref="EfCoreTransFactory{T}"/> para conectarse a un contexto
         /// de datos.
         /// </returns>
-        public static IService BuildService(TransactionConfiguration configuration)
+        public static IService BuildService(IMiddlewareConfigurator configuration)
         {
             return new Service(configuration, new EfCoreTransFactory<T>());
         }
@@ -56,7 +56,7 @@ namespace TheXDS.Triton.Services
         /// Una transacción que permite leer información desde el contexto de
         /// datos.
         /// </returns>
-        public ICrudReadTransaction GetReadTransaction(TransactionConfiguration configuration)
+        public ICrudReadTransaction GetReadTransaction(IMiddlewareRunner configuration)
         {
             return new CrudReadTransaction<T>(configuration);
         }
@@ -72,7 +72,7 @@ namespace TheXDS.Triton.Services
         /// Una transacción que permite escribir información desde el contexto
         /// de datos.
         /// </returns>
-        public ICrudWriteTransaction GetWriteTransaction(TransactionConfiguration configuration)
+        public ICrudWriteTransaction GetWriteTransaction(IMiddlewareRunner configuration)
         {
             return new CrudWriteTransaction<T>(configuration);
         }
@@ -88,7 +88,7 @@ namespace TheXDS.Triton.Services
         /// Una transacción que permite leer y escribir información desde el 
         /// contexto de datos.
         /// </returns>
-        public ICrudReadWriteTransaction GetTransaction(TransactionConfiguration configuration)
+        public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration)
         {
             return new CrudTransaction<T>(configuration);
         }

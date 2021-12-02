@@ -24,7 +24,7 @@ namespace TheXDS.Triton
         /// </summary>
         static ContextBuilder()
         {
-            Factory = new TypeFactory($"{ReflectionHelpers.GetEntryPoint()?.DeclaringType?.Namespace ?? ReflectionHelpers.GetCallingMethod()?.DeclaringType?.Namespace ?? typeof(ContextBuilder).Namespace ?? nameof(ContextBuilder)}._generated", true);
+            Factory = new TypeFactory($"{ReflectionHelpers.GetEntryPoint()?.DeclaringType?.Namespace ?? ReflectionHelpers.GetCallingMethod()?.DeclaringType?.Namespace ?? typeof(ContextBuilder).Namespace ?? nameof(ContextBuilder)}._generated", false);
         }
 
         /// <summary>
@@ -47,9 +47,10 @@ namespace TheXDS.Triton
         {
             if (models.Any(p => !p.Implements<Model>())) throw new ArgumentException(null, nameof(models));
             var t = Factory.NewType<DbContext>("DynamicDbContext");
+            using var sha = System.Security.Cryptography.SHA1.Create();
             foreach (var j in models)
             {
-                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
+                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}_{Convert.ToHexString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(j.Name)))}", typeof(DbSet<>).MakeGenericType(j));
             }
             if (setupCallback is { Method: MethodInfo callback })
             {

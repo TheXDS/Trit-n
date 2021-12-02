@@ -24,11 +24,11 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         /// Configuración a utilizar para la transacción.
         /// </param>
-        public CrudWriteTransaction(TransactionConfiguration configuration) : base(configuration)
+        public CrudWriteTransaction(IMiddlewareRunner configuration) : base(configuration)
         {
         }
 
-        internal CrudWriteTransaction(TransactionConfiguration configuration, T context) : base(configuration, context)
+        internal CrudWriteTransaction(IMiddlewareRunner configuration, T context) : base(configuration, context)
         {
         }
 

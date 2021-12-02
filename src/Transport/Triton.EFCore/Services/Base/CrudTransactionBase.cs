@@ -23,7 +23,7 @@ namespace TheXDS.Triton.Services.Base
         /// <summary>
         /// Obtiene la configuración disponible para esta transacción.
         /// </summary>
-        protected readonly TransactionConfiguration _configuration;
+        protected readonly IMiddlewareRunner _configuration;
 
         /// <summary>
         /// Obtiene la instancia activa del contexto de datos a utilizar
@@ -347,7 +347,7 @@ namespace TheXDS.Triton.Services.Base
         /// <param name="configuration">
         /// Configuración a utilizar para la transacción.
         /// </param>
-        protected CrudTransactionBase(TransactionConfiguration configuration) : this(configuration, new T())
+        protected CrudTransactionBase(IMiddlewareRunner configuration) : this(configuration, new T())
         {
         }
 
@@ -387,7 +387,7 @@ namespace TheXDS.Triton.Services.Base
             };
         }
 
-        private protected CrudTransactionBase(TransactionConfiguration configuration, T contextInstance)
+        private protected CrudTransactionBase(IMiddlewareRunner configuration, T contextInstance)
         {
             _configuration = configuration;
             _context = contextInstance;

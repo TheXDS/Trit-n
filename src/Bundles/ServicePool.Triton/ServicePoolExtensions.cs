@@ -27,7 +27,7 @@ namespace ServicePool.Triton
         /// </returns>
         public static ITritonConfigurable UseTriton(this TheXDS.ServicePool.ServicePool pool)
         {
-            return UseTriton(pool, _ => { });
+            return UseTriton(pool, new TransactionConfiguration());
         }
 
         /// <summary>
@@ -53,6 +53,26 @@ namespace ServicePool.Triton
                 pool.RegisterNow(tc = new());
                 middlewareConfigurator(tc);
             }
+            return new TritonConfigurable(pool);
+        }
+
+        /// <summary>
+        /// Configura un <see cref="TheXDS.ServicePool.ServicePool"/> para
+        /// hostear servicios de datos de Tritón.
+        /// </summary>
+        /// <param name="pool">
+        /// <see cref="TheXDS.ServicePool.ServicePool"/> a configurar.
+        /// </param>
+        /// <param name="configuration">
+        /// Objeto que contiene la configuración de transacciones a utilizar.
+        /// </param>
+        /// <returns>
+        /// Un objeto que puede utilizarse para configiurar los servicios de
+        /// Tritón.
+        /// </returns>
+        public static ITritonConfigurable UseTriton(this TheXDS.ServicePool.ServicePool pool, IMiddlewareConfigurator configuration)
+        {
+            pool.RegisterNow(configuration);
             return new TritonConfigurable(pool);
         }
 

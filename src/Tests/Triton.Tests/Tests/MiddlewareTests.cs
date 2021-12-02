@@ -11,11 +11,10 @@ namespace TheXDS.Triton.Tests
 {
     public partial class MiddlewareTests
     {
-        private readonly Service _srv = new(new InMemoryTransFactory());
-        
         //[Test]
         public void RunMiddlewareTest()
         {
+            Service _srv = new(new InMemoryTransFactory());
             bool prologDidRun = false, epilogDidRun = false;
 
             ServiceResult? TestProlog(CrudAction arg1, Model? arg2)

@@ -20,26 +20,38 @@ namespace ServicePool.Triton
             pool.DiscoverAll<Service>();
             foreach (var j in TheXDS.MCART.Helpers.Objects.GetTypes<DbContext>(true))
             {
-                pool.Register(() => new Service(pool.Resolve<TransactionConfiguration>()!, typeof(EfCoreTransFactory<>).MakeGenericType(j).New<ITransactionFactory>()));
+                pool.Register(() => new Service(pool.Resolve<IMiddlewareConfigurator>()!, typeof(EfCoreTransFactory<>).MakeGenericType(j).New<ITransactionFactory>()));
             }
             return this;
         }
 
         public ITritonConfigurable UseContext<T>() where T : DbContext, new()
         {
-            pool.Register(() => new Service(pool.Discover<TransactionConfiguration>() ?? new TransactionConfiguration(), new EfCoreTransFactory<T>()));
+            pool.Register(() => new Service(pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), new EfCoreTransFactory<T>()));
             return this;
         }
 
         public ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new()
         {
-            TransactionConfiguration? c = pool.Discover<TransactionConfiguration>();
-            if (c is null)
+            pool.Discover<IMiddlewareConfigurator>()!.Attach<T>();
+            return this;
+        }
+
+        public ITritonConfigurable UseTransactionPrologs(params MiddlewareAction[] actions)
+        {
+            foreach (MiddlewareAction j in actions)
             {
-                c = new TransactionConfiguration();
-                pool.RegisterNow(c);
+                pool.Discover<IMiddlewareConfigurator>()!.AddProlog(j);
             }
-            c.Attach<T>();
+            return this;
+        }
+
+        public ITritonConfigurable UseTransactionEpilogs(params MiddlewareAction[] actions)
+        {
+            foreach (MiddlewareAction j in actions)
+            {
+                pool.Discover<IMiddlewareConfigurator>()!.AddEpilog(j);
+            }
             return this;
         }
 

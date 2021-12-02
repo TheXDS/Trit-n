@@ -29,7 +29,7 @@ namespace TheXDS.Triton.InMemory.Services
         /// <param name="configuration">
         /// Configuración de transacciones a utilizar.
         /// </param>
-        public InMemoryCrudTransaction(TransactionConfiguration configuration)
+        public InMemoryCrudTransaction(IMiddlewareRunner configuration)
         {
             Configuration = configuration;
         }
@@ -38,7 +38,7 @@ namespace TheXDS.Triton.InMemory.Services
         /// Obtiene la configuración de transacciones que ha sido establecida
         /// en esta transacción.
         /// </summary>
-        public TransactionConfiguration Configuration { get; }
+        public IMiddlewareRunner Configuration { get; }
 
         /// <summary>
         /// Obtiene un <see cref="ServiceResult"/> con un Query de todas las

@@ -18,7 +18,7 @@
         /// Una transacción que permite leer información de la base de 
         /// datos.
         /// </returns>
-        ICrudReadTransaction GetReadTransaction(TransactionConfiguration configuration) => GetTransaction(configuration);
+        ICrudReadTransaction GetReadTransaction(IMiddlewareRunner configuration) => GetTransaction(configuration);
 
         /// <summary>
         /// Fabrica una transacción que permite escribir información en la
@@ -31,7 +31,7 @@
         /// Una transacción que permite escribir información en la base de
         /// datos.
         /// </returns>
-        ICrudWriteTransaction GetWriteTransaction(TransactionConfiguration configuration) => GetTransaction(configuration);
+        ICrudWriteTransaction GetWriteTransaction(IMiddlewareRunner configuration) => GetTransaction(configuration);
 
         /// <summary>
         /// Fabrica una transacción que permite leer y escribir información
@@ -44,6 +44,6 @@
         /// Una transacción que permite leer y escribir información en la
         /// base de datos.
         /// </returns>
-        ICrudReadWriteTransaction GetTransaction(TransactionConfiguration configuration);
+        ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration);
     }
 }
