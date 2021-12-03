@@ -45,12 +45,33 @@ namespace TheXDS.Triton
         /// </returns>
         public static TypeBuilder<DbContext> Build(Type[] models, Action<DbContextOptionsBuilder>? setupCallback)
         {
+            return Build($"DynamicDbContext_{Guid.NewGuid()}", models, setupCallback);
+        }
+
+        /// <summary>
+        /// Construye un nuevo contexto de datos utilizando los modelos
+        /// especificados.
+        /// </summary>
+        /// <param name="name">Nombre del nuevo contexto de datos.</param>
+        /// <param name="models">
+        /// Modelos de datos a incorporar como parte del contexto de datos a
+        /// generar.
+        /// </param>
+        /// <param name="setupCallback">
+        /// Método a invocar para configurar externamente el contexto de datos
+        /// generado.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
+        /// nuevo contexto de datos.
+        /// </returns>
+        public static TypeBuilder<DbContext> Build(string name, Type[] models, Action<DbContextOptionsBuilder>? setupCallback)
+        {
             if (models.Any(p => !p.Implements<Model>())) throw new ArgumentException(null, nameof(models));
-            var t = Factory.NewType<DbContext>("DynamicDbContext");
-            using var sha = System.Security.Cryptography.SHA1.Create();
+            var t = Factory.NewType<DbContext>(name);
             foreach (var j in models)
             {
-                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}_{Convert.ToHexString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(j.Name)))}", typeof(DbSet<>).MakeGenericType(j));
+                t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
             }
             if (setupCallback is { Method: MethodInfo callback })
             {
@@ -78,6 +99,21 @@ namespace TheXDS.Triton
         public static TypeBuilder<DbContext> Build(Type[] models) => Build(models, null);
 
         /// <summary>
+        /// Construye un nuevo contexto de datos utilizando los modelos
+        /// especificados.
+        /// </summary>
+        /// <param name="name">Nombre del nuevo contexto de datos.</param>
+        /// <param name="models">
+        /// Modelos de datos a incorporar como parte del contexto de datos a
+        /// generar.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
+        /// nuevo contexto de datos.
+        /// </returns>
+        public static TypeBuilder<DbContext> Build(string name, Type[] models) => Build(name, models, null);
+
+        /// <summary>
         /// Construye un nuevo contexto de datos, descubriendo todos los
         /// modelos de datos disponibles en la aplicación.
         /// </summary>
@@ -91,6 +127,17 @@ namespace TheXDS.Triton
         /// Construye un nuevo contexto de datos, descubriendo todos los
         /// modelos de datos disponibles en la aplicación.
         /// </summary>
+        /// <param name="name">Nombre del nuevo contexto de datos.</param>
+        /// <returns>
+        /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
+        /// nuevo contexto de datos.
+        /// </returns>
+        public static TypeBuilder<DbContext> Build(string name) => Build(name, (Action<DbContextOptionsBuilder>?)null);
+
+        /// <summary>
+        /// Construye un nuevo contexto de datos, descubriendo todos los
+        /// modelos de datos disponibles en la aplicación.
+        /// </summary>
         /// <param name="configurationCallback">
         /// Método a invocar para configurar externamente el contexto de datos
         /// generado.
@@ -99,7 +146,28 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
-        public static TypeBuilder<DbContext> Build(Action<DbContextOptionsBuilder>? configurationCallback) => Build(Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
+        public static TypeBuilder<DbContext> Build(Action<DbContextOptionsBuilder>? configurationCallback)
+        {
+            return Build(Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
+        }
+
+        /// <summary>
+        /// Construye un nuevo contexto de datos, descubriendo todos los
+        /// modelos de datos disponibles en la aplicación.
+        /// </summary>
+        /// <param name="name">Nombre del nuevo contexto de datos.</param>
+        /// <param name="configurationCallback">
+        /// Método a invocar para configurar externamente el contexto de datos
+        /// generado.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
+        /// nuevo contexto de datos.
+        /// </returns>
+        public static TypeBuilder<DbContext> Build(string name, Action<DbContextOptionsBuilder>? configurationCallback)
+        {
+            return Build(name, Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
+        }
 
         /// <summary>
         /// Obtiene un <see cref="ITransactionFactory"/> conectado a un
