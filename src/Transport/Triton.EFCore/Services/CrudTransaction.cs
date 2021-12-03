@@ -30,7 +30,7 @@ namespace TheXDS.Triton.Services
         /// <param name="configuration">
         /// Configuración a pasar a las transacciones subyacentes.
         /// </param>
-        public CrudTransaction(TransactionConfiguration configuration) : base(configuration)
+        public CrudTransaction(IMiddlewareRunner configuration) : base(configuration)
         {
             _readTransaction = new CrudReadTransaction<T>(configuration, _context);
             _writeTransaction = new CrudWriteTransaction<T>(configuration, _context);

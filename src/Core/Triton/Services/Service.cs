@@ -44,7 +44,7 @@ namespace TheXDS.Triton.Services
         /// Configuración a utilizar para las transacciones generadas por este
         /// servicio.
         /// </param>
-        public Service(TransactionConfiguration transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
+        public Service(IMiddlewareConfigurator transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
         {
         }
 
@@ -57,22 +57,23 @@ namespace TheXDS.Triton.Services
         /// servicio.
         /// </param>
         /// <param name="factory">Fábrica de transacciones a utilizar.</param>
-        public Service(TransactionConfiguration transactionConfiguration, ITransactionFactory factory)
+        public Service(IMiddlewareConfigurator transactionConfiguration, ITransactionFactory factory)
         {
             Configuration = transactionConfiguration ?? throw new ArgumentNullException(nameof(transactionConfiguration));
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            Factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <summary>
         /// Obtiene la configuración predeterminada a utilizar al crear
         /// transacciones.
         /// </summary>
-        public TransactionConfiguration Configuration { get; }
+        public IMiddlewareConfigurator Configuration { get; }
 
         /// <summary>
-        /// Obtiene la fábrica de transacciones a utilizar por el servicio.
+        /// Obtiene una referencia a la fábrica de transacciones a utilizar por
+        /// el servicio.
         /// </summary>
-        private readonly ITransactionFactory _factory;
+        public ITransactionFactory Factory { get; }
 
         /// <summary>
         /// Obtiene una transacción que permite leer información de la base
@@ -82,7 +83,7 @@ namespace TheXDS.Triton.Services
         /// Una transacción que permite leer información de la base de 
         /// datos.
         /// </returns>
-        public ICrudReadTransaction GetReadTransaction() => _factory.GetReadTransaction(Configuration);
+        public ICrudReadTransaction GetReadTransaction() => Factory.GetReadTransaction(Configuration.GetRunner());
 
         /// <summary>
         /// Obtiene una transacción que permite escribir información en la
@@ -92,7 +93,7 @@ namespace TheXDS.Triton.Services
         /// Una transacción que permite escribir información en la base de
         /// datos.
         /// </returns>
-        public ICrudWriteTransaction GetWriteTransaction() => _factory.GetWriteTransaction(Configuration);
+        public ICrudWriteTransaction GetWriteTransaction() => Factory.GetWriteTransaction(Configuration.GetRunner());
 
         /// <summary>
         /// Obtiene una transacción que permite leer y escribir información
@@ -102,7 +103,7 @@ namespace TheXDS.Triton.Services
         /// Una transacción que permite leer y escribir información en la
         /// base de datos.
         /// </returns>
-        public ICrudReadWriteTransaction GetTransaction() => _factory.GetTransaction(Configuration);
+        public ICrudReadWriteTransaction GetTransaction() => Factory.GetTransaction(Configuration.GetRunner());
 
         /// <summary>
         /// Ejecuta una operación en el contexto de una transacción de lectura.

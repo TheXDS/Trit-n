@@ -2,17 +2,17 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>    
-    <PackageReference Include="TheXDS.MCART" Version="0.15.0.1" />
+  <ItemGroup>
+    <PackageReference Include="TheXDS.MCART" Version="0.15.1" />
     <ProjectReference Include="..\Triton.Models\Triton.Models.csproj" />
-    <Compile Update="Resources\Strings.Designer.cs">
+    <Compile Update="Resources\Strings\Common.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
+      <DependentUpon>Common.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="Resources\Strings.resx">
+    <EmbeddedResource Update="Resources\Strings\Common.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <LastGenOutput>Common.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

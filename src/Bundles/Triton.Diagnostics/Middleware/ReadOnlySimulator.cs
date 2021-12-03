@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using TheXDS.MCART.Exceptions;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
@@ -20,7 +19,7 @@ namespace TheXDS.Triton.Middleware
         /// </summary>
         public static bool RunEpilogs { get; set; } = true;
 
-        private static TransactionConfiguration? _config;
+        private static IMiddlewareConfigurator? _config;
 
         /// <summary>
         /// Configura la transacción para simular las operaciones sin realizar
@@ -33,7 +32,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo
         /// utilizar sintaxis Fluent.
         /// </returns>
-        public static TransactionConfiguration UseSimulation(this TransactionConfiguration config)
+        public static IMiddlewareConfigurator UseSimulation(this IMiddlewareConfigurator config)
         {
             if (_config is { }) throw new InvalidOperationException();                        
             return _config = config.AddLastProlog(SkipActualCall);
@@ -42,7 +41,7 @@ namespace TheXDS.Triton.Middleware
         private static ServiceResult? SkipActualCall(CrudAction arg1, Model? arg2)
         {
             if (arg1 == CrudAction.Read) return null;
-            return (RunEpilogs ? (_config ?? throw new TamperException()).RunEpilog(arg1, arg2) : null) ?? ServiceResult.Ok;
+            return (RunEpilogs ? (_config ?? throw new TamperException()).GetRunner().RunEpilog(arg1, arg2) : null) ?? ServiceResult.Ok;
         }
     }
 }

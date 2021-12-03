@@ -20,7 +20,7 @@ namespace TheXDS.Triton.InMemory.Services
         /// Una transacción conectada a un almacén volátil sin persistencia en
         /// la memoria de la aplicación.
         /// </returns>
-        public ICrudReadWriteTransaction GetTransaction(TransactionConfiguration configuration)
+        public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration)
         {
             return new InMemoryCrudTransaction(configuration);
         }

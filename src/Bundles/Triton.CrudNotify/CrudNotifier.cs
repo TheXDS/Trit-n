@@ -26,7 +26,7 @@ namespace TheXDS.Triton.Middleware
         /// <returns>
         /// La misma instancia que <paramref name="config"/>.
         /// </returns>
-        public static TransactionConfiguration AddNotifyService<T>(this TransactionConfiguration config) where T : ICrudNotifier, new()
+        public static IMiddlewareConfigurator AddNotifyService<T>(this IMiddlewareConfigurator config) where T : ICrudNotifier, new()
         {
             return AddNotifyService(config, new T());
         }
@@ -48,7 +48,7 @@ namespace TheXDS.Triton.Middleware
         /// <returns>
         /// La misma instancia que <paramref name="config"/>.
         /// </returns>
-        public static TransactionConfiguration AddNotifyService<T>(this TransactionConfiguration config, T crudNotifier) where T : ICrudNotifier
+        public static IMiddlewareConfigurator AddNotifyService<T>(this IMiddlewareConfigurator config, T crudNotifier) where T : ICrudNotifier
         {
             return config.AddEpilog(crudNotifier.PushInto(_notifiers).NotifyPeers);
         }
