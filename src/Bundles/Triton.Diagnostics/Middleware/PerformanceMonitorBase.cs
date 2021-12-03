@@ -5,13 +5,14 @@ using System.Runtime.CompilerServices;
 using TheXDS.MCART.Events;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Triton.Middleware
 {
     /// <summary>
     /// Clase base para los distintos tipos de contadores de rendimiento disponibles.
     /// </summary>
-    public abstract class PerformanceMonitorBase : INotifyPropertyChanged, ITransactionMiddleware
+    public abstract class PerformanceMonitorBase : NotifyPropertyChanged, ITransactionMiddleware
     {
         private readonly Stopwatch _stopwatch = new();
 
@@ -20,11 +21,6 @@ namespace TheXDS.Triton.Middleware
         /// <see cref="CrudAction.Commit"/>.
         /// </summary>
         public event EventHandler<ValueEventArgs<double>>? Elapsed;
-
-        /// <summary>
-        /// Ocurre cuando el valor de una propiedad ha cambiado.
-        /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Obtiene la cantidad de eventos de guardado registrados por esta
@@ -95,15 +91,6 @@ namespace TheXDS.Triton.Middleware
                 Notify(nameof(MaxMs));
             }
             return null;
-        }
-
-        /// <summary>
-        /// Notifica el cambio del valor de una propiedad.
-        /// </summary>
-        /// <param name="propertyName">Propiedad que ha cambiado de valor.</param>
-        protected void Notify([CallerMemberName]string propertyName = null!)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
