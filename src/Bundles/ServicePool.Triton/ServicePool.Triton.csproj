@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TheXDS.ServicePool" Version="0.1.0-a002" />
+    <PackageReference Include="TheXDS.ServicePool" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
