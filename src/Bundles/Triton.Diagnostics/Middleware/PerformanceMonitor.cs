@@ -49,7 +49,7 @@ namespace TheXDS.Triton.Middleware
             if (!avg.IsValid()) avg = 0.0;
             if (milliseconds > max || !max.IsValid()) max = milliseconds;
             else if (milliseconds < min || !min.IsValid()) min = milliseconds;
-            avg = (avg * evt + milliseconds) / (++evt);
+            avg = ((avg * evt) + milliseconds) / (++evt);
         }
     }
 }
