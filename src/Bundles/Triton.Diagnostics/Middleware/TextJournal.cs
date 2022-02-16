@@ -4,6 +4,7 @@ using System.Linq;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
+using St = TheXDS.Triton.Diagnostics.Resources.Strings;
 
 namespace TheXDS.Triton.Middleware
 {
@@ -16,17 +17,17 @@ namespace TheXDS.Triton.Middleware
         /// <inheritdoc/>
         public void Log(CrudAction action, Model? entity, JournalMiddleware.Settings settings)
         {
-            string GetText() => $"{DateTime.Now:s}: {settings.ActorProvider?.GetCurrentActor() ?? "Se"} ha ejecutado una operación '{action}'";
+            string GetText() => $"{DateTime.Now:s}: {string.Format(St.XRanOperation, settings.ActorProvider?.GetCurrentActor() ?? St.NoActorProviderSubst, action)}";
             if (action == CrudAction.Read) return;
             List<string> lines = new();
 
             if (entity is null)
             {
-                lines.Add($"{GetText()} sin obtener datos.");
+                lines.Add(string.Format(St.XWithNoData, GetText()));
             }
             else
             {
-                lines.Add($"{GetText()}' sobre el modelo {entity.GetType().NameOf()} {entity.IdAsString}");
+                lines.Add(string.Format(St.XWithData, GetText(), entity.GetType().NameOf(), entity.IdAsString));
                 switch (action)
                 {
                     case CrudAction.Create:

@@ -112,7 +112,6 @@ namespace TheXDS.Triton.Fakers
         public static Person Someone(int minAge, int maxAge)
         {
             var m = _rnd.CoinFlip();
-
             return new Person(
                 (m ? StringTables.MaleNames : StringTables.FemaleNames).Pick(),
                 StringTables.Surnames.Pick(),
@@ -168,9 +167,8 @@ namespace TheXDS.Triton.Fakers
             do
             {
                 if (_rnd.CoinFlip()) sb.Append('_');
-                sb.Append(new[] { StringTables.Lorem.Pick(), person.Birth.Year.ToString(), person.Birth.Year.ToString().Substring(2), _rnd.Next(0, 1000).ToString().PadLeft(_rnd.Next(1, 4), '0') }.Pick());
+                sb.Append(new[] { StringTables.Lorem.Pick(), person.Birth.Year.ToString(), person.Birth.Year.ToString()[2..], _rnd.Next(0, 1000).ToString().PadLeft(_rnd.Next(1, 4), '0') }.Pick());
             } while (--rounds > 0);
-
             return sb.ToString().ToLower();
         }
 
@@ -182,14 +180,12 @@ namespace TheXDS.Triton.Fakers
         {
             var sb = new StringBuilder();
             var rounds = _rnd.Next(1, 4);
-
             sb.Append(StringTables.Lorem.Pick());
             do
             {
                 if (_rnd.CoinFlip()) sb.Append('_');
                 sb.Append(new[] { StringTables.Lorem.Pick(), _rnd.Next(0, 10000).ToString().PadLeft(_rnd.Next(1, 5), '0')}.Pick());
             } while (--rounds > 0);
-
             return sb.ToString();
         }
 
@@ -207,7 +203,7 @@ namespace TheXDS.Triton.Fakers
         /// </returns>
         public static string FakeEmail(Person? person)
         {
-            return $"{FakeUsername(person ?? Someone())}@{(fakeDomains ??=LoadDomains()).Pick()}";
+            return $"{FakeUsername(person ?? Someone())}@{(fakeDomains ??= LoadDomains()).Pick()}";
         }
 
         /// <summary>

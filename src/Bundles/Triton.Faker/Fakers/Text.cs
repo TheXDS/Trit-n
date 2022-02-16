@@ -9,18 +9,6 @@ using static TheXDS.Triton.Fakers.Globals;
 namespace TheXDS.Triton.Fakers
 {
     /// <summary>
-    /// Objeto que describe una ubicación física completa.
-    /// </summary>
-    public record Address(string AddressLine, string? AddressLine2, string City, string Country, ushort Zip)
-    {
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            return $@"{string.Join(System.Environment.NewLine, new[] { AddressLine, AddressLine2, $"{City}, {Country} {Zip}" }.NotNull())}";
-        }
-    }
-
-    /// <summary>
     /// Contiene funciones auxiliares de generación de texto aleatorio.
     /// </summary>
     public static class Text
@@ -43,7 +31,6 @@ namespace TheXDS.Triton.Fakers
             static string? RndLine2() => _rnd.CoinFlip() ? $"{new[] { "#", "Apt.", "House" }.Pick()} {_rnd.Next(1, 9999)}" : null;
             static string RndCity() => string.Join(' ', new string?[] { Capitalize(StringTables.Surnames.Pick()), _rnd.CoinFlip() ? "City" : null }.NotNull());
             static string RndCountry() => new System.Globalization.RegionInfo(System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).Pick().Name).EnglishName;
-
             return new(RndAddress(), RndLine2(), RndCity(), RndCountry(), (ushort)_rnd.Next(10001, 99999));
         }
 
@@ -102,20 +89,16 @@ namespace TheXDS.Triton.Fakers
         {
             double wps = wordsPerSentence;
             double spp = sentencesPerParagraph;
-
             var text = new StringBuilder();
-            
             var twc = 0; // Cuenta de palabras en total.
             var swc = 0; // Cuenta de palabras por oración.
             var psc = 0; // Cuenta de oraciones por párrafo.
-
             do
             {
                 var word = StringTables.Lorem.Pick();
                 text.Append(swc != 0 ? word : Capitalize(word));
                 twc++;
                 swc++;
-
                 if (swc > wps.Variate(delta))
                 {
                     if (_rnd.CoinFlip())
@@ -144,9 +127,7 @@ namespace TheXDS.Triton.Fakers
                 {
                     text.Append(' ');
                 }
-
             } while (twc < words);
-
             return swc != 0 ? $"{text.ToString().TrimEnd()}." : text.ToString();
         }
     }

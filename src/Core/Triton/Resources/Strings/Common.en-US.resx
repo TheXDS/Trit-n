@@ -117,20 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="JournalError" xml:space="preserve">
-    <value>La operación se ha completado exitosamente, pero el escritor de bitácora encontró un error.
-{0}: {1}</value>
+  <data name="BadQuery" xml:space="preserve">
+    <value>Malformed data query.</value>
   </data>
-  <data name="NoActorProviderSubst" xml:space="preserve">
-    <value>Se</value>
+  <data name="ConcurrencyFailure" xml:space="preserve">
+    <value>An attempt has been made to overwrite data already edited by another user.</value>
   </data>
-  <data name="XRanOperation" xml:space="preserve">
-    <value>{0} ha ejecutado una operación '{1}'</value>
+  <data name="DbFailure" xml:space="preserve">
+    <value>The data server has returned an error.</value>
   </data>
-  <data name="XWithData" xml:space="preserve">
-    <value>{0} sobre el modelo {1} {2}</value>
+  <data name="EntityNotFound" xml:space="preserve">
+    <value>The entity has not been found.</value>
   </data>
-  <data name="XWithNoData" xml:space="preserve">
-    <value>{0} sin obtener datos.</value>
+  <data name="FailureForbidden" xml:space="preserve">
+    <value>Access to the resource has been denied.</value>
+  </data>
+  <data name="FailureUnknown" xml:space="preserve">
+    <value>An unknown error has occurred during the operation.</value>
+  </data>
+  <data name="MissingService" xml:space="preserve">
+    <value>The requested service has not been loaded.</value>
+  </data>
+  <data name="MissingXService" xml:space="preserve">
+    <value>The {0} service has not been loaded.</value>
+  </data>
+  <data name="NetworkFailure" xml:space="preserve">
+    <value>A network error has occurred.</value>
+  </data>
+  <data name="OperationCompletedSuccessfully" xml:space="preserve">
+    <value>The operation has completed successfully.</value>
+  </data>
+  <data name="QueryOverLimit" xml:space="preserve">
+    <value>The requested query returns too much data. Please, filter the query or reduce its size before executing it.</value>
+  </data>
+  <data name="ServiceFailure" xml:space="preserve">
+    <value>the service has found an error.</value>
+  </data>
+  <data name="Tamper" xml:space="preserve">
+    <value>A malicious use of the Tritón API has been detected.</value>
+  </data>
+  <data name="UnconfiguredServiceError" xml:space="preserve">
+    <value>An attempt has been made to use a service before configuring it.</value>
+  </data>
+  <data name="UnconfiguredValueX" xml:space="preserve">
+    <value>Unconfigured value: {0}</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>Validation error.</value>
   </data>
 </root>

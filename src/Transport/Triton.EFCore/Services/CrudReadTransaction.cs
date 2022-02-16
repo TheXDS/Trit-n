@@ -66,7 +66,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            var result = TryCall(CrudAction.Read, (Func<object[], TModel>)_context.Find<TModel>, out TModel? entity, new object?[] { new object[] { key } })?.CastUp<ServiceResult<TModel?>>();
+            var result = TryCall(CrudAction.Read, _context.Find<TModel>, out TModel? entity, new object?[] { new object[] { key } })?.CastUp<ServiceResult<TModel?>>();
             return  entity is null ? result ?? FailureReason.NotFound : new ServiceResult<TModel?>(entity);
         }
 
@@ -89,7 +89,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
-            return TryCallAsync(CrudAction.Read, _context.FindAsync<TModel>(new object[] { key }).AsTask());
+            return TryCallAsync(CrudAction.Read, _context.FindAsync<TModel>(new object[] { key }));
         }
     }
 }

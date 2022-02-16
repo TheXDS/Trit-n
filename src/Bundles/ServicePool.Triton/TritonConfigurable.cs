@@ -1,63 +1,91 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.ServicePool.Triton.Resources;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
-namespace ServicePool.Triton
+namespace TheXDS.ServicePool.Triton
 {
     internal class TritonConfigurable : ITritonConfigurable
     {
-        private readonly TheXDS.ServicePool.ServicePool pool;
+        /// <inheritdoc/>
+        public ServicePool Pool { get; }
 
-        public TritonConfigurable(TheXDS.ServicePool.ServicePool pool)
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="TritonConfigurable"/>.
+        /// </summary>
+        /// <param name="pool">
+        /// Repositorio de servicios en el cual se está registrando esta
+        /// instancia.
+        /// </param>
+        public TritonConfigurable(ServicePool pool)
         {
-            this.pool = pool;
+            Pool = pool;
         }
 
+        /// <inheritdoc/>
         public ITritonConfigurable DiscoverContexts()
         {
-            pool.DiscoverAll<Service>();
-            foreach (var j in TheXDS.MCART.Helpers.Objects.GetTypes<DbContext>(true))
+            Pool.DiscoverAll<Service>();
+            foreach (var j in MCART.Helpers.Objects.GetTypes<DbContext>(true))
             {
-                pool.Register(() => new Service(pool.Resolve<IMiddlewareConfigurator>()!, typeof(EfCoreTransFactory<>).MakeGenericType(j).New<ITransactionFactory>()));
+                Pool.Register(() => new Service(Pool.Resolve<IMiddlewareConfigurator>()!, typeof(EfCoreTransFactory<>).MakeGenericType(j).New<ITransactionFactory>()));
             }
             return this;
         }
 
+        /// <inheritdoc/>
         public ITritonConfigurable UseContext<T>() where T : DbContext, new()
         {
-            pool.Register(() => new Service(pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), new EfCoreTransFactory<T>()));
+            Pool.Register(() => new Service(Pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), new EfCoreTransFactory<T>()));
             return this;
         }
 
+        /// <inheritdoc/>
+        public ITritonConfigurable UseContext(Type context)
+        {
+            if (!context.Implements<DbContext>()) 
+            {
+                throw Errors.TypeMustImplDbContext(nameof(context));
+            }
+            Pool.Register(() => new Service(Pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), typeof(EfCoreTransFactory<>).MakeGenericType(context).New<ITransactionFactory>()));
+            return this;
+        }
+
+        /// <inheritdoc/>
         public ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new()
         {
-            pool.Discover<IMiddlewareConfigurator>()!.Attach<T>();
+            Pool.Discover<IMiddlewareConfigurator>()!.Attach<T>();
             return this;
         }
 
+        /// <inheritdoc/>
         public ITritonConfigurable UseTransactionPrologs(params MiddlewareAction[] actions)
         {
             foreach (MiddlewareAction j in actions)
             {
-                pool.Discover<IMiddlewareConfigurator>()!.AddProlog(j);
+                Pool.Discover<IMiddlewareConfigurator>()!.AddProlog(j);
             }
             return this;
         }
 
+        /// <inheritdoc/>
         public ITritonConfigurable UseTransactionEpilogs(params MiddlewareAction[] actions)
         {
             foreach (MiddlewareAction j in actions)
             {
-                pool.Discover<IMiddlewareConfigurator>()!.AddEpilog(j);
+                Pool.Discover<IMiddlewareConfigurator>()!.AddEpilog(j);
             }
             return this;
         }
 
+        /// <inheritdoc/>
         public ITritonConfigurable UseService<T>() where T : Service
         {
-            pool.Register<T>();
+            Pool.Register<T>();
             return this;
         }
     }

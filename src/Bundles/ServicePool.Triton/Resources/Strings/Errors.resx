@@ -117,20 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="JournalError" xml:space="preserve">
-    <value>La operación se ha completado exitosamente, pero el escritor de bitácora encontró un error.
-{0}: {1}</value>
-  </data>
-  <data name="NoActorProviderSubst" xml:space="preserve">
-    <value>Se</value>
-  </data>
-  <data name="XRanOperation" xml:space="preserve">
-    <value>{0} ha ejecutado una operación '{1}'</value>
-  </data>
-  <data name="XWithData" xml:space="preserve">
-    <value>{0} sobre el modelo {1} {2}</value>
-  </data>
-  <data name="XWithNoData" xml:space="preserve">
-    <value>{0} sin obtener datos.</value>
+  <data name="TypeMustImplementDbContext" xml:space="preserve">
+    <value>El tipo especificado debe implementar DbContext para ser válido en este contexto.</value>
   </data>
 </root>

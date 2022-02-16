@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TheXDS.Triton.Diagnostics.Resources {
+namespace TheXDS.ServicePool.Triton.Resources.Strings {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace TheXDS.Triton.Diagnostics.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    internal class Errors___Copia {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Strings() {
+        internal Errors___Copia() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TheXDS.Triton.Diagnostics.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Triton.Diagnostics.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.ServicePool.Triton.Resources.Strings.Errors - Copia", typeof(Errors___Copia).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,48 +61,11 @@ namespace TheXDS.Triton.Diagnostics.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a La operación se ha completado exitosamente, pero el escritor de bitácora encontró un error.
-        ///{0}: {1}.
+        ///   Busca una cadena traducida similar a El tipo especificado debe implementar DbContext para ser válido en este contexto..
         /// </summary>
-        internal static string JournalError {
+        internal static string TypeMustImplementDbContext {
             get {
-                return ResourceManager.GetString("JournalError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Se.
-        /// </summary>
-        internal static string NoActorProviderSubst {
-            get {
-                return ResourceManager.GetString("NoActorProviderSubst", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a {0} ha ejecutado una operación &apos;{1}&apos;.
-        /// </summary>
-        internal static string XRanOperation {
-            get {
-                return ResourceManager.GetString("XRanOperation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a {0} sobre el modelo {1} {2}.
-        /// </summary>
-        internal static string XWithData {
-            get {
-                return ResourceManager.GetString("XWithData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a {0} sin obtener datos..
-        /// </summary>
-        internal static string XWithNoData {
-            get {
-                return ResourceManager.GetString("XWithNoData", resourceCulture);
+                return ResourceManager.GetString("TypeMustImplementDbContext", resourceCulture);
             }
         }
     }

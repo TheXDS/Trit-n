@@ -8,7 +8,7 @@ namespace TheXDS.Triton.Fakers
 
         public static string Capitalize(string value)
         {
-            return value.Substring(0, 1).ToUpper() + value[1..].ToLower();
+            return value[..1].ToUpper() + value[1..].ToLower();
         }
     }
 }

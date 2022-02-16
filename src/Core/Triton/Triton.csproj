@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.15.1" />
+    <PackageReference Include="TheXDS.MCART" Version="0.15.2" />
     <ProjectReference Include="..\Triton.Models\Triton.Models.csproj" />
     <Compile Update="Resources\Strings\Common.Designer.cs">
       <DesignTime>True</DesignTime>

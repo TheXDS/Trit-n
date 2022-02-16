@@ -191,7 +191,7 @@ namespace TheXDS.Triton.Services.Base
         /// <see cref="ServiceResult"/> que representa un error en la
         /// operación.
         /// </returns>
-        protected async Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel> op, TModel? entity) where TModel : Model
+        protected async Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel?> op, TModel? entity) where TModel : Model
         {
             try
             {
@@ -282,7 +282,7 @@ namespace TheXDS.Triton.Services.Base
         /// <see cref="ServiceResult"/> que representa un error en la
         /// operación.
         /// </returns>
-        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel> op) where TModel : Model
+        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, Task<TModel?> op) where TModel : Model
         {
             return TryCallAsync(action, op, null);
         }
@@ -306,7 +306,7 @@ namespace TheXDS.Triton.Services.Base
         /// <see cref="ServiceResult"/> que representa un error en la
         /// operación.
         /// </returns>
-        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel> op) where TModel : Model
+        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel?> op) where TModel : Model
         {
             return TryCallAsync(action, op.AsTask(), null);
         }
@@ -335,7 +335,7 @@ namespace TheXDS.Triton.Services.Base
         /// <see cref="ServiceResult"/> que representa un error en la
         /// operación.
         /// </returns>
-        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel> op, TModel? entity) where TModel : Model
+        protected Task<ServiceResult<TModel?>> TryCallAsync<TModel>(CrudAction action, ValueTask<TModel?> op, TModel? entity) where TModel : Model
         {
             return TryCallAsync(action, op.AsTask(), entity);
         }
