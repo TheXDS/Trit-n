@@ -28,7 +28,6 @@ namespace TheXDS.Triton.Services.Base
         /// </returns>
         ServiceResult Create<TModel>(TModel newEntity) where TModel : Model;
 
-
         /// <summary>
         /// Crea un conjunto de entidades en la base de datos.
         /// </summary>

@@ -96,7 +96,6 @@ namespace TheXDS.Triton.Tests
             }
         }
 
-
         [Test]
         public void UpdateAndVerifyTransactionTest()
         {

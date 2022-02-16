@@ -115,7 +115,6 @@ namespace TheXDS.Triton.Middleware
         /// </returns>
         public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton, Settings configuration) where T : notnull, IJournalMiddleware
         {
-
             return config.AddLastEpilog((a, m) =>
             {
                 try
