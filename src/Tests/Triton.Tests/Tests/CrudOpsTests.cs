@@ -12,6 +12,21 @@ namespace TheXDS.Triton.Tests
 {
     public class CrudOpsTests
     {
+        private class DefaultImplServiceWrap : IService
+        {
+            private readonly Service svc;
+
+            public DefaultImplServiceWrap(Service svc)
+            {
+                this.svc = svc;
+            }
+
+            public ICrudReadWriteTransaction GetTransaction()
+            {
+                return ((IService)svc).GetTransaction();
+            }
+        }
+
         private readonly Service _srv = new(new InMemoryTransFactory());
 
         [Test]
@@ -26,6 +41,24 @@ namespace TheXDS.Triton.Tests
                 Assert.IsInstanceOf<ICrudWriteTransaction>(t);
             }
             using (var t = _srv.GetTransaction())
+            {
+                Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
+            }
+        }
+
+        [Test]
+        public void Service_defualt_impl_transaction_test()
+        {
+            IService svc = new DefaultImplServiceWrap(_srv);
+            using (var t = svc.GetReadTransaction())
+            {
+                Assert.IsInstanceOf<ICrudReadTransaction>(t);
+            }
+            using (var t = svc.GetWriteTransaction())
+            {
+                Assert.IsInstanceOf<ICrudWriteTransaction>(t);
+            }
+            using (var t = svc.GetTransaction())
             {
                 Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
             }
@@ -94,6 +127,17 @@ namespace TheXDS.Triton.Tests
                 Assert.IsInstanceOf<User>(u);
                 Assert.AreEqual("User 4", u!.PublicName);
             }
+        }
+
+        [Test]
+        public void CreateMany_test()
+        {
+            using var t = _srv.GetWriteTransaction();
+            Assert.AreEqual(ServiceResult.Ok, t.CreateMany(new Models.Base.Model[] {
+                new User("user7", "User #7"),
+                new User("user8", "User #8"),
+                new User("user9", "User #9"),
+            }));
         }
 
         [Test]

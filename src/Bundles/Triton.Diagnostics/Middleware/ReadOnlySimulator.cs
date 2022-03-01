@@ -13,13 +13,24 @@ namespace TheXDS.Triton.Middleware
     /// </summary>
     public static class ReadOnlySimulator
     {
-        /// <summary>
-        /// Obtiene o establece un valor que indica si se ejecutarán los
-        /// epílogos luego de bloquear la operación de la transacción.
-        /// </summary>
-        public static bool RunEpilogs { get; set; } = true;
+        private class Singleton
+        {
+            private readonly IMiddlewareConfigurator _config;
+            private readonly bool _runEpilogs;
 
-        private static IMiddlewareConfigurator? _config;
+            public Singleton(IMiddlewareConfigurator config, bool runEpilogs)
+            {
+                _config = config;
+                _runEpilogs = runEpilogs;
+                config.AddLastProlog(SkipActualCall);
+            }
+
+            private ServiceResult? SkipActualCall(CrudAction arg1, Model? arg2)
+            {
+                if (arg1 == CrudAction.Read) return null;
+                return (_runEpilogs ? (_config ?? throw new TamperException()).GetRunner().RunEpilog(arg1, arg2) : null) ?? ServiceResult.Ok;
+            }
+        }
 
         /// <summary>
         /// Configura la transacción para simular las operaciones sin realizar
@@ -28,20 +39,18 @@ namespace TheXDS.Triton.Middleware
         /// <param name="config">
         /// Configuración de transacción sobre la cual aplicar.
         /// </param>
+        /// <param name="runEpilogs">
+        /// Indica si se ejecutarán o los los epílogos de las transacciones 
+        /// generadas.
+        /// </param>
         /// <returns>
         /// La misma instancia que <paramref name="config"/>, permitiendo
         /// utilizar sintaxis Fluent.
         /// </returns>
-        public static IMiddlewareConfigurator UseSimulation(this IMiddlewareConfigurator config)
+        public static IMiddlewareConfigurator UseSimulation(this IMiddlewareConfigurator config, bool runEpilogs = true)
         {
-            if (_config is { }) throw new InvalidOperationException();                        
-            return _config = config.AddLastProlog(SkipActualCall);
-        }
-
-        private static ServiceResult? SkipActualCall(CrudAction arg1, Model? arg2)
-        {
-            if (arg1 == CrudAction.Read) return null;
-            return (RunEpilogs ? (_config ?? throw new TamperException()).GetRunner().RunEpilog(arg1, arg2) : null) ?? ServiceResult.Ok;
+            var _ = new Singleton(config, runEpilogs);
+            return config;
         }
     }
 }

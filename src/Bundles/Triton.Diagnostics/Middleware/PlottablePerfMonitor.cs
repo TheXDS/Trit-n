@@ -58,8 +58,8 @@ namespace TheXDS.Triton.Middleware
         {
             lock (_events)
             {
+                if (_events.Count == maxSamples) _events.Dequeue();
                 _events.Enqueue(milliseconds);
-                while (_events.Count > maxSamples) _events.Dequeue();
             }
             Notify(nameof(Events));
         }

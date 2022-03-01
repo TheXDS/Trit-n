@@ -21,6 +21,6 @@ namespace TheXDS.Triton.Middleware
         /// <param name="settings">
         /// Opciones de configuración del Middleware de bitácora.
         /// </param>
-        void Log(CrudAction action, Model? entity, JournalMiddleware.Settings settings);
+        void Log(CrudAction action, Model? entity, JournalSettings settings);
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 using System.Linq;
+using TheXDS.MCART.Exceptions;
 
 namespace TheXDS.Triton.Services.Base
 {
@@ -40,9 +41,10 @@ namespace TheXDS.Triton.Services.Base
         /// </returns>
         ServiceResult CreateMany(params Model[] entities)
         {
+            var gm = GetType().GetMethod(nameof(Create), new Type[] { Type.MakeGenericMethodParameter(0) }) ?? throw new TamperException();
             foreach (var g in entities.GroupBy(p => p.GetType()))
             {
-                var m = GetType().GetMethod(nameof(Create), new Type[] { g.Key })!;
+                var m = gm.MakeGenericMethod(new[] { g.Key });
                 foreach (var j in g)
                 {
                     var r = (ServiceResult)m.Invoke(this, new object[] { j })!;

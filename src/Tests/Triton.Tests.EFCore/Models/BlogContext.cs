@@ -30,7 +30,7 @@ namespace TheXDS.Triton.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseInMemoryDatabase(GetType().FullName)
+                .UseInMemoryDatabase(GetType().FullName!)
                 .UseLoggerFactory(_m);
         }
 

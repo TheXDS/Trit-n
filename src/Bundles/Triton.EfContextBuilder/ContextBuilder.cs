@@ -35,7 +35,7 @@ namespace TheXDS.Triton
         /// Modelos de datos a incorporar como parte del contexto de datos a
         /// generar.
         /// </param>
-        /// <param name="setupCallback">
+        /// <param name="configurationCallback">
         /// Método a invocar para configurar externamente el contexto de datos
         /// generado.
         /// </param>
@@ -43,9 +43,17 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
-        public static TypeBuilder<DbContext> Build(Type[] models, Action<DbContextOptionsBuilder>? setupCallback)
+        /// <exception cref="ArgumentException">
+        /// Se produce si algún elemento de la colección
+        /// <paramref name="models"/> no hereda del tipo base
+        /// <see cref="Model"/>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Se produce si el método especificado en <paramref name="configurationCallback"/> no es un método estático.
+        /// </exception>
+        public static TypeBuilder<DbContext> Build(Type[] models, Action<DbContextOptionsBuilder>? configurationCallback)
         {
-            return Build($"DynamicDbContext_{Guid.NewGuid()}", models, setupCallback);
+            return Build($"DynamicDbContext_{Guid.NewGuid()}", models, configurationCallback);
         }
 
         /// <summary>
@@ -57,15 +65,27 @@ namespace TheXDS.Triton
         /// Modelos de datos a incorporar como parte del contexto de datos a
         /// generar.
         /// </param>
-        /// <param name="setupCallback">
+        /// <param name="configurationCallback">
         /// Método a invocar para configurar externamente el contexto de datos
-        /// generado.
+        /// generado. Debe ser un método estático.
         /// </param>
         /// <returns>
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
-        public static TypeBuilder<DbContext> Build(string name, Type[] models, Action<DbContextOptionsBuilder>? setupCallback)
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si <paramref name="name"/> es una cadena vacía o
+        /// <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Se produce si algún elemento de la colección
+        /// <paramref name="models"/> no hereda del tipo base
+        /// <see cref="Model"/>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Se produce si el método especificado en <paramref name="configurationCallback"/> no es un método estático.
+        /// </exception>
+        public static TypeBuilder<DbContext> Build(string name, Type[] models, Action<DbContextOptionsBuilder>? configurationCallback)
         {
             if (models.Any(p => !p.Implements<Model>())) throw new ArgumentException(null, nameof(models));
             var t = Factory.NewType<DbContext>(name);
@@ -73,7 +93,7 @@ namespace TheXDS.Triton
             {
                 t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
             }
-            if (setupCallback is { Method: MethodInfo callback })
+            if (configurationCallback is { Method: MethodInfo callback })
             {
                 if (!callback.IsStatic) throw new InvalidOperationException();
                 if (typeof(DbContext).GetMethod("OnConfiguring", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(DbContextOptionsBuilder) }, null) is { } oc)
@@ -96,6 +116,11 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
+        /// <exception cref="ArgumentException">
+        /// Se produce si algún elemento de la colección
+        /// <paramref name="models"/> no hereda del tipo base
+        /// <see cref="Model"/>.
+        /// </exception>
         public static TypeBuilder<DbContext> Build(Type[] models) => Build(models, null);
 
         /// <summary>
@@ -111,6 +136,15 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si <paramref name="name"/> es una cadena vacía o
+        /// <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Se produce si algún elemento de la colección
+        /// <paramref name="models"/> no hereda del tipo base
+        /// <see cref="Model"/>.
+        /// </exception>
         public static TypeBuilder<DbContext> Build(string name, Type[] models) => Build(name, models, null);
 
         /// <summary>
@@ -132,6 +166,10 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si <paramref name="name"/> es una cadena vacía o
+        /// <see langword="null"/>.
+        /// </exception>
         public static TypeBuilder<DbContext> Build(string name) => Build(name, (Action<DbContextOptionsBuilder>?)null);
 
         /// <summary>
@@ -146,6 +184,9 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Se produce si el método especificado en <paramref name="configurationCallback"/> no es un método estático.
+        /// </exception>
         public static TypeBuilder<DbContext> Build(Action<DbContextOptionsBuilder>? configurationCallback)
         {
             return Build(Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
@@ -164,6 +205,13 @@ namespace TheXDS.Triton
         /// Un <see cref="TypeBuilder{T}"/> con el que se puede instanciar un
         /// nuevo contexto de datos.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Se produce si <paramref name="name"/> es una cadena vacía o
+        /// <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Se produce si el método especificado en <paramref name="configurationCallback"/> no es un método estático.
+        /// </exception>
         public static TypeBuilder<DbContext> Build(string name, Action<DbContextOptionsBuilder>? configurationCallback)
         {
             return Build(name, Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);

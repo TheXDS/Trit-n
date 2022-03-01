@@ -57,7 +57,26 @@ namespace TheXDS.ServicePool.Triton
         /// <returns>
         /// La misma instancia del objeto utilizado para configurar Tritón.
         /// </returns>
+        /// <seealso cref="ConfigureMiddlewares(Action{IMiddlewareConfigurator})"/>.
         ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new();
+
+        /// <summary>
+        /// Ejecuta un método de configuración de middlewares para la instancia
+        /// configurada.
+        /// </summary>
+        /// <param name="configuratorCallback">
+        /// Método a utilizar para configurar los Middlewares a utilizar en las
+        /// transacciones de la instancia de Tritón configurada.
+        /// </param>
+        /// <returns>
+        /// La misma instancia del objeto utilizado para configurar Tritón.
+        /// </returns>
+        /// <remarks>
+        /// Para objetos que implementan <see cref="ITransactionMiddleware"/>,
+        /// puede utilizar el método <see cref="UseMiddleware{T}"/> en su lugar.
+        /// </remarks>
+        /// <seealso cref="UseMiddleware{T}"/>.
+        ITritonConfigurable ConfigureMiddlewares(Action<IMiddlewareConfigurator> configuratorCallback);
 
         /// <summary>
         /// Agrega un <see cref="DbContext"/> a la colección de servicios

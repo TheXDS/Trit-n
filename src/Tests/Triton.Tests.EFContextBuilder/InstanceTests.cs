@@ -1,9 +1,11 @@
 #pragma warning disable CS1591
+#pragma warning disable CA1822
 
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using TheXDS.Triton.Models;
+using System;
 using TheXDS.Triton;
+using TheXDS.Triton.Models;
 
 namespace Triton.Tests.EFContextBuilder
 {
@@ -15,6 +17,11 @@ namespace Triton.Tests.EFContextBuilder
             options.UseInMemoryDatabase("TestDb");
         }
 
+        public void BrokenConfigTest(DbContextOptionsBuilder options)
+        {            
+        }
+
+
         [Test]
         public void ParametricInstancingBuilderTest()
         {
@@ -25,6 +32,13 @@ namespace Triton.Tests.EFContextBuilder
         public void AutomaticInstancingBuilderTest()
         {
             TestContext(ContextBuilder.Build(ConfigTest).New());
+        }
+
+        [Test]
+        public void Instancing_contracts_test()
+        {
+            Assert.Throws<ArgumentException>(() => ContextBuilder.Build(new[] { typeof(Comment), typeof(Exception) }));
+            Assert.Throws<InvalidOperationException>(() => ContextBuilder.Build(BrokenConfigTest));
         }
 
         private static void TestContext(DbContext context)

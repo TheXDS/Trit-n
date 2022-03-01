@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using TheXDS.MCART.Events;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
-using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Triton.Middleware
 {
@@ -71,15 +69,15 @@ namespace TheXDS.Triton.Middleware
         /// </param>
         protected abstract void RegisterEvent(double milliseconds);
 
-        internal ServiceResult? BeforeAction(CrudAction arg1, Model? _)
+        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction arg1, Model? _)
         {
-            if (arg1.HasFlag(CrudAction.Commit)) _stopwatch.Restart();
+            if (arg1 == CrudAction.Commit) _stopwatch.Restart();
             return null;
         }
 
-        internal ServiceResult? AfterAction(CrudAction arg1, Model? _)
+        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction arg1, Model? _)
         {
-            if (arg1.HasFlag(CrudAction.Commit))
+            if (arg1 == CrudAction.Commit)
             {
                 _stopwatch.Stop();
                 RegisterEvent(_stopwatch.Elapsed.TotalMilliseconds);

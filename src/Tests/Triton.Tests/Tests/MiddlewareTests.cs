@@ -3,6 +3,7 @@
 using NUnit.Framework;
 using System.Linq;
 using TheXDS.Triton.InMemory.Services;
+using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
@@ -11,8 +12,18 @@ namespace TheXDS.Triton.Tests
 {
     public partial class MiddlewareTests
     {
-        //[Test]
-        public void RunMiddlewareTest()
+        public class DefaultMiddleware : ITransactionMiddleware { }
+
+        [Theory]
+        public void ITransactionMiddleware_has_default_implememtations(CrudAction action)
+        {
+            ITransactionMiddleware transaction = new DefaultMiddleware();
+            Assert.Null(transaction.PrologAction(action, new User("x", "Test"))); 
+            Assert.Null(transaction.EpilogAction(action, new User("x", "Test")));
+        }
+
+        [Test]
+        public void Run_Middleware_test()
         {
             Service _srv = new(new InMemoryTransFactory());
             bool prologDidRun = false, epilogDidRun = false;
@@ -36,7 +47,6 @@ namespace TheXDS.Triton.Tests
                     Assert.True(prologDidRun);
                     Assert.AreEqual(CrudAction.Create, arg1);
                     Assert.IsInstanceOf<Post>(arg2);
-                    Assert.AreNotEqual("0", arg2!.IdAsString);
                     epilogDidRun = true;
                 }
                 return null;
@@ -53,8 +63,7 @@ namespace TheXDS.Triton.Tests
             Assert.False(epilogDidRun);
             Assert.True(j.Create(new Post("Test", "Middleware test!", u)).Success);
             Assert.True(prologDidRun);
-            Assert.True(epilogDidRun);
-
+            Assert.True(epilogDidRun);            
             Assert.True(j.Commit().Success);
         }
     }

@@ -88,5 +88,12 @@ namespace TheXDS.ServicePool.Triton
             Pool.Register<T>();
             return this;
         }
+
+        /// <inheritdoc/>
+        public ITritonConfigurable ConfigureMiddlewares(Action<IMiddlewareConfigurator> configuratorCallback)
+        {
+            (configuratorCallback ?? throw new ArgumentNullException(nameof(configuratorCallback))).Invoke(Pool.Discover<IMiddlewareConfigurator>()!);
+            return this;
+        }
     }
 }

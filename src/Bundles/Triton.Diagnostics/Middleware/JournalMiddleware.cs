@@ -11,26 +11,6 @@ namespace TheXDS.Triton.Middleware
     public static class JournalMiddleware
     {
         /// <summary>
-        /// Estructura que contiene los valores de configuración a utilizar
-        /// para cada escritor de bitácora.
-        /// </summary>
-        public struct Settings
-        {
-            /// <summary>
-            /// Obtiene un objeto que se puede utilizar para identificar al
-            /// actor que ha ejecutado la acción CRUD.
-            /// </summary>
-            public IActorProvider? ActorProvider { get; init; }
-
-            /// <summary>
-            /// Obtiene un objeto que se puede utilizar para extraer los
-            /// valores anteriores de la entidad que ha sido afectada por la
-            /// operación CRUD.
-            /// </summary>
-            public IOldValueProvider? OldValueProvider { get; init; }
-        }
-
-        /// <summary>
         /// Agrega un escritor de bitácora a la configuración de transacciones.
         /// </summary>
         /// <typeparam name="T">
@@ -87,7 +67,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo el
         /// uso de sintaxis Fluent.
         /// </returns>
-        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, Settings configuration) where T : notnull, IJournalMiddleware, new()
+        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, JournalSettings configuration) where T : notnull, IJournalMiddleware, new()
         {
             return config.UseJournal(new T(), configuration);
         }
@@ -113,7 +93,7 @@ namespace TheXDS.Triton.Middleware
         /// La misma instancia que <paramref name="config"/>, permitiendo el
         /// uso de sintaxis Fluent.
         /// </returns>
-        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton, Settings configuration) where T : notnull, IJournalMiddleware
+        public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton, JournalSettings configuration) where T : notnull, IJournalMiddleware
         {
             return config.AddLastEpilog((a, m) =>
             {

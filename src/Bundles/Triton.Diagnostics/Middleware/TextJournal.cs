@@ -15,7 +15,7 @@ namespace TheXDS.Triton.Middleware
     public abstract class TextJournal : IJournalMiddleware
     {
         /// <inheritdoc/>
-        public void Log(CrudAction action, Model? entity, JournalMiddleware.Settings settings)
+        public void Log(CrudAction action, Model? entity, JournalSettings settings)
         {
             string GetText() => $"{DateTime.Now:s}: {string.Format(St.XRanOperation, settings.ActorProvider?.GetCurrentActor() ?? St.NoActorProviderSubst, action)}";
             if (action == CrudAction.Read) return;

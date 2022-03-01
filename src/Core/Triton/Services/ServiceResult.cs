@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using static TheXDS.MCART.Types.Extensions.EnumExtensions;
 using St = TheXDS.Triton.Resources.Strings.Common;
 
 namespace TheXDS.Triton.Services
@@ -26,7 +25,7 @@ namespace TheXDS.Triton.Services
                 FailureReason.NotFound => St.EntityNotFound,
                 FailureReason.BadQuery => St.BadQuery,
                 FailureReason.QueryOverLimit => St.QueryOverLimit,
-                _ => reason.NameOf() ?? reason.ToString("X").PadLeft(8, '0'),
+                _ => $"0x{reason.ToString("X").PadLeft(8, '0')}",
             };
         }
 
