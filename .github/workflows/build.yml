@@ -5,6 +5,8 @@ on:
       - '**/*.md'
       - '**/*.gitignore'
       - '**/*.gitattributes'
+    branches-ignore:
+      - 'docs*'
     tags-ignore:
       - '*'
 jobs:
@@ -23,7 +25,7 @@ jobs:
     - name: Install Codecov
       run: choco install codecov -y
     - name: Build and test Tritón
-      run: dotnet test $env:Solution_Name --configuration=$env:Configuration --collect:"XPlat Code Coverage" --results-directory .\Build\tests --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      run: dotnet test $env:Solution_Name --configuration=$env:Configuration --collect:"XPlat Code Coverage" --results-directory .\Build\tests -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
     - name: Upload code coverage report
       run: foreach ($j in (ls .\Build\tests\ -Directory)) { codecov -f "$($j.FullName)\coverage.opencover.xml" }
       env:
@@ -34,3 +36,4 @@ jobs:
       with:
         name: Triton-nuget-packages
         path: Build/Bin/**/*.nupkg
+        
