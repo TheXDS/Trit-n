@@ -20,7 +20,6 @@ namespace TheXDS.Triton.InMemory.Services
         [Test]
         public void Fail_from_Exception_test()
         {
-
             var ex = new IOException("Test");
             var r = ServiceResult.FailWith<ServiceResult>(ex);
             Assert.False(r.Success);

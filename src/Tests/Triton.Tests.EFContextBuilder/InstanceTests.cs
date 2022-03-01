@@ -21,7 +21,6 @@ namespace Triton.Tests.EFContextBuilder
         {            
         }
 
-
         [Test]
         public void ParametricInstancingBuilderTest()
         {
