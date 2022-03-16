@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
@@ -14,6 +15,17 @@ namespace TheXDS.Triton.Tests
         {
         }
 
+        private class TestModel : Model<string?>
+        {
+            public TestModel()
+            {
+            }
+
+            public TestModel(string? id): base(id)
+            {
+            }
+        }
+
         [Test]
         public void ConcurrentModel_T_includes_RowVersion()
         {
@@ -25,6 +37,32 @@ namespace TheXDS.Triton.Tests
             x.RowVersion = a;
             Assert.AreEqual(a, x.RowVersion);
 
+        }
+
+        [Test]
+        public void IdAsString_is_not_null()
+        {
+            var t = new TestModel();
+            Assert.Null(t.Id);
+            Assert.NotNull(t.IdAsString);
+
+            var u = new ConcurrentTestModel();
+            Assert.Zero(u.Id);
+            Assert.AreEqual("0", u.IdAsString);
+        }
+
+        [Test]
+        public void Model_ctor_throws_on_null_id()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TestModel(null));
+        }
+
+        [Test]
+        public void Model_ctor_initializes_id()
+        {
+            var t = new TestModel("xabc1234");
+            Assert.AreEqual("xabc1234", t.Id);
+            Assert.AreEqual("xabc1234", t.IdAsString);
         }
     }
 }
