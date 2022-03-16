@@ -52,7 +52,7 @@ namespace TheXDS.Triton.Tests.Diagnostics
             Assert.AreEqual(2, perfMon.EventCount);
             Assert.IsTrue(perfMon.AverageMs > 300 && perfMon.AverageMs < 400);
             Assert.IsTrue(perfMon.MinMs >= 250 && perfMon.MinMs < 500);
-            Assert.GreaterOrEqual(perfMon.MaxMs, 500);
+            Assert.GreaterOrEqual(perfMon.MaxMs, 490);
             perfMon.Reset();
             Assert.AreEqual(0, perfMon.EventCount);
             Assert.IsNaN(perfMon.AverageMs);
