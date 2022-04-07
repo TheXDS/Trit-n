@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
 
@@ -15,13 +16,13 @@ namespace TheXDS.Triton.Tests
         {
         }
 
-        private class TestModel : Model<string?>
+        private class TestModel : Model<string>
         {
             public TestModel()
             {
             }
 
-            public TestModel(string? id): base(id)
+            public TestModel(string id): base(id)
             {
             }
         }
@@ -33,10 +34,9 @@ namespace TheXDS.Triton.Tests
             Assert.NotNull(t.GetProperties().SingleOrDefault(p => p.IsReadWrite() && p.PropertyType == typeof(byte[]) && p.HasAttr<TimestampAttribute>()));
             var x = new ConcurrentTestModel();
             Assert.AreEqual(default(bool[]), x.RowVersion);
-            var a = RandomNumberGeneratorExtensions.GetBytes(16);
+            var a = RandomNumberGenerator.GetBytes(16);
             x.RowVersion = a;
             Assert.AreEqual(a, x.RowVersion);
-
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace TheXDS.Triton.Tests
         [Test]
         public void Model_ctor_throws_on_null_id()
         {
-            Assert.Throws<ArgumentNullException>(() => new TestModel(null));
+            Assert.Throws<ArgumentNullException>(() => new TestModel(null!));
         }
 
         [Test]
