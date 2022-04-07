@@ -27,8 +27,11 @@ namespace Triton.Tests.Diagnostics
             var evts = perfMon.Events.ToArray();
             Assert.AreEqual(3, perfMon.EventCount);
             Assert.AreEqual(3, evts.Length);
+            System.Console.WriteLine(evts[0]);
             Assert.True(evts[0] >= 1000 && evts[0] <= 2000);
+            System.Console.WriteLine(evts[1]);
             Assert.True(evts[1] >= 2000 && evts[1] <= 3000);
+            System.Console.WriteLine(evts[2]);
             Assert.True(evts[2] >= 3000 && evts[2] <= 4000);
         }
     }

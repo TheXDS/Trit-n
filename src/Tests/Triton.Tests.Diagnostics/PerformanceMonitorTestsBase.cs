@@ -23,6 +23,7 @@ namespace TheXDS.Triton.Tests.Diagnostics
             Assert.AreEqual(0, perfMon.EventCount);
             await Run(testRepo, CrudAction.Commit, 1000);
             Assert.AreEqual(1, perfMon.EventCount);
+            System.Console.WriteLine(perfMon.AverageMs);
             Assert.IsTrue(perfMon.AverageMs > 500 && perfMon.AverageMs < 1500);
         }
 
@@ -50,8 +51,11 @@ namespace TheXDS.Triton.Tests.Diagnostics
             await Run(testRepo, CrudAction.Commit, 2000);
             await Run(testRepo, CrudAction.Commit, 1500);
             Assert.AreEqual(2, perfMon.EventCount);
+            System.Console.WriteLine(perfMon.AverageMs);
             Assert.IsTrue(perfMon.AverageMs > 1600 && perfMon.AverageMs < 1900);
+            System.Console.WriteLine(perfMon.MinMs);
             Assert.IsTrue(perfMon.MinMs >= 1500 && perfMon.MinMs < 1700);
+            System.Console.WriteLine(perfMon.MaxMs);
             Assert.GreaterOrEqual(perfMon.MaxMs, 1900);
             perfMon.Reset();
             Assert.AreEqual(0, perfMon.EventCount);
