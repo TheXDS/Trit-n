@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
@@ -238,6 +239,12 @@ namespace TheXDS.Triton.Services
         {
             _writeTransaction.Dispose();
             base.OnDispose();
+        }
+
+        /// <inheritdoc/>
+        public Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> query) where TModel : Model
+        {
+            return _readTransaction.SearchAsync(query);
         }
     }
 }

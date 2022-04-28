@@ -11,12 +11,12 @@
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Bundles\Triton.EfContextBuilder\Triton.EfContextBuilder.csproj" />
-    <ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
+    <ProjectReference Include="..\..\..\Bundles\Triton.EfContextBuilder\Triton.EfContextBuilder.csproj" />
+    <ProjectReference Include="..\..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
   </ItemGroup>
-  <Import Project="..\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
+  <Import Project="..\..\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
 </Project>

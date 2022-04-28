@@ -343,6 +343,25 @@ namespace TheXDS.Triton.Services
             };
         }
 
+        /// <summary>
+        /// Convierte un resultado simple en uno de un tipo más específico.
+        /// </summary>
+        /// <typeparam name="TResult">Tipo de resultado a obtener.</typeparam>
+        /// <param name="result">Resultado a incluir.</param>
+        /// <returns>
+        /// Un resultado de tipo <see cref="ServiceResult{T}"/> de tipo
+        /// <typeparamref name="TResult"/>.
+        /// </returns>
+        public ServiceResult<TResult?> CastUp<TResult>(TResult result)
+        {
+            return new(result)
+            {
+                Success = Success,
+                Reason = Reason,
+                Message = Message
+            };
+        }
+
         /// <inheritdoc/>
         public override bool Equals([AllowNull] object obj)
         {

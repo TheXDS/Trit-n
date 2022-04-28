@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
@@ -149,6 +150,12 @@ namespace TheXDS.Triton.InMemory.Services
             return Task.FromResult(Models.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
                 ? new ServiceResult<TModel?>(e)
                 : new ServiceResult<TModel?>(FailureReason.NotFound));
+        }
+
+        /// <inheritdoc/>
+        public async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model
+        {
+            return (await Models.OfType<TModel>().AsQueryable().Where(predicate).ToListAsync()).ToArray();
         }
 
         /// <summary>

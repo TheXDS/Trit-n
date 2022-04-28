@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services.Base;
@@ -67,7 +69,7 @@ namespace TheXDS.Triton.Services
         public ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
             var result = TryCall(CrudAction.Read, _context.Find<TModel>, out TModel? entity, new object?[] { new object[] { key } })?.CastUp<ServiceResult<TModel?>>();
-            return  entity is null ? result ?? FailureReason.NotFound : new ServiceResult<TModel?>(entity);
+            return  entity is null ? result ?? FailureReason.NotFound : entity;
         }
 
         /// <summary>
@@ -90,6 +92,21 @@ namespace TheXDS.Triton.Services
         public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
         {
             return TryCallAsync(CrudAction.Read, _context.FindAsync<TModel>(new object[] { key }));
+        }
+
+        /// <inheritdoc/>
+        public async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> query) where TModel : Model
+        {
+            try
+            {
+                var a = All<TModel>();
+                if (!a.Success) return a.Reason!.Value;
+                return await a.Where(query).ToArrayAsync();                
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
         }
     }
 }

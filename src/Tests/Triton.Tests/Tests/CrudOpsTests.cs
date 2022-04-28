@@ -27,7 +27,7 @@ namespace TheXDS.Triton.Tests
             }
         }
 
-        private readonly Service _srv = new(new InMemoryTransFactory());
+        private readonly Service _srv = new(new TestTransFactory());
 
         [Test]
         public void GetTransactionTest()

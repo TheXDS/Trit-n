@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TheXDS.MCART.Exceptions;
@@ -148,6 +149,25 @@ namespace TheXDS.Triton.Services.Base
         {
             return DynamicRead<TModel, Task<ServiceResult<TModel?>>>(key, p => Task.FromResult(p));
         }
+
+        /// <summary>
+        /// Ejecuta una consulta que obtendrá un arreglo de entidades que 
+        /// coinciden con el predicado especificado en
+        /// <paramref name="predicate"/>.
+        /// </summary>
+        /// <typeparam name="TModel">Tipo de entidades a obtener.</typeparam>
+        /// <param name="predicate">
+        /// Función de filtro a aplicar al buscar entidades.
+        /// </param>
+        /// <returns>
+        /// Una tarea que, al finalizar, contiene el resultado reportado de la
+        /// operación ejecutada por el servicio subyacente, incluyendo como
+        /// valor de resultado a las entidades obtenidas en la operación de
+        /// lectura. Si no existen entidades que coincidan con el predicado
+        /// espeficicado en <paramref name="predicate"/>, se devolverá un
+        /// arreglo de tipo <typeparamref name="TModel"/> vacío.
+        /// </returns>
+        Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ChkIdType<T>(Type idType)

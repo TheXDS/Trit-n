@@ -15,7 +15,7 @@ namespace TheXDS.Triton.Tests
         [OneTimeSetUp]
         public void PopulateDb()
         {
-            using var t = new Service(new InMemoryTransFactory()).GetTransaction();
+            using var t = new Service(new TestTransFactory()).GetTransaction();
             if (!t.All<User>().Any())
             {
                 User u1, u2, u3;
@@ -39,7 +39,7 @@ namespace TheXDS.Triton.Tests
         [OneTimeTearDown]
         public void Teardown()
         {
-            InMemoryCrudTransaction.Wipe();
+            TestCrudTransaction.Wipe();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
@@ -16,7 +17,7 @@ namespace TheXDS.Triton.InMemory.Services
     /// en la memoria de la aplicación. Los datos almacenados no se persistirán
     /// y serán borrados al finalizar la ejecución.
     /// </summary>
-    public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
+    public class TestCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     {
         private static readonly List<Model> Store = new();
 
@@ -32,12 +33,12 @@ namespace TheXDS.Triton.InMemory.Services
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
-        /// <see cref="InMemoryCrudTransaction"/>.
+        /// <see cref="TestCrudTransaction"/>.
         /// </summary>
         /// <param name="configuration">
         /// Configuración de transacciones a utilizar.
         /// </param>
-        public InMemoryCrudTransaction(IMiddlewareRunner configuration)
+        public TestCrudTransaction(IMiddlewareRunner configuration)
         {
             Configuration = configuration;
         }
@@ -207,6 +208,12 @@ namespace TheXDS.Triton.InMemory.Services
         protected override async ValueTask OnDisposeAsync()
         {
             if (_temp.Any()) await CommitAsync().ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model
+        {
+            return (await Store.OfType<TModel>().AsQueryable().Where(predicate).ToListAsync()).ToArray();
         }
     }
 }

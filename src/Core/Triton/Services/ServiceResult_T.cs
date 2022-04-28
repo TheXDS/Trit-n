@@ -135,5 +135,14 @@ namespace TheXDS.Triton.Services
         /// Motivo por el cual la operación ha fallado.
         /// </param>
         public static implicit operator ServiceResult<T>(in FailureReason reason) => new(reason);
+
+        /// <summary>
+        /// Convierte implícitamente un <typeparamref name="T"/> en un
+        /// <see cref="ServiceResult{T}"/>.
+        /// </summary>
+        /// <param name="value">
+        /// Valor a partir del cual generar un nuevo <see cref="ServiceResult{T}"/>.
+        /// </param>
+        public static implicit operator ServiceResult<T>(T value) => new(value);
     }
 }
