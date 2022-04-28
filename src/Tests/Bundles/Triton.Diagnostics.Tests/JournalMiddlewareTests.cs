@@ -22,7 +22,7 @@ namespace TheXDS.Triton.Tests.Diagnostics
 
         protected static (ServiceResult?, bool) RunSimulatorPass(IMiddlewareConfigurator testRepo, CrudAction action, Model? entity)
         {
-            if (testRepo.GetRunner().RunProlog(action, entity) is { } pr) return (pr, false);            
+            if (testRepo.GetRunner().RunProlog(action, entity) is { } pr) return (pr, false);
             return (testRepo.GetRunner().RunEpilog(action, entity), true);
         }
 
@@ -69,7 +69,7 @@ namespace TheXDS.Triton.Tests.Diagnostics
                 return null;
             }
             var t = new TransactionConfiguration().UseSimulation().AddEpilog(ChkEpilog);
-            Assert.AreEqual(ranTrans,RunSimulatorPass(t, action, new User("x", "test")).Item2);
+            Assert.AreEqual(ranTrans, RunSimulatorPass(t, action, new User("x", "test")).Item2);
             Assert.True(ranEpilog);
         }
     }
