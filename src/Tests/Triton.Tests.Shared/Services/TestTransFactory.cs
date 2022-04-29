@@ -1,7 +1,7 @@
 ﻿using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
-namespace TheXDS.Triton.InMemory.Services
+namespace TheXDS.Triton.Tests.Services
 {
     /// <summary>
     /// Fábrica de transacciones que genera transacciones sin persistencia (en

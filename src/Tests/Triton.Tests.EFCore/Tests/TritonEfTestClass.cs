@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS1591
+﻿using TheXDS.Triton.Tests.EFCore.Services;
+
+#pragma warning disable CS1591
 
 namespace TheXDS.Triton.Tests
 {

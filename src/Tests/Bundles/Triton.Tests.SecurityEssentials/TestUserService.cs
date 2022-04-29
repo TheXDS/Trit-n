@@ -1,14 +1,12 @@
 ﻿#pragma warning disable CS1591
 
-using TheXDS.Triton.InMemory.Services;
+namespace TheXDS.Triton.Tests.SecurityEssentials;
 using TheXDS.Triton.Services;
+using Services;
 
-namespace TheXDS.Triton.Tests
+internal class TestUserService : Service, IUserService
 {
-    internal class TestUserService : Service, IUserService
+    public TestUserService() : base(new TestTransFactory())
     {
-        public TestUserService() : base(new TestTransFactory())
-        {
-        }
     }
 }

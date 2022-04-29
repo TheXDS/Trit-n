@@ -2,11 +2,12 @@
 
 using NUnit.Framework;
 using System.Linq;
-using TheXDS.Triton.InMemory.Services;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
+using TheXDS.Triton.Tests.Models;
+using TheXDS.Triton.Tests.Services;
 
 namespace TheXDS.Triton.Tests
 {

@@ -28,7 +28,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         async Task<ServiceResult<LoginCredential?>> GetCredential(string username)
         {
-            using var j = GetReadTransaction();
+            await using var j = GetReadTransaction();
             var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
             return r.Success ? (r.ReturnValue!.FirstOrDefault() ?? ServiceResult.FailWith<ServiceResult<LoginCredential?>>(FailureReason.NotFound)) : r.CastUp<LoginCredential?>(null);
         }
@@ -50,7 +50,7 @@ namespace TheXDS.Triton.Services
         /// </returns>
         async Task<ServiceResult> AddNewLoginCredential(string username, SecureString password)
         {
-            using var j = GetTransaction();
+            await using var j = GetTransaction();
 
             var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
             if (!r.Success) return r;
@@ -85,15 +85,11 @@ namespace TheXDS.Triton.Services
         {
             var r = await VerifyPassword(username, password);
             if (!(r.Success && r.ReturnValue is { } result)) return r.CastUp<Session?>(null);
-            
-            if ((result.Valid ?? false) && result.LoginCredential is not null)
-            {
-                using var j = GetWriteTransaction();
-                Session s = new() { Timestamp = DateTime.UtcNow, Credential = result.LoginCredential };
-                j.Create(s);
-                return (await j.CommitAsync()).CastUp(s);
-            }
-            return FailureReason.Forbidden;
+            if (!(result.Valid ?? false)) return FailureReason.Forbidden;
+            await using var j = GetWriteTransaction();
+            Session s = new() { Timestamp = DateTime.UtcNow, Credential = result.LoginCredential };
+            j.Create(s);
+            return (await j.CommitAsync()).CastUp(s);
         }
 
         /// <summary>
@@ -114,8 +110,9 @@ namespace TheXDS.Triton.Services
         {
             var r = await GetCredential(userId);
             if (!r.Success) return r.CastUp<VerifyPasswordResult?>(null);
-            if (r.ReturnValue is not { PasswordHash: byte[] passwd } user) return VerifyPasswordResult.Invalid;
-            return new VerifyPasswordResult(PasswordStorage.VerifyPassword(password, passwd), user);
+            return r.ReturnValue is not { PasswordHash: { } passwd, Enabled: true } user
+                ? VerifyPasswordResult.Invalid 
+                : new VerifyPasswordResult(PasswordStorage.VerifyPassword(password, passwd), user);
         }
 
         /// <summary>
@@ -185,9 +182,9 @@ namespace TheXDS.Triton.Services
         /// </returns>
         ServiceResult<bool?> CheckAccess(SecurityObject credential, string context, PermissionFlags requested)
         {
-            foreach (var j in new SecurityObject[] { credential }.Concat(credential.Membership.Select(p => p.Group)))
+            foreach (var j in new[] { credential }.Concat(credential.Membership.Select(p => p.Group)))
             {
-                if (ChkAccessInternal(j, context, requested) is bool b) return b;
+                if (ChkAccessInternal(j, context, requested) is { } b) return b;
             }
             return new((bool?)null);
         }
@@ -195,7 +192,7 @@ namespace TheXDS.Triton.Services
         private static bool? ChkAccessInternal(SecurityObject obj, string context, PermissionFlags requested)
         {
             return obj.Descriptors.FirstOrDefault(p => p.ContextId == context) is { } d
-                && IsSet(d, requested) is bool b
+                && IsSet(d, requested) is { } b
                 ? b
                 : IsSet(obj, requested);
         }

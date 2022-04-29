@@ -1,6 +1,5 @@
-namespace TheXDS.Triton.Models;
+namespace TheXDS.Triton.Models.Base;
 using System;
-using TheXDS.Triton.Models.Base;
 
 /// <summary>
 /// Modelo base para aquellas entidades que expongan campos de marca de tiempo.
@@ -8,7 +7,7 @@ using TheXDS.Triton.Models.Base;
 /// <typeparam name="T">
 /// Tipo de campo llave a utilizar para este modelo.
 /// </typeparam>
-public abstract class TimestampModel<T> : Model<T> where T : notnull, IComparable<T>, IEquatable<T>
+public abstract class TimestampModel<T> : Model<T> where T : IComparable<T>, IEquatable<T>
 {
     /// <summary>
     /// Obtiene o establece una marca de tiempo a asociar con esta entidad.

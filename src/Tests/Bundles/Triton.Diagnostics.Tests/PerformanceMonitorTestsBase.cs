@@ -54,7 +54,7 @@ namespace TheXDS.Triton.Tests.Diagnostics
             System.Console.WriteLine(perfMon.AverageMs);
             Assert.IsTrue(perfMon.AverageMs > 1600 && perfMon.AverageMs < 1900);
             System.Console.WriteLine(perfMon.MinMs);
-            Assert.IsTrue(perfMon.MinMs >= 1500 && perfMon.MinMs < 1700);
+            Assert.IsTrue(perfMon.MinMs >= 1400 && perfMon.MinMs < 1900);
             System.Console.WriteLine(perfMon.MaxMs);
             Assert.GreaterOrEqual(perfMon.MaxMs, 1900);
             perfMon.Reset();

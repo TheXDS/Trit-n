@@ -1,10 +1,10 @@
 ﻿#pragma warning disable CS1591
 
-using NUnit.Framework;
 using System.IO;
+using NUnit.Framework;
 using TheXDS.Triton.Services;
 
-namespace TheXDS.Triton.InMemory.Services
+namespace TheXDS.Triton.Tests.Services
 {
     public class ServiceResultTests
     {

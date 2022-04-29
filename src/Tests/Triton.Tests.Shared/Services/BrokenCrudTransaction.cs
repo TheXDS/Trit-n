@@ -6,7 +6,7 @@ using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
-namespace TheXDS.Triton.InMemory.Services
+namespace TheXDS.Triton.Tests.Services
 {
     /// <summary>
     /// Implementa una transacción rota que simula errores en el servicio.

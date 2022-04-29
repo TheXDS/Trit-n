@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TheXDS.MCART.Math;
+using TheXDS.MCART.Resources;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Faker.Resources;
 using static TheXDS.Triton.Fakers.Globals;
@@ -87,6 +89,10 @@ namespace TheXDS.Triton.Fakers
         /// </returns>
         public static string Lorem(in int words, in int wordsPerSentence, in int sentencesPerParagraph, in double delta)
         {
+            if (words < 1) throw Errors.ValueOutOfRange(nameof(words), 1, int.MaxValue);
+            if (wordsPerSentence < 1) throw Errors.ValueOutOfRange(nameof(wordsPerSentence), 1, int.MaxValue);
+            if (sentencesPerParagraph < 1) throw Errors.ValueOutOfRange(nameof(sentencesPerParagraph), 1, int.MaxValue);
+            
             double wps = wordsPerSentence;
             double spp = sentencesPerParagraph;
             var text = new StringBuilder();

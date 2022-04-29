@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TheXDS.Triton.Models.Base;
 
-namespace TheXDS.Triton.Models
+namespace TheXDS.Triton.Tests.Models
 {
     /// <summary>
     /// Describe un Post.

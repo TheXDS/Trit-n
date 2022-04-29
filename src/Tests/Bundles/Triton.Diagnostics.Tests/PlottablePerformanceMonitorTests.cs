@@ -1,14 +1,13 @@
 ﻿#pragma warning disable CS1591
 
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Services;
-using TheXDS.Triton.Tests.Diagnostics;
 
-namespace Triton.Tests.Diagnostics
+namespace TheXDS.Triton.Tests.Diagnostics
 {
     public class PlottablePerformanceMonitorTests : PerformanceMonitorTestsBase<PlottablePerfMonitor>
     {
@@ -20,7 +19,7 @@ namespace Triton.Tests.Diagnostics
         [Test]
         public async Task Monitor_exposes_events()
         {
-            (var testRepo, var perfMon) = Build();
+            var (testRepo, perfMon) = Build();
             await Run(testRepo, CrudAction.Commit, 1000);
             await Run(testRepo, CrudAction.Commit, 2000);
             await Run(testRepo, CrudAction.Commit, 3000);

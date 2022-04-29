@@ -10,7 +10,7 @@ using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
-namespace TheXDS.Triton.InMemory.Services
+namespace TheXDS.Triton.Tests.Services
 {
     /// <summary>
     /// Representa una transacción de prueba que almacena los datos guardados
@@ -161,7 +161,7 @@ namespace TheXDS.Triton.InMemory.Services
         /// </returns>
         public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key)
             where TModel : Model<TKey>
-            where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
+            where TKey : IComparable<TKey>, IEquatable<TKey>
         {
             Configuration.RunProlog(CrudAction.Read, null);
             Configuration.RunEpilog(CrudAction.Read, null);

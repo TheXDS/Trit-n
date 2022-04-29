@@ -1,4 +1,6 @@
-﻿namespace TheXDS.Triton.Models;
+﻿using TheXDS.Triton.Models.Base;
+
+namespace TheXDS.Triton.Models;
 using System;
 
 /// <summary>
