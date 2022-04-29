@@ -66,16 +66,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.EFContextBuild
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.SecurityEssentials", "Bundles\Triton.SecurityEssentials\Triton.SecurityEssentials.csproj", "{97DEC746-8DCC-46B0-BC0F-810C6CD34649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Tests.SecurityEssentials", "Tests\Bundles\Triton.Tests.SecurityEssentials\Triton.Tests.SecurityEssentials.csproj", "{3FE4542B-5F4C-4299-A9D6-8BEB5EEBEFB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.SecurityEssentials", "Tests\Bundles\Triton.Tests.SecurityEssentials\Triton.Tests.SecurityEssentials.csproj", "{3FE4542B-5F4C-4299-A9D6-8BEB5EEBEFB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Tests.Models", "Tests\Triton.Tests.Models\Triton.Tests.Models.csproj", "{B936D615-81B5-40D2-BAF5-1333CDF67C3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.Models", "Tests\Triton.Tests.Models\Triton.Tests.Models.csproj", "{B936D615-81B5-40D2-BAF5-1333CDF67C3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Tests.CrudNotify", "Tests\Bundles\Triton.Tests.CrudNotify\Triton.Tests.CrudNotify.csproj", "{0F8FBC9C-9C6B-45E3-849F-B51DBC324D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.CrudNotify", "Tests\Bundles\Triton.Tests.CrudNotify\Triton.Tests.CrudNotify.csproj", "{0F8FBC9C-9C6B-45E3-849F-B51DBC324D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Tests.Faker", "Tests\Bundles\Triton.Tests.Faker\Triton.Tests.Faker.csproj", "{47B0D6EF-11B3-471F-9795-306D7F8927B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.Faker", "Tests\Bundles\Triton.Tests.Faker\Triton.Tests.Faker.csproj", "{47B0D6EF-11B3-471F-9795-306D7F8927B9}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{0f8fbc9c-9c6b-45e3-849f-b51dbc324d9d}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{3fe4542b-5f4c-4299-a9d6-8beb5eebefb1}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{8ecfeedf-ce5b-4aba-b72f-99eb3652f908}*SharedItemsImports = 13
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{9f06a204-134a-44d5-b35c-f5cc52bb7810}*SharedItemsImports = 5

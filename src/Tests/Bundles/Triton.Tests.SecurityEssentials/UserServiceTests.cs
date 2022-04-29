@@ -51,8 +51,7 @@ public class UserServiceTests
         Assert.IsNull(r.ReturnValue);
         Assert.AreEqual(FailureReason.Forbidden, r.Reason);
     }
-    
-    
+        
     [Test]
     public async Task Authenticate_with_disabled_user_Test()
     {
