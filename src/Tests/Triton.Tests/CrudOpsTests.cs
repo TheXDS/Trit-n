@@ -175,4 +175,12 @@ public class CrudOpsTests
             Assert.IsNull(t.Read<User, string>("user3").ReturnValue);
         }
     }
+
+    public async Task ReadAsync_Test()
+    {
+        await using var t = _srv.GetReadTransaction();
+        User r = (await t.ReadAsync<User, string>("user1")).ReturnValue!;
+        Assert.IsNotNull(r);
+        Assert.IsAssignableFrom<User>(r);
+    }
 }

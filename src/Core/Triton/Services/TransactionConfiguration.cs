@@ -15,23 +15,27 @@ namespace TheXDS.Triton.Services
         {
             private readonly List<MiddlewareAction> _list = new();
             private int _tail = 0;
-
+            
+            /// <inheritdoc/>
             public void AddFirst(MiddlewareAction item)
             {
-                _list.Insert(1, item);
+                _list.Insert(0, item);
                 _tail++;
             }
 
+            /// <inheritdoc/>
             public void Add(MiddlewareAction item)
             {
                 _list.Insert(_tail++, item);
             }
 
+            /// <inheritdoc/>
             public void AddLast(MiddlewareAction item)
             {
                 _list.Add(item);
             }
-
+            
+            /// <inheritdoc/>
             public IEnumerator<MiddlewareAction> GetEnumerator() => _list.GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_list).GetEnumerator();

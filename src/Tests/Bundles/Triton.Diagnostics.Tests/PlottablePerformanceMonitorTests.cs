@@ -27,11 +27,11 @@ namespace TheXDS.Triton.Tests.Diagnostics
             Assert.AreEqual(3, perfMon.EventCount);
             Assert.AreEqual(3, evts.Length);
             System.Console.WriteLine(evts[0]);
-            Assert.True(evts[0] >= 1000 && evts[0] <= 2000);
+            Assert.True(evts[0] >= 900 && evts[0] <= 2100);
             System.Console.WriteLine(evts[1]);
-            Assert.True(evts[1] >= 2000 && evts[1] <= 3000);
+            Assert.True(evts[1] >= 1900 && evts[1] <= 3100);
             System.Console.WriteLine(evts[2]);
-            Assert.True(evts[2] >= 3000 && evts[2] <= 4000);
+            Assert.True(evts[2] >= 2900 && evts[2] <= 4100);
         }
     }
 }
