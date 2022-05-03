@@ -11,7 +11,7 @@ public abstract class SecurityBase : Model<Guid>
     /// Inicializa una nueva instancia de la clase
     /// <see cref="SecurityBase"/>.
     /// </summary>
-    protected SecurityBase()
+    protected SecurityBase() : this(default, default)
     {
     }
 

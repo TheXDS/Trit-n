@@ -97,7 +97,10 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        IMiddlewareConfigurator Attach<T>() where T : ITransactionMiddleware, new();
+        IMiddlewareConfigurator Attach<T>() where T : ITransactionMiddleware, new()
+        {
+            return AttachAt<T>(TransactionConfiguration.ActionPosition.Default);
+        }
 
         /// <summary>
         /// Agrega las acciones de un Middleware a ejecutar durante una
@@ -111,7 +114,10 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        IMiddlewareConfigurator Attach<T>(out T middleware) where T : ITransactionMiddleware, new();
+        IMiddlewareConfigurator Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
+        {
+            return AttachAt(out middleware, TransactionConfiguration.ActionPosition.Default);
+        }
 
         /// <summary>
         /// Agrega las acciones de un Middleware a ejecutar durante una
@@ -125,7 +131,10 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        IMiddlewareConfigurator Attach<T>(T middleware) where T : ITransactionMiddleware;
+        IMiddlewareConfigurator Attach<T>(T middleware) where T : ITransactionMiddleware
+        {
+            return AttachAt(middleware, TransactionConfiguration.ActionPosition.Default);
+        }
 
         /// <summary>
         /// Agrega con prioridad las acciones de un Middleware a ejecutar
@@ -146,7 +155,31 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        IMiddlewareConfigurator AttachAt<T>(in TransactionConfiguration.ActionPosition prologPosition = TransactionConfiguration.ActionPosition.Default, in TransactionConfiguration.ActionPosition epilogPosition = TransactionConfiguration.ActionPosition.Default) where T : ITransactionMiddleware, new();
+        IMiddlewareConfigurator AttachAt<T>(in TransactionConfiguration.ActionPosition prologPosition,
+            in TransactionConfiguration.ActionPosition epilogPosition) where T : ITransactionMiddleware, new()
+        {
+            return AttachAt(new T(), prologPosition, epilogPosition);
+        }
+        
+        /// <summary>
+        /// Agrega con prioridad las acciones de un Middleware a ejecutar
+        /// durante una operación Crud.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de Middleware a agregar.
+        /// </typeparam>
+        /// <param name="position">
+        /// Posición en la cual agregar el prólogo y epílogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <returns>
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
+        /// </returns>
+        IMiddlewareConfigurator AttachAt<T>(in TransactionConfiguration.ActionPosition position) where T : ITransactionMiddleware, new()
+        {
+            return AttachAt<T>(position, position);
+        }
 
         /// <summary>
         /// Agrega con prioridad las acciones de un Middleware a ejecutar
@@ -168,7 +201,34 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        IMiddlewareConfigurator AttachAt<T>(out T middleware, in TransactionConfiguration.ActionPosition prologPosition = TransactionConfiguration.ActionPosition.Default, in TransactionConfiguration.ActionPosition epilogPosition = TransactionConfiguration.ActionPosition.Default) where T : ITransactionMiddleware, new();
+        IMiddlewareConfigurator AttachAt<T>(out T middleware, in TransactionConfiguration.ActionPosition prologPosition,
+            in TransactionConfiguration.ActionPosition epilogPosition) where T : ITransactionMiddleware, new()
+        {
+            middleware = new();
+            return AttachAt(middleware, prologPosition, epilogPosition);
+        }
+
+        /// <summary>
+        /// Agrega con prioridad las acciones de un Middleware a ejecutar
+        /// durante una operación Crud.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de Middleware a agregar.
+        /// </typeparam>
+        /// <param name="middleware">Middleware que ha sido agregado.</param>
+        /// <param name="position">
+        /// Posición en la cual agregar el prólogo y epílogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <returns>
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
+        /// </returns>
+        IMiddlewareConfigurator AttachAt<T>(out T middleware, in TransactionConfiguration.ActionPosition position)
+            where T : ITransactionMiddleware, new()
+        {
+            return AttachAt(out middleware, position, position);
+        }
         
         /// <summary>
         /// Agrega las acciones de un Middleware a ejecutar durante una
@@ -191,8 +251,31 @@ namespace TheXDS.Triton.Services
         /// La misma instancia de <see cref="TransactionConfiguration"/>
         /// para poder utilizar sintaxis Fluent.
         /// </returns>
-        IMiddlewareConfigurator AttachAt<T>(T middleware, in TransactionConfiguration.ActionPosition prologPosition = TransactionConfiguration.ActionPosition.Default, in TransactionConfiguration.ActionPosition epilogPosition = TransactionConfiguration.ActionPosition.Default) where T : ITransactionMiddleware;
+        IMiddlewareConfigurator AttachAt<T>(T middleware, in TransactionConfiguration.ActionPosition prologPosition, in TransactionConfiguration.ActionPosition epilogPosition) where T : ITransactionMiddleware;
 
+        /// <summary>
+        /// Agrega las acciones de un Middleware a ejecutar durante una
+        /// operación Crud, especificando la posición en la cual cada acción
+        /// deberá insertarse.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de Middleware a agregar.
+        /// </typeparam>
+        /// <param name="middleware">Middleware que será agregado.</param>
+        /// <param name="position">
+        /// Posición en la cual agregar el prólogo y epílogo del 
+        /// <see cref="ITransactionMiddleware"/>.
+        /// </param>
+        /// <returns>
+        /// La misma instancia de <see cref="TransactionConfiguration"/>
+        /// para poder utilizar sintaxis Fluent.
+        /// </returns>
+        IMiddlewareConfigurator AttachAt<T>(T middleware, in TransactionConfiguration.ActionPosition position)
+            where T : ITransactionMiddleware
+        {
+            return AttachAt(middleware, position, position);
+        }
+        
         /// <summary>
         /// Obtiene una referencia a un <see cref="IMiddlewareRunner"/> que
         /// ejecutará una colección de Middlewares.

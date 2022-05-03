@@ -38,7 +38,7 @@ public class MultiFactorEntry : Model<Guid>
     /// Obtiene o establece al usuario que posee esta entrada de autenticación
     /// en dos factores.
     /// </summary>
-    public LoginCredential User { get; set; } = null!;
+    public LoginCredential Credential { get; set; } = null!;
 
     ///
     /// <summary>

@@ -52,7 +52,7 @@ public class DbPopulation
                 Token = "abcd1234"
             }.PushInto(lc.Sessions));
             t.Create(new UserGroupMembership() {
-                User = lc,
+                Credential = lc,
                 Group = g,
                 Id = System.Guid.NewGuid(),
             }.PushInto(lc.Membership).PushInto(g.Membership));

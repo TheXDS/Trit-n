@@ -85,7 +85,7 @@ namespace TheXDS.Triton.Services
         }
 
         /// <inheritdoc/>
-        public IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware
+        public IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition prologPosition, in ActionPosition epilogPosition) where T : ITransactionMiddleware
         {
             AttachAt(_prologs, middleware.PrologAction, prologPosition);
             AttachAt(_epilogs, middleware.EpilogAction, epilogPosition);

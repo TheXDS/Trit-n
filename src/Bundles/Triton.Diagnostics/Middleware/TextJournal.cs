@@ -18,9 +18,7 @@ namespace TheXDS.Triton.Middleware
         public void Log(CrudAction action, Model? entity, JournalSettings settings)
         {
             string GetText() => $"{DateTime.Now:s}: {string.Format(St.XRanOperation, settings.ActorProvider?.GetCurrentActor() ?? St.NoActorProviderSubst, action)}";
-            if (action == CrudAction.Read) return;
             List<string> lines = new();
-
             if (entity is null)
             {
                 lines.Add(string.Format(St.XWithNoData, GetText()));
@@ -36,6 +34,10 @@ namespace TheXDS.Triton.Middleware
                     case CrudAction.Update:
                         AddUpdatedValues(lines, entity, settings.OldValueProvider);
                         break;
+                    case CrudAction.Read:
+                    case CrudAction.Delete:
+                        lines.Add($"  - Id: {entity.IdAsString}");
+                        break;
                 }
             }
             WriteText(lines);
@@ -48,7 +50,7 @@ namespace TheXDS.Triton.Middleware
         /// <param name="lines">Líneas de texto a escribir.</param>
         protected abstract void WriteText(IEnumerable<string> lines);
 
-        private static void AddUpdatedValues(List<string> lines, Model entity, IOldValueProvider? oldValueProvider)
+        private static void AddUpdatedValues(ICollection<string> lines, Model entity, IOldValueProvider? oldValueProvider)
         {
             var c = oldValueProvider?.GetOldValues(entity);
             if (c is null) return;
@@ -58,7 +60,7 @@ namespace TheXDS.Triton.Middleware
             }
         }
 
-        private static void AddNewValues(List<string> lines, Model entity)
+        private static void AddNewValues(ICollection<string> lines, Model entity)
         {
             foreach (var j in entity.GetType().GetProperties().Where(p => p.CanRead))
             {

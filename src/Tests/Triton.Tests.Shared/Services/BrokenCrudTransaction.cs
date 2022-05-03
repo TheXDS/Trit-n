@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TheXDS.MCART.Types.Base;
@@ -11,6 +12,7 @@ namespace TheXDS.Triton.Tests.Services
     /// <summary>
     /// Implementa una transacción rota que simula errores en el servicio.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class BrokenCrudTransaction : Disposable, ICrudReadWriteTransaction
     {
         /// <inheritdoc/>

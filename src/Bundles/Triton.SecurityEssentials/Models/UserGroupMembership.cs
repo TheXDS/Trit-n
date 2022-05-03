@@ -15,5 +15,5 @@ public class UserGroupMembership : Model<Guid>
     /// <summary>
     /// Obtiene o establece el usuario que es miembro de un grupo.
     /// </summary>
-    public LoginCredential User { get; set; } = null!;
+    public LoginCredential Credential { get; set; } = null!;
 }

@@ -11,7 +11,7 @@ namespace TheXDS.Triton.Middleware
     public class PlottablePerfMonitor : PerformanceMonitorBase
     {
         private readonly Queue<double> _events = new();
-        private int maxSamples = 1000;
+        private int _maxSamples = 1000;
 
         /// <summary>
         /// Obtiene la colección de eventos registrados.
@@ -36,12 +36,12 @@ namespace TheXDS.Triton.Middleware
         /// </summary>
         public int MaxSamples
         {
-            get => maxSamples;
+            get => _maxSamples;
             set
             {
                 lock (_events)
                 {
-                    maxSamples = value;
+                    _maxSamples = value;
                     while (_events.Count > value) _events.Dequeue();
                 }
             }
@@ -58,7 +58,7 @@ namespace TheXDS.Triton.Middleware
         {
             lock (_events)
             {
-                if (_events.Count == maxSamples) _events.Dequeue();
+                if (_events.Count == _maxSamples) _events.Dequeue();
                 _events.Enqueue(milliseconds);
             }
             Notify(nameof(Events));

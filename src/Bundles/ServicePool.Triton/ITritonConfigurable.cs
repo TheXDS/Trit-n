@@ -92,5 +92,25 @@ namespace TheXDS.ServicePool.Triton
         /// La misma instancia del objeto utilizado para configurar Tritón.
         /// </returns>
         ITritonConfigurable UseContext(Type context);
+
+        /// <summary>
+        /// Agrega una colección de acciones de Middleware de prólogo a la
+        /// configuración de transacciones registrada.
+        /// </summary>
+        /// <param name="actions">Acciones de prólogo a agregar.</param>
+        /// <returns>
+        /// La misma instancia del objeto utilizado para configurar Tritón.
+        /// </returns>
+        ITritonConfigurable UseTransactionPrologs(params MiddlewareAction[] actions);
+
+        /// <summary>
+        /// Agrega una colección de acciones de Middleware de epílogo a la
+        /// configuración de transacciones registrada.
+        /// </summary>
+        /// <param name="actions">Acciones de epílogo a agregar.</param>
+        /// <returns>
+        /// La misma instancia del objeto utilizado para configurar Tritón.
+        /// </returns>
+        ITritonConfigurable UseTransactionEpilogs(params MiddlewareAction[] actions);
     }
 }

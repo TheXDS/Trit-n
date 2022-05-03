@@ -18,9 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Bundles\Triton.CrudNotify\Triton.CrudNotify.csproj" />
+      <ProjectReference Include="..\..\..\Bundles\ServicePool.Triton\ServicePool.Triton.csproj" />
     </ItemGroup>
-
-    <Import Project="..\..\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
 
 </Project>
