@@ -11,7 +11,7 @@
 		<RepositoryUrl>https://github.com/TheXDS/Triton/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Description>Tritón Framework es una herramienta de rápido desarrollo de software con conexiones a datos mediante Entity Framework u otros proveedores de datos.</Description>
-		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(VersionSuffix)'==''">
