@@ -1,14 +1,14 @@
+#pragma warning disable CS1591
+
 using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;
 using TheXDS.Triton.Tests.Services;
-
-#pragma warning disable CS1591
+using NUnit.Framework;
+using TheXDS.Triton.Middleware;
 
 namespace TheXDS.Triton.Tests.CrudNotify;
-using NUnit.Framework;
-using Middleware;
 
 public class CrudNotifierTests
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TheXDS.Triton.Fakers
+namespace TheXDS.Triton.Faker
 {
     internal static class Globals
     {

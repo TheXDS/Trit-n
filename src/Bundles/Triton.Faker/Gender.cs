@@ -1,4 +1,4 @@
-﻿namespace TheXDS.Triton.Fakers
+﻿namespace TheXDS.Triton.Faker
 {
     /// <summary>
     /// Enumera los géneros biológicos de una persona.

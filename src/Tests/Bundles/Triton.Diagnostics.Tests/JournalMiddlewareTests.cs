@@ -1,14 +1,15 @@
 ﻿#pragma warning disable CS1591
 
-namespace TheXDS.Triton.Tests.Diagnostics;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Middleware;
+using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
-using Models;
+using TheXDS.Triton.Tests.Models;
+
+namespace TheXDS.Triton.Tests.Diagnostics;
 
 public class JournalMiddlewareTests : MiddlewareTestsBase
 {
