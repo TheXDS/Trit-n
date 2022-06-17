@@ -167,7 +167,10 @@ namespace TheXDS.Triton.Services.Base
         /// espeficicado en <paramref name="predicate"/>, se devolverá un
         /// arreglo de tipo <typeparamref name="TModel"/> vacío.
         /// </returns>
-        Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model;
+        async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model
+        {
+            return (await All<TModel>().Where(predicate).ToListAsync()).ToArray();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ChkIdType<T>(Type idType)
