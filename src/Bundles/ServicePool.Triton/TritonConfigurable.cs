@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.ServicePool.Triton.Resources;
 using TheXDS.Triton.Middleware;
@@ -29,10 +30,9 @@ namespace TheXDS.ServicePool.Triton
         /// <inheritdoc/>
         public ITritonConfigurable DiscoverContexts()
         {
-            Pool.DiscoverAll<Service>();
-            foreach (var j in MCART.Helpers.Objects.GetTypes<DbContext>(true))
+            foreach (var j in MCART.Helpers.Objects.GetTypes<DbContext>(true).Where(p => p.GetConstructor(Type.EmptyTypes) is not null))
             {
-                Pool.Register(() => new Service(Pool.Resolve<IMiddlewareConfigurator>()!, typeof(EfCoreTransFactory<>).MakeGenericType(j).New<ITransactionFactory>()));
+                UseContext(j);
             }
             return this;
         }
@@ -40,8 +40,7 @@ namespace TheXDS.ServicePool.Triton
         /// <inheritdoc/>
         public ITritonConfigurable UseContext<T>() where T : DbContext, new()
         {
-            Pool.Register(() => new Service(Pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), new EfCoreTransFactory<T>()));
-            return this;
+            return UseContext(typeof(T));
         }
 
         /// <inheritdoc/>
@@ -56,9 +55,10 @@ namespace TheXDS.ServicePool.Triton
         }
 
         /// <inheritdoc/>
-        public ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new()
+        public ITritonConfigurable UseMiddleware<T>(out T newMiddleware) where T : ITransactionMiddleware, new()
         {
-            Pool.Discover<IMiddlewareConfigurator>()!.Attach<T>();
+            newMiddleware = new();
+            Pool.Discover<IMiddlewareConfigurator>()!.Attach(newMiddleware);
             return this;
         }
 

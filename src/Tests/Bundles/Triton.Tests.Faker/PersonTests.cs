@@ -2,67 +2,26 @@
 
 using NUnit.Framework;
 using System;
-using System.Text.RegularExpressions;
+using System.Linq;
 using TheXDS.MCART.Helpers;
 using TheXDS.Triton.Faker;
 
 namespace TheXDS.Triton.Tests.Faker;
 
-public class AddressTests
+public class CompanyTests
 {
     [Test]
-    public void GetAddress_Test()
+    public void Company_has_fake_data()
     {
-        for (var j = 0; j < 100; j++)
+        foreach (var _ in Enumerable.Range(0, 100))
         {
-            var a = Address.NewAddress();
-            Assert.IsNotEmpty(a.AddressLine);
-            if (a.AddressLine2 is not null) Assert.IsNotEmpty(a.AddressLine2);
-            Assert.IsNotEmpty(a.City);
-            Assert.IsNotEmpty(a.Country);
-            Assert.IsAssignableFrom<ushort>(a.Zip);
-
-            var s = a.ToString();
-            Assert.IsTrue(s.Contains(a.AddressLine));
-            if (a.AddressLine2 is not null) Assert.IsTrue(s.Contains(a.AddressLine));
-            Assert.IsTrue(s.Contains(a.City));
-            Assert.IsTrue(s.Contains(a.Country));
-            Assert.IsTrue(s.Contains(a.Zip.ToString()));
-        }
-    }
-
-}
-
-public class InternetTests
-{
-    [Test]
-    public void FakeUsername_Test()
-    {
-        for (var j = 0; j < 100; j++)
-        {
-            Assert.IsNotEmpty(Internet.FakeUsername());
-        }
-    }
-
-    [Test]
-    public void FakeEmail_Test()
-    {
-        for (var j = 0; j < 100; j++)
-        {
-            var e = Internet.FakeEmail();
-            Assert.IsNotEmpty(e);
-            Assert.IsTrue(Regex.IsMatch(e, ".+@.+[.].{2,}"));
-        }
-    }
-
-    [Test]
-    public void FakeEmail_with_person_Test()
-    {
-        for (var j = 0; j < 100; j++)
-        {
-            var e = Internet.FakeEmail(Person.Someone());
-            Assert.IsNotEmpty(e);
-            Assert.IsTrue(Regex.IsMatch(e, ".+@.+[.].{2,}"));
+            Company c = new();
+            Assert.IsNotNull(c);
+            Assert.IsNotEmpty(c.Name);
+            Assert.IsNotNull(c.Address);
+            Assert.IsNotEmpty(c.DomainName);
+            Assert.IsNotEmpty(c.Website);
+            Assert.IsTrue(Uri.IsWellFormedUriString(c.Website, UriKind.Absolute));
         }
     }
 }
@@ -87,7 +46,7 @@ public class PersonTests
     [Test]
     public void Adult_Test()
     {
-        for (var j = 0; j < 100; j++)
+        for (var j = 0; j < 1000; j++)
         {
             Assert.IsTrue(Person.Adult().Age.IsBetween(18, 60));
         }
@@ -96,7 +55,7 @@ public class PersonTests
     [Test]
     public void Kid_Test()
     {
-        for (var j = 0; j < 100; j++)
+        for (var j = 0; j < 1000; j++)
         {
             Assert.IsTrue(Person.Kid().Age.IsBetween(5, 18));
         }
@@ -105,16 +64,17 @@ public class PersonTests
     [Test]
     public void Baby_Test()
     {
-        for (var j = 0; j < 100; j++)
+        for (var j = 0; j < 1000; j++)
         {
-            Assert.IsTrue(Person.Baby().Age.IsBetween(0, 5));
+            var b = Person.Baby();
+            Assert.IsTrue(b.Age.IsBetween(0, 5));
         }
     }
 
     [Test]
     public void Old_Test()
     {
-        for (var j = 0; j < 100; j++)
+        for (var j = 0; j < 1000; j++)
         {
             Assert.IsTrue(Person.Old().Age.IsBetween(60, 110));
         }
@@ -123,7 +83,7 @@ public class PersonTests
     [Test]
     public void FakeBirth_Test()
     {
-        for (var j = 0; j < 100; j++)
+        for (var j = 0; j < 1000; j++)
         {
             Assert.IsTrue(((DateTime.Today - Person.FakeBirth(20, 40)).TotalDays / 365.25).IsBetween(20, 40));
         }

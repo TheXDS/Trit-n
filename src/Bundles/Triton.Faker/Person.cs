@@ -142,7 +142,7 @@ public class Person
     /// </returns>
     public static DateTime FakeBirth(int minAge, int maxAge)
     {
-        var a = _rnd.NextDouble();
-        return (DateTime.Today - TimeSpan.FromDays((a * (maxAge - minAge) + minAge) * 365.25)).Date;
+        var a = Math.FusedMultiplyAdd(_rnd.NextDouble(), maxAge - minAge, minAge); 
+        return DateTime.Today - TimeSpan.FromDays(a * 365.25);
     }
 }

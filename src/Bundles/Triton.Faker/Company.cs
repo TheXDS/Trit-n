@@ -44,7 +44,7 @@ public class Company
             _rnd.CoinFlip() ? new[]{ "Co.", "Inc.", "LLC", "Ltd.", "Corp." }.Pick() : null
         }.NotNull());
         Address = Address.NewAddress();
-        DomainName = Internet.NewDomain(new[] { n1, n2?.Replace("&", "and") }.NotNull());
+        DomainName = Internet.NewDomain(new[] { n1, n2?.Replace("&", "and") }.NotNull()).Without(' ');
     }
 
     private static string GetName()

@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.ServicePool" Version="1.0.2" />
+    <PackageReference Include="TheXDS.ServicePool" Version="1.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />

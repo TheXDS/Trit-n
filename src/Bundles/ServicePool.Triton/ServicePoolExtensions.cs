@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.ServicePool.Extensions;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
 
@@ -27,7 +28,8 @@ namespace TheXDS.ServicePool.Triton
         /// </returns>
         public static ITritonConfigurable UseTriton(this ServicePool pool)
         {
-            return pool.UseTriton(new TransactionConfiguration());
+            pool.RegisterNow(new TransactionConfiguration());
+            return pool.Discover<ITritonConfigurable>() ?? new TritonConfigurable(pool).RegisterInto(pool);
         }
 
         /// <summary>
@@ -37,43 +39,17 @@ namespace TheXDS.ServicePool.Triton
         /// <param name="pool">
         /// <see cref="ServicePool"/> a configurar.
         /// </param>
-        /// <param name="middlewareConfigurator">
-        /// Método a utilizar para configurar los Middleware a inyectar en la
-        /// configuración de transacción.
+        /// <param name="configurator">
+        /// Delegado de configuración de los servicios de Tritón.
         /// </param>
         /// <returns>
-        /// Un objeto que puede utilizarse para configiurar los servicios de
-        /// Tritón.
+        /// La misma instancia que <paramref name="pool"/>, permitiendo el uso
+        /// de sintaxis Fluent.
         /// </returns>
-        public static ITritonConfigurable UseTriton(this ServicePool pool, Action<IMiddlewareConfigurator> middlewareConfigurator)
+        public static ServicePool UseTriton(this ServicePool pool, Action<ITritonConfigurable> configurator)
         {
-            TransactionConfiguration? tc = pool.Resolve<TransactionConfiguration>();
-            if (tc is null)
-            {
-                pool.RegisterNow(tc = new());
-                middlewareConfigurator(tc);
-            }
-            return new TritonConfigurable(pool);
-        }
-
-        /// <summary>
-        /// Configura un <see cref="ServicePool"/> para
-        /// hostear servicios de datos de Tritón.
-        /// </summary>
-        /// <param name="pool">
-        /// <see cref="ServicePool"/> a configurar.
-        /// </param>
-        /// <param name="configuration">
-        /// Objeto que contiene la configuración de transacciones a utilizar.
-        /// </param>
-        /// <returns>
-        /// Un objeto que puede utilizarse para configiurar los servicios de
-        /// Tritón.
-        /// </returns>
-        public static ITritonConfigurable UseTriton(this ServicePool pool, IMiddlewareConfigurator configuration)
-        {
-            pool.RegisterNow(configuration);
-            return new TritonConfigurable(pool);
+            configurator(UseTriton(pool));
+            return pool;
         }
 
         /// <summary>
@@ -97,13 +73,10 @@ namespace TheXDS.ServicePool.Triton
         /// </remarks>
         public static IService ResolveTritonService<T>(this ServicePool pool) where T : DbContext, new()
         {
-            var s = pool.ResolveAll<Service>().FirstOrDefault(p => p.Factory.GetType().Implements<EfCoreTransFactory<T>>());
-            if (s is null)
-            {
-                pool.UseTriton().UseContext<T>();
-                return ResolveTritonService<T>(pool);
-            }
-            return s;
+            var s = pool.ResolveAll<Service>().FirstOrDefault(p => p.Factory is EfCoreTransFactory<T>);
+            if (s is not null) return s;
+            pool.UseTriton().UseContext<T>();
+            return ResolveTritonService<T>(pool);
         }
     }
 }

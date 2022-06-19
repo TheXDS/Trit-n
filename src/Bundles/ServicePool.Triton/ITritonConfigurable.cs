@@ -58,7 +58,21 @@ namespace TheXDS.ServicePool.Triton
         /// La misma instancia del objeto utilizado para configurar Tritón.
         /// </returns>
         /// <seealso cref="ConfigureMiddlewares(Action{IMiddlewareConfigurator})"/>.
-        ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new();
+        ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new() => UseMiddleware<T>(out _);
+        
+        /// <summary>
+        /// Agrega un Middleware a la configuración de transacciones a utilizar
+        /// por los servicios de Tritón.
+        /// </summary>
+        /// <param name="newMiddleware">
+        /// Parámetro de salida. Middleware que ha sido creado y registrado.
+        /// </param>
+        /// <typeparam name="T">Tipo de Middleware a agregar.</typeparam>
+        /// <returns>
+        /// La misma instancia del objeto utilizado para configurar Tritón.
+        /// </returns>
+        /// <seealso cref="ConfigureMiddlewares(Action{IMiddlewareConfigurator})"/>.
+        ITritonConfigurable UseMiddleware<T>(out T newMiddleware) where T : ITransactionMiddleware, new();
 
         /// <summary>
         /// Ejecuta un método de configuración de middlewares para la instancia
@@ -73,9 +87,11 @@ namespace TheXDS.ServicePool.Triton
         /// </returns>
         /// <remarks>
         /// Para objetos que implementan <see cref="ITransactionMiddleware"/>,
-        /// puede utilizar el método <see cref="UseMiddleware{T}"/> en su lugar.
+        /// puede utilizar el método <see cref="UseMiddleware{T}(out T)"/> o
+        /// <see cref="UseMiddleware{T}()"/> en su lugar.
         /// </remarks>
-        /// <seealso cref="UseMiddleware{T}"/>.
+        /// <seealso cref="UseMiddleware{T}(out T)"/>.
+        /// <seealso cref="UseMiddleware{T}()"/>.
         ITritonConfigurable ConfigureMiddlewares(Action<IMiddlewareConfigurator> configuratorCallback);
 
         /// <summary>
