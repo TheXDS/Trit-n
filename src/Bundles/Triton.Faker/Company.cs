@@ -41,10 +41,10 @@ public class Company
         Name = string.Join(" ", new[] {
             Capitalize(n1),
             n2 is not null ? Capitalize(n2) : null,
-            _rnd.CoinFlip() ? new[]{ "Co.", "Inc.", "LLC", "Ltd.", "Corp." }.Pick() : null
+            new[]{ "Co.", "Inc.", "LLC", "Ltd.", "Corp." }.Pick()
         }.NotNull());
         Address = Address.NewAddress();
-        DomainName = Internet.NewDomain(new[] { n1, n2?.Replace("&", "and") }.NotNull()).Without(' ');
+        DomainName = Internet.NewDomain(new[] { n1, n2?.Replace("& ", "and") }.NotNull());
     }
 
     private static string GetName()
