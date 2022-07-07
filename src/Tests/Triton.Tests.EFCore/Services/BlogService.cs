@@ -10,7 +10,7 @@ using TheXDS.Triton.Tests.Models;
 /// Servicio de pruebas que permite administrar el contexto de datos
 /// <see cref="BlogContext"/>.
 /// </summary>
-public class BlogService : Service
+public class BlogService : TritonService
 {
     /// <summary>
     /// Inicializa una nueva instancia de la clase

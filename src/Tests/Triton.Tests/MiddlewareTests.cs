@@ -26,7 +26,7 @@ namespace TheXDS.Triton.Tests
         [Test]
         public void Run_Middleware_test()
         {
-            Service _srv = new(new TestTransFactory());
+            TritonService _srv = new(new TestTransFactory());
             bool prologDidRun = false, epilogDidRun = false;
 
             ServiceResult? TestProlog(CrudAction arg1, Model? arg2)

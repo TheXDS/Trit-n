@@ -10,7 +10,7 @@ public class ServiceTests
     [Test]
     public void Service_discovers_ITransactionFactory_Test()
     {
-        var s = new Service();
+        var s = new TritonService();
         Assert.IsNotNull(s.Factory);
 
         s = new(new TransactionConfiguration());

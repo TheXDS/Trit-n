@@ -29,7 +29,7 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
     {
         try
         {
-            return new QueryServiceResult<TModel>(_connection.Query<TModel>($"SELECT * FROM {GetTableName<TModel>()};", transaction: _transaction).AsQueryable());
+            return new QueryServiceResult<TModel>(_connection.Query<TModel>($"SELECT * FROM {GetTableName<TModel>()};", transaction: _transaction, buffered: false).AsQueryable());
         }
         catch (Exception ex)
         {

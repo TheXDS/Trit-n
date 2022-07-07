@@ -38,7 +38,7 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().DiscoverContexts();
-        var s = testPool.ResolveAll<Service>().Select(p => p.Factory).ToArray();
+        var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
         Assert.IsTrue(s.Any(p => p is EfCoreTransFactory<TestDbContext>));
     }
 
@@ -47,7 +47,7 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseContext<TestDbContext>();
-        var s = testPool.ResolveAll<Service>().Select(p => p.Factory).ToArray();
+        var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
         Assert.IsTrue(s.Any(p => p is EfCoreTransFactory<TestDbContext>));
     }
 
@@ -63,7 +63,7 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseContext(typeof(TestDbContext));
-        var s = testPool.ResolveAll<Service>().Select(p => p.Factory).ToArray();
+        var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
         Assert.IsTrue(s.Any(p => p is EfCoreTransFactory<TestDbContext>));
     }
 
@@ -136,22 +136,22 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseContext<TestDbContext>();
-        Assert.IsAssignableFrom<Service>(testPool.ResolveTritonService<TestDbContext>());
+        Assert.IsAssignableFrom<TritonService>(testPool.ResolveTritonService<TestDbContext>());
     }
 
     [Test]
     public void ResolveTritonService_initializes_all_required_singletons_if_none_registered()
     {
         ServicePool testPool = new();
-        Assert.IsAssignableFrom<Service>(testPool.ResolveTritonService<TestDbContext>());
+        Assert.IsAssignableFrom<TritonService>(testPool.ResolveTritonService<TestDbContext>());
     }
 
     [Test]
     public void UseService_explicit_registration()
     {
         ServicePool testPool = new();
-        testPool.UseTriton().UseService<Service<TestDbContext>>();
-        Assert.IsAssignableFrom<Service<TestDbContext>>(testPool.ResolveTritonService<TestDbContext>());
+        testPool.UseTriton().UseService<TritonService<TestDbContext>>();
+        Assert.IsAssignableFrom<TritonService<TestDbContext>>(testPool.ResolveTritonService<TestDbContext>());
     }
 
     [Test]

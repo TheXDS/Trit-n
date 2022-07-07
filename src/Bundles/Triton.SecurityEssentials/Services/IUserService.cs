@@ -10,7 +10,7 @@ namespace TheXDS.Triton.Services
     /// Define una serie de miembros a implementar por un tipo que exponga
     /// servicios de gestión de usuarios y seguridad.
     /// </summary>
-    public interface IUserService : IService
+    public interface IUserService : ITritonService
     {
         /// <summary>
         /// Obtiene una credencial de inicio de sesión registrada con el nombre

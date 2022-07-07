@@ -63,17 +63,17 @@ namespace TheXDS.ServicePool.Triton
         /// <see cref="ServicePool"/> a configurar.
         /// </param>
         /// <returns>
-        /// Una instancia de <see cref="IService"/> que permite acceder al 
+        /// Una instancia de <see cref="ITritonService"/> que permite acceder al 
         /// contexto de datos solicitado.
         /// </returns>
         /// <remarks>
-        /// Prefiera resolver directamente un <see cref="IService"/> si
+        /// Prefiera resolver directamente un <see cref="ITritonService"/> si
         /// necesita acceder directamente a la funcionalidad de un servicio
         /// concreto.
         /// </remarks>
-        public static IService ResolveTritonService<T>(this ServicePool pool) where T : DbContext, new()
+        public static ITritonService ResolveTritonService<T>(this ServicePool pool) where T : DbContext, new()
         {
-            var s = pool.ResolveAll<Service>().FirstOrDefault(p => p.Factory is EfCoreTransFactory<T>);
+            var s = pool.ResolveAll<TritonService>().FirstOrDefault(p => p.Factory is EfCoreTransFactory<T>);
             if (s is not null) return s;
             pool.UseTriton().UseContext<T>();
             return ResolveTritonService<T>(pool);

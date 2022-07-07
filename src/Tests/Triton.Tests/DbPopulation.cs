@@ -16,7 +16,7 @@ namespace TheXDS.Triton.Tests
         [OneTimeSetUp]
         public void PopulateDb()
         {
-            using var t = new Service(new TestTransFactory()).GetTransaction();
+            using var t = new TritonService(new TestTransFactory()).GetTransaction();
             if (!t.All<User>().Any())
             {
                 User u1, u2, u3;

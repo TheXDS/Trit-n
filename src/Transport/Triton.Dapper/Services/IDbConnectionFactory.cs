@@ -10,6 +10,6 @@ public interface IDbConnectionFactory
     /// <summary>
     /// Abre una nueva conexión a una base de datos.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Una conexión abierta a una base de datos.</returns>
     IDbConnection OpenConnection();
 }

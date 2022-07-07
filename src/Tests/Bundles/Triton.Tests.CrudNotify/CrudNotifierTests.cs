@@ -29,7 +29,7 @@ public class CrudNotifierTests
     [Test]
     public async Task Crud_transaction_triggers_notifications_Test()
     {
-        Service srv = new(new TestTransFactory());
+        TritonService srv = new(new TestTransFactory());
         srv.Configuration.AddNotifyService<TestNotifier>();
         await using (var t = srv.GetTransaction())
         {

@@ -25,9 +25,9 @@ namespace TheXDS.Triton.Services
         /// <see cref="EfCoreTransFactory{T}"/> para conectarse a un contexto
         /// de datos.
         /// </returns>
-        public static IService BuildService(IMiddlewareConfigurator configuration)
+        public static ITritonService BuildService(IMiddlewareConfigurator configuration)
         {
-            return new Service(configuration, new EfCoreTransFactory<T>());
+            return new TritonService(configuration, new EfCoreTransFactory<T>());
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace TheXDS.Triton.Services
         /// predetermianda y utilizando un <see cref="EfCoreTransFactory{T}"/>
         /// para conectarse a un contexto de datos.
         /// </returns>
-        public static IService BuildService()
+        public static ITritonService BuildService()
         {
-            return new Service(new EfCoreTransFactory<T>());
+            return new TritonService(new EfCoreTransFactory<T>());
         }
 
         /// <summary>

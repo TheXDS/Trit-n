@@ -50,7 +50,7 @@ namespace TheXDS.ServicePool.Triton
             {
                 throw Errors.TypeMustImplDbContext(nameof(context));
             }
-            Pool.Register(() => new Service(Pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), typeof(EfCoreTransFactory<>).MakeGenericType(context).New<ITransactionFactory>()));
+            Pool.Register(() => new TritonService(Pool.Discover<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), typeof(EfCoreTransFactory<>).MakeGenericType(context).New<ITransactionFactory>()));
             return this;
         }
 
@@ -83,7 +83,7 @@ namespace TheXDS.ServicePool.Triton
         }
 
         /// <inheritdoc/>
-        public ITritonConfigurable UseService<T>() where T : Service
+        public ITritonConfigurable UseService<T>() where T : TritonService
         {
             Pool.Register<T>();
             return this;

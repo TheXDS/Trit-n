@@ -9,12 +9,12 @@ namespace TheXDS.Triton.Services;
 /// <typeparam name="T">
 /// Tipo de <see cref="DbContext"/> a ser gestionado por este servicio.
 /// </typeparam>
-public class Service<T> : Service where T: DbContext, new()
+public class TritonService<T> : TritonService where T: DbContext, new()
 {
     /// <summary>
-    /// Inicializa una nueva instancia de la clase <see cref="Service{T}"/>.
+    /// Inicializa una nueva instancia de la clase <see cref="TritonService{T}"/>.
     /// </summary>
-    public Service() : base(new EfCoreTransFactory<T>())
+    public TritonService() : base(new EfCoreTransFactory<T>())
     {
     }
 }

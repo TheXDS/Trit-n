@@ -12,22 +12,22 @@ using Services;
 
 public class CrudOpsTests
 {
-    private class DefaultImplServiceWrap : IService
+    private class DefaultImplServiceWrap : ITritonService
     {
-        private readonly Service _svc;
+        private readonly TritonService _svc;
 
-        public DefaultImplServiceWrap(Service svc)
+        public DefaultImplServiceWrap(TritonService svc)
         {
             _svc = svc;
         }
 
         public ICrudReadWriteTransaction GetTransaction()
         {
-            return ((IService)_svc).GetTransaction();
+            return ((ITritonService)_svc).GetTransaction();
         }
     }
 
-    private readonly Service _srv = new(new TestTransFactory());
+    private readonly TritonService _srv = new(new TestTransFactory());
 
     [Test]
     public void GetTransactionTest()
@@ -49,7 +49,7 @@ public class CrudOpsTests
     [Test]
     public void Service_defualt_impl_transaction_test()
     {
-        IService svc = new DefaultImplServiceWrap(_srv);
+        ITritonService svc = new DefaultImplServiceWrap(_srv);
         using (var t = svc.GetReadTransaction())
         {
             Assert.IsInstanceOf<ICrudReadTransaction>(t);

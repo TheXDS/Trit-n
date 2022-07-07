@@ -31,7 +31,7 @@ namespace TheXDS.ServicePool.Triton
         /// Agrega un <see cref="DbContext"/> a la colección de servicios
         /// hosteados dentro de un
         /// <see cref="ServicePool"/>, envolviendolo en un 
-        /// <see cref="Service"/>.
+        /// <see cref="TritonService"/>.
         /// </summary>
         /// <typeparam name="T">Tipo de contexto a registrar.</typeparam>
         /// <returns>
@@ -47,7 +47,7 @@ namespace TheXDS.ServicePool.Triton
         /// <returns>
         /// La misma instancia del objeto utilizado para configurar Tritón.
         /// </returns>
-        ITritonConfigurable UseService<T>() where T : Service;
+        ITritonConfigurable UseService<T>() where T : TritonService;
 
         /// <summary>
         /// Agrega un Middleware a la configuración de transacciones a utilizar
@@ -98,7 +98,7 @@ namespace TheXDS.ServicePool.Triton
         /// Agrega un <see cref="DbContext"/> a la colección de servicios
         /// hosteados dentro de un
         /// <see cref="ServicePool"/>, envolviendolo en un 
-        /// <see cref="Service"/>.
+        /// <see cref="TritonService"/>.
         /// </summary>
         /// <param name="context">
         /// Tipo de contexto a registrar. Debe implementar

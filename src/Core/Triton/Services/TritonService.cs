@@ -11,53 +11,53 @@ namespace TheXDS.Triton.Services
     /// Clase base para implementación simple de servicios. Permite establecer
     /// o descubrir la configuración de transacción a utilizar.
     /// </summary>
-    public class Service : IService
+    public class TritonService : ITritonService
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static T FindT<T>() where T : class => Objects.FindFirstObject<T>() ?? throw new MissingTypeException(typeof(T));
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase 
-        /// <see cref="Service"/>, buscando automáticamente la
+        /// <see cref="TritonService"/>, buscando automáticamente la
         /// configuración de transacciones a utilizar.
         /// </summary>
-        public Service() : this(FindT<ITransactionFactory>())
+        public TritonService() : this(FindT<ITransactionFactory>())
         {
         }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase 
-        /// <see cref="Service"/>, buscando automáticamente la
+        /// <see cref="TritonService"/>, buscando automáticamente la
         /// configuración de transacciones a utilizar.
         /// </summary>
         /// <param name="factory">Fábrica de transacciones a utilizar.</param>
-        public Service(ITransactionFactory factory) : this(new TransactionConfiguration(), factory)
+        public TritonService(ITransactionFactory factory) : this(new TransactionConfiguration(), factory)
         {
         }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase 
-        /// <see cref="Service"/>, buscando automáticamente la
+        /// <see cref="TritonService"/>, buscando automáticamente la
         /// configuración de transacciones a utilizar.
         /// </summary>
         /// <param name="transactionConfiguration">
         /// Configuración a utilizar para las transacciones generadas por este
         /// servicio.
         /// </param>
-        public Service(IMiddlewareConfigurator transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
+        public TritonService(IMiddlewareConfigurator transactionConfiguration) : this(transactionConfiguration, FindT<ITransactionFactory>())
         {
         }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase 
-        /// <see cref="Service"/>, especificando la configuración a utilizar.
+        /// <see cref="TritonService"/>, especificando la configuración a utilizar.
         /// </summary>
         /// <param name="transactionConfiguration">
         /// Configuración a utilizar para las transacciones generadas por este
         /// servicio.
         /// </param>
         /// <param name="factory">Fábrica de transacciones a utilizar.</param>
-        public Service(IMiddlewareConfigurator transactionConfiguration, ITransactionFactory factory)
+        public TritonService(IMiddlewareConfigurator transactionConfiguration, ITransactionFactory factory)
         {
             Configuration = transactionConfiguration ?? throw new ArgumentNullException(nameof(transactionConfiguration));
             Factory = factory ?? throw new ArgumentNullException(nameof(factory));

@@ -5,7 +5,7 @@
     /// provea de funcionalidad extendida para generar transacciones de
     /// lectura/escritura.
     /// </summary>
-    public interface IService
+    public interface ITritonService
     {
         /// <summary>
         /// Obtiene una transacción que permite leer información de la base

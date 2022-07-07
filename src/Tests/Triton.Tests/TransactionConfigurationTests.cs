@@ -90,7 +90,7 @@ public class TransactionConfigurationTests
     {
         TransactionConfiguration c = new();
         c.Attach<Flaggy1TestMiddleware>();
-        c.AttachAt<Flaggy2TestMiddleware>(TransactionConfiguration.ActionPosition.Early, TransactionConfiguration.ActionPosition.Late);
+        c.AttachAt<Flaggy2TestMiddleware>(ActionPosition.Early, ActionPosition.Late);
         
         _test_AttachAt_flag1 = false;
         _test_AttachAt_flag2 = false;
