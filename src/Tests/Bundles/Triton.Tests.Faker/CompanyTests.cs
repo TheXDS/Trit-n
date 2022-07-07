@@ -12,7 +12,7 @@ public class CompanyTests
     [Test]
     public void Company_has_fake_data()
     {
-        foreach (var _ in Enumerable.Range(0, 100))
+        foreach (var _ in Enumerable.Range(0, 1000))
         {
             Company c = new();
             Assert.IsNotNull(c);

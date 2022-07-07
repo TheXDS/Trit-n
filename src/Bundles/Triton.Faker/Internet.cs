@@ -82,7 +82,7 @@ public class Internet
             .Select(p => p.TwoLetterISOLanguageName.ToLower())
             .Distinct()
             .ToArray();
-        return $"{string.Concat(names)}.{top.Pick()}{(_rnd.CoinFlip() ? $".{ctop.Pick()}" : null)}".ToLower();
+        return $"{string.Concat(names)}.{top.Pick()}{(_rnd.CoinFlip() ? $".{ctop.Pick()}" : null)}".ToLower().Replace(" ", "");
     }
 
     private static string GetName()
