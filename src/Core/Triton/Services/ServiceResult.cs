@@ -284,6 +284,18 @@ namespace TheXDS.Triton.Services
             return Message;
         }
 
+        /// <inheritdoc/>
+        public override bool Equals([AllowNull] object obj)
+        {
+            return obj switch
+            {
+                ServiceResult s => Equals(s),
+                Exception ex => Equals(ex),
+                bool b => Success == b,
+                _ => false
+            };
+        }
+
         /// <summary>
         /// Compara la igualdad entre esta y otra instancia de la clase
         /// <see cref="ServiceResult"/>.
@@ -359,17 +371,6 @@ namespace TheXDS.Triton.Services
                 Success = Success,
                 Reason = Reason,
                 Message = Message
-            };
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals([AllowNull] object obj)
-        {
-            return obj switch
-            {
-                ServiceResult s => Equals(s),
-                Exception ex => Equals(ex),
-                _ => false
             };
         }
 
