@@ -28,16 +28,25 @@ namespace TheXDS.Triton.Tests.Diagnostics
         }
 
         [Test]
+        public async Task Monitor_includes_commits_and_reads()
+        {
+            (var testRepo, var perfMon) = Build();
+            Assert.AreEqual(0, perfMon.EventCount);
+            await Run(testRepo, CrudAction.Read);
+            await Run(testRepo, CrudAction.Commit);
+            Assert.AreEqual(2, perfMon.EventCount);
+        }
+
+
+        [Test]
         public async Task Monitor_skips_non_commits()
         {
             (var testRepo, var perfMon) = Build();
             Assert.AreEqual(0, perfMon.EventCount);
             await Run(testRepo, CrudAction.Create);
-            await Run(testRepo, CrudAction.Read);
             await Run(testRepo, CrudAction.Update);
             await Run(testRepo, CrudAction.Delete);
-            await Run(testRepo, CrudAction.Commit);
-            Assert.AreEqual(1, perfMon.EventCount);
+            Assert.AreEqual(0, perfMon.EventCount);
         }
 
         [Test]
