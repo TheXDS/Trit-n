@@ -1,6 +1,6 @@
-﻿namespace TheXDS.Triton.Models;
-using System;
-using TheXDS.Triton.Models.Base;
+﻿using TheXDS.Triton.Models.Base;
+
+namespace TheXDS.Triton.Models;
 
 /// <summary>
 /// Clase base para los modelos que contengan banderas de seguridad.

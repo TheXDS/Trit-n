@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS1591
 
-using TheXDS.Triton.Middleware;
+using TheXDS.Triton.Diagnostics.Middleware;
 
 namespace TheXDS.Triton.Tests.Diagnostics
 {

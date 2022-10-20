@@ -1,7 +1,6 @@
 ﻿using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Models;
-using System;
 
 /// <summary>
 /// Modelo que representa una sessión de usuario activa.

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TheXDS.MCART.Helpers;
+using TheXDS.Triton.Diagnostics.Middleware;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Services;
 

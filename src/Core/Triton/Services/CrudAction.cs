@@ -1,36 +1,33 @@
-﻿using System;
+﻿namespace TheXDS.Triton.Services;
 
-namespace TheXDS.Triton.Services
+/// <summary>
+/// Enumera las operaciones CRUD existentes.
+/// </summary>
+[Flags]
+public enum CrudAction : byte
 {
     /// <summary>
-    /// Enumera las operaciones CRUD existentes.
+    /// Escritura de la información en la base de datos.
     /// </summary>
-    [Flags]
-    public enum CrudAction : byte
-    {
-        /// <summary>
-        /// Escritura de la información en la base de datos.
-        /// </summary>
-        Commit,
+    Commit,
 
-        /// <summary>
-        /// Crear.
-        /// </summary>
-        Create,
+    /// <summary>
+    /// Crear.
+    /// </summary>
+    Create,
 
-        /// <summary>
-        /// Leer.
-        /// </summary>
-        Read,
+    /// <summary>
+    /// Leer.
+    /// </summary>
+    Read,
 
-        /// <summary>
-        /// Actualizar.
-        /// </summary>
-        Update,
+    /// <summary>
+    /// Actualizar.
+    /// </summary>
+    Update,
 
-        /// <summary>
-        /// Eliminar.
-        /// </summary>
-        Delete,
-    }
+    /// <summary>
+    /// Eliminar.
+    /// </summary>
+    Delete,
 }

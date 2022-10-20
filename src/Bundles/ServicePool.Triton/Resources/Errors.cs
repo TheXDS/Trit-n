@@ -1,13 +1,11 @@
-﻿using System;
-using Ers = TheXDS.ServicePool.Triton.Resources.Strings.Errors;
+﻿using Ers = TheXDS.ServicePool.Triton.Resources.Strings.Errors;
 
-namespace TheXDS.ServicePool.Triton.Resources
+namespace TheXDS.ServicePool.Triton.Resources;
+
+internal static class Errors
 {
-    internal static class Errors
+    public static ArgumentException TypeMustImplDbContext(string argName)
     {
-        public static ArgumentException TypeMustImplDbContext(string argName)
-        {
-            return new(Ers.TypeMustImplementDbContext, argName);
-        }
+        return new(Ers.TypeMustImplementDbContext, argName);
     }
 }

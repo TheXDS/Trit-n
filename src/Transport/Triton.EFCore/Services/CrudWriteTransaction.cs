@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services.Base;
-using static TheXDS.Triton.Services.FailureReason;
+﻿using static TheXDS.Triton.Services.FailureReason;
 
 namespace TheXDS.Triton.Services
 {

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TheXDS.Triton.Services.Base;
-
-namespace TheXDS.Triton.Services
+﻿namespace TheXDS.Triton.Services
 {
     /// <summary>
     /// Fábrica de transacciones que permite conectarse a un contexto de datos

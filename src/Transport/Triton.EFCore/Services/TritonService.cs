@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace TheXDS.Triton.Services;
+﻿namespace TheXDS.Triton.Services;
 
 /// <summary>
 /// Servicio que incluye uina referencia fuertemente tipeada al

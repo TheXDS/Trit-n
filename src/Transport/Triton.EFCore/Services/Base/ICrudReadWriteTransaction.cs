@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace TheXDS.Triton.Services.Base
+﻿namespace TheXDS.Triton.Services.Base
 {
     /// <summary>
     /// Define una serie de miembros a implementar por un tipo que permita

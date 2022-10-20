@@ -1,5 +1,4 @@
 namespace TheXDS.Triton.Models.Base;
-using System;
 
 /// <summary>
 /// Modelo base para aquellas entidades que expongan campos de marca de tiempo.

@@ -1,5 +1,6 @@
-﻿namespace TheXDS.Triton.Component;
-using TheXDS.MCART.Types.Base;
+﻿using TheXDS.MCART.Types.Base;
+
+namespace TheXDS.Triton.Component;
 
 /// <summary>
 /// Define una serie de miembros a implementar por un tipo que permita realizar

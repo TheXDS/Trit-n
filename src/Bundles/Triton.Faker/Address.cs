@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TheXDS.MCART.Types.Extensions;
+﻿using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Faker.Resources;
 using static TheXDS.Triton.Faker.Globals;
 

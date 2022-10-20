@@ -6,7 +6,7 @@ using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;
 using TheXDS.Triton.Tests.Services;
 using NUnit.Framework;
-using TheXDS.Triton.Middleware;
+using TheXDS.Triton.CrudNotify;
 
 namespace TheXDS.Triton.Tests.CrudNotify;
 

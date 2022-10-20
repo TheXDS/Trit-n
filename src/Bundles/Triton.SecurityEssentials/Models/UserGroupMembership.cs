@@ -1,6 +1,6 @@
-﻿namespace TheXDS.Triton.Models;
-using System;
-using TheXDS.Triton.Models.Base;
+﻿using TheXDS.Triton.Models.Base;
+
+namespace TheXDS.Triton.Models;
 
 /// <summary>
 /// modelo que representa la membresía de un usuario a un grupo de usuarios.

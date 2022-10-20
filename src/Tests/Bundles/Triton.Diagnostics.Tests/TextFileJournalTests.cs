@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using TheXDS.MCART.Types.Extensions;
-using TheXDS.Triton.Middleware;
+using TheXDS.Triton.Diagnostics.Middleware;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;

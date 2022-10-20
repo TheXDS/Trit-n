@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using TheXDS.MCART.Types.Extensions;
+﻿using TheXDS.MCART.Types.Extensions;
 
-namespace TheXDS.Triton.Middleware;
+namespace TheXDS.Triton.Diagnostics.Middleware;
 
 /// <summary>
 /// Implementa un <see cref="TextJournal"/> que permite escribir las

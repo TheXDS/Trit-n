@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TheXDS.Triton.Middleware;
+using TheXDS.Triton.Diagnostics.Middleware;
 using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Tests.Diagnostics

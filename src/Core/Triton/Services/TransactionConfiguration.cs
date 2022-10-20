@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models.Base;
 
