@@ -32,8 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.EFCore", "Transport\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.InMemory", "Transport\Triton.InMemory\Triton.InMemory.csproj", "{9DBA2F41-5FBF-46CF-BE13-67524D0850B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.EFCore", "Tests\Triton.Tests.EFCore\Triton.Tests.EFCore.csproj", "{BD0378A6-4CF9-474B-B9C8-85952639C516}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Triton.Tests.Shared", "Tests\Triton.Tests.Shared\Triton.Tests.Shared.shproj", "{8ECFEEDF-CE5B-4ABA-B72F-99EB3652F908}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bundles", "Bundles", "{0C91A362-44B0-4474-B156-F611C8281B1B}"
@@ -43,8 +41,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.CrudNotify", "Bundles\Triton.CrudNotify\Triton.CrudNotify.csproj", "{DB49349A-CD91-494D-AF1E-393184006996}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Faker", "Bundles\Triton.Faker\Triton.Faker.csproj", "{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests", "Tests\Triton.Tests\Triton.Tests.csproj", "{9F06A204-134A-44D5-B35C-F5CC52BB7810}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.EfContextBuilder", "Bundles\Triton.EfContextBuilder\Triton.EfContextBuilder.csproj", "{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7}"
 EndProject
@@ -77,6 +73,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicePool.Triton.Tests", "Tests\Bundles\ServicePool.Triton.Tests\ServicePool.Triton.Tests.csproj", "{37A9B28B-A1D3-4DB0-89D0-E63BD106E1E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Dapper", "Transport\Triton.Dapper\Triton.Dapper.csproj", "{48A50626-A672-4F64-BCCA-CBFF6BB24CBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transport", "Transport", "{9A4B38C7-9F0E-4DE1-9500-1B6214688EF6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{EF285DA1-2A05-461C-8FC4-30C39586649C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,16 +127,6 @@ Global
 		{9DBA2F41-5FBF-46CF-BE13-67524D0850B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9DBA2F41-5FBF-46CF-BE13-67524D0850B0}.Release-Publish|Any CPU.ActiveCfg = Release-Publish|Any CPU
 		{9DBA2F41-5FBF-46CF-BE13-67524D0850B0}.Release-Publish|Any CPU.Build.0 = Release-Publish|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Release-Publish|Any CPU.ActiveCfg = Release-Publish|Any CPU
-		{BD0378A6-4CF9-474B-B9C8-85952639C516}.Release-Publish|Any CPU.Build.0 = Release-Publish|Any CPU
 		{300F1D78-4A71-49EE-9F96-724088510E55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{300F1D78-4A71-49EE-9F96-724088510E55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{300F1D78-4A71-49EE-9F96-724088510E55}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
@@ -167,16 +157,6 @@ Global
 		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release-Publish|Any CPU.ActiveCfg = Release-Publish|Any CPU
 		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B}.Release-Publish|Any CPU.Build.0 = Release-Publish|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug-PublishLocal|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Debug-PublishLocal|Any CPU.Build.0 = Debug-PublishLocal|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Release-Publish|Any CPU.ActiveCfg = Release-Publish|Any CPU
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810}.Release-Publish|Any CPU.Build.0 = Release-Publish|Any CPU
 		{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
@@ -307,12 +287,10 @@ Global
 		{C5489EA9-48EC-427A-8916-820F2D0A2D0D} = {E82B9C4A-7B06-4056-9AD0-0B348A23E95A}
 		{CCCC192F-0BF3-46B4-85CC-B5F0F603BE64} = {28F78FBF-F25F-4E65-9C99-0B4CB1F328EA}
 		{9DBA2F41-5FBF-46CF-BE13-67524D0850B0} = {28F78FBF-F25F-4E65-9C99-0B4CB1F328EA}
-		{BD0378A6-4CF9-474B-B9C8-85952639C516} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 		{8ECFEEDF-CE5B-4ABA-B72F-99EB3652F908} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 		{300F1D78-4A71-49EE-9F96-724088510E55} = {0C91A362-44B0-4474-B156-F611C8281B1B}
 		{DB49349A-CD91-494D-AF1E-393184006996} = {0C91A362-44B0-4474-B156-F611C8281B1B}
 		{FEC02404-4D53-4CA8-977B-7AB0C7499C6B} = {0C91A362-44B0-4474-B156-F611C8281B1B}
-		{9F06A204-134A-44D5-B35C-F5CC52BB7810} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 		{4A3FAC6B-88A1-45A2-A7DF-0F26A68674C7} = {0C91A362-44B0-4474-B156-F611C8281B1B}
 		{7BB81112-849A-40BA-B5AB-1513F717F168} = {73D6D032-1D9C-4CA7-98FB-19060055DD6F}
 		{97BB2993-FB64-4D85-A192-10321FF4C5DF} = {0C91A362-44B0-4474-B156-F611C8281B1B}
@@ -327,6 +305,8 @@ Global
 		{47B0D6EF-11B3-471F-9795-306D7F8927B9} = {75EBB303-23F4-43F4-973E-194022C0A93C}
 		{37A9B28B-A1D3-4DB0-89D0-E63BD106E1E9} = {75EBB303-23F4-43F4-973E-194022C0A93C}
 		{48A50626-A672-4F64-BCCA-CBFF6BB24CBB} = {28F78FBF-F25F-4E65-9C99-0B4CB1F328EA}
+		{9A4B38C7-9F0E-4DE1-9500-1B6214688EF6} = {3344971D-A100-47A5-A94C-5AD7556909BF}
+		{EF285DA1-2A05-461C-8FC4-30C39586649C} = {3344971D-A100-47A5-A94C-5AD7556909BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A45987E-24AB-4E9E-9C1F-4C8D9B1F956A}
@@ -335,9 +315,7 @@ Global
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{0f8fbc9c-9c6b-45e3-849f-b51dbc324d9d}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{3fe4542b-5f4c-4299-a9d6-8beb5eebefb1}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{8ecfeedf-ce5b-4aba-b72f-99eb3652f908}*SharedItemsImports = 13
-		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{9f06a204-134a-44d5-b35c-f5cc52bb7810}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{b2ac936a-452b-4477-bb25-c476ea4294c2}*SharedItemsImports = 5
-		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{bd0378a6-4cf9-474b-b9c8-85952639c516}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{f9ba5244-26ed-4342-a2f5-58510dafc053}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
