@@ -54,12 +54,29 @@ public class Person
     /// </summary>
     public double Age => (DateTime.Today - Birth).TotalDays / 365.25;
 
-    private Person(string firstName, string surname, Gender gender, DateTime birth)
+    /// <summary>
+    /// Inicializa una nueva instancia de la clase <see cref="Person"/>.
+    /// </summary>
+    /// <param name="firstName">Primer nombre de la persona.</param>
+    /// <param name="surname">Apellido de la persona.</param>
+    /// <param name="gender">Género biológico de la persona.</param>
+    /// <param name="birth">Fecha de nacimiento de la persona.</param>
+    protected Person(string firstName, string surname, Gender gender, DateTime birth)
     {
         FirstName = Capitalize(firstName);
         Surname = Capitalize(surname);
         Gender = gender;
         Birth = birth;
+    }
+
+    /// <summary>
+    /// Establece el nombre de usuario para esta instancia de la clase 
+    /// <see cref="Person"/>.
+    /// </summary>
+    /// <param name="userName">Nombre de usuario a establecer.</param>
+    protected void SetUserName(string userName)
+    {
+        _userName = userName;
     }
 
     /// <summary>

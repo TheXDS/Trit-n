@@ -13,5 +13,5 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <ProjectReference Include="$(SolutionDir)\Core\Triton\Triton.csproj" />
   </ItemGroup>
-  <Import Project="..\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
+  <Import Project="..\..\Triton.Tests.Shared\Triton.Tests.Shared.projitems" Label="Shared" />
 </Project>

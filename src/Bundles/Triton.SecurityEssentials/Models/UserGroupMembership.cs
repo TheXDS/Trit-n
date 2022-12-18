@@ -13,7 +13,7 @@ public class UserGroupMembership : Model<Guid>
     public UserGroup Group { get; set; } = null!;
 
     /// <summary>
-    /// Obtiene o establece el usuario que es miembro de un grupo.
+    /// Obtiene o establece el objeto de seguridad que es miembro de un grupo.
     /// </summary>
-    public LoginCredential Credential { get; set; } = null!;
+    public SecurityObject SecurityObject { get; set; } = null!;
 }

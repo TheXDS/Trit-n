@@ -7,7 +7,7 @@
 /// <typeparam name="T">
 /// Tipo de <see cref="DbContext"/> a ser gestionado por este servicio.
 /// </typeparam>
-public class TritonService<T> : TritonService where T: DbContext, new()
+public class TritonService<T> : TritonService, ITritonService<T> where T: DbContext, new()
 {
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="TritonService{T}"/>.

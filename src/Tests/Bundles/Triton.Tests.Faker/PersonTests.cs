@@ -1,8 +1,8 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
-using System;
 using TheXDS.MCART.Helpers;
+using TheXDS.MCART.Math;
 using TheXDS.Triton.Faker;
 
 namespace TheXDS.Triton.Tests.Faker;
@@ -22,6 +22,9 @@ public class PersonTests
         Assert.IsNotEmpty(p.Name);
         Assert.IsNotEmpty(p.FullName);
         Assert.IsInstanceOf<double>(p.Age);
+        Assert.IsTrue(p.Age.IsValid());
+        Assert.IsTrue(p.Age.IsBetween(0, 110));
+
     }
 
     [Test]

@@ -30,7 +30,7 @@ public record Address(string AddressLine, string? AddressLine2, string City, str
             l.Add(new[] { "Ave.", "Road", "Street", "Highway" }.Pick());
             return string.Join(' ', l);
         }
-        static string? RndLine2() => _rnd.CoinFlip() ? $"{new[] { "#", "Apt.", "House" }.Pick()} {_rnd.Next(1, 9999)}" : null;
+        static string? RndLine2() => _rnd.CoinFlip() ? $"{new[] { "#", "Apt.", "House", "Building" }.Pick()} {_rnd.Next(1, 9999)}" : null;
         static string RndCity() => string.Join(' ', new string?[] { Capitalize(StringTables.Surnames.Pick()), _rnd.CoinFlip() ? "City" : null }.NotNull());
         static string RndCountry() => new System.Globalization.RegionInfo(System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).Pick().Name).EnglishName;
         return new(RndAddress(), RndLine2(), RndCity(), RndCountry(), (ushort)_rnd.Next(10001, 99999));

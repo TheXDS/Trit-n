@@ -29,6 +29,23 @@ public class Internet
     }
 
     /// <summary>
+    /// Genera una dirección de correo electrónico aleatoria para el objeto
+    /// <see cref="Person"/> especificado.
+    /// </summary>
+    /// <param name="person">
+    /// Persona para la cual generar la dirección de correo.
+    /// </param>
+    /// <returns>
+    /// Una dirección de correo con un formato válido. Subsecuentes
+    /// llamadas a este método podrán obtener direcciones de correo del
+    /// mismo dominio.
+    /// </returns>
+    public static string FakeEmail(Person? person)
+    {
+        return $"{FakeUsername(person)}@{(fakeDomains ??= LoadDomains()).Pick()}";
+    }
+
+    /// <summary>
     /// Genera un nombre de usuario totalmente aleatorio.
     /// </summary>
     /// <returns>Un nombre de usuario totalmente aleatorio.</returns>
@@ -43,49 +60,6 @@ public class Internet
             sb.Append(new[] { StringTables.Lorem.Pick(), _rnd.Next(0, 10000).ToString().PadLeft(_rnd.Next(1, 5), '0') }.Pick());
         } while (--rounds > 0);
         return sb.ToString();
-    }
-
-    private static string[] LoadDomains()
-    {
-        return Enumerable.Range(0, 15).Select(_ => NewDomain(GetName(), GetName())).ToArray();
-    }
-
-    /// <summary>
-    /// Crea un nuevo nombre de dominio dados los componentes de nombres
-    /// especificados.
-    /// </summary>
-    /// <param name="names">
-    /// Nombres a utilizar para generar el nombre de dominio.
-    /// </param>
-    /// <returns>
-    /// Una cadena con un nombre de dominio.
-    /// </returns>
-    public static string NewDomain(params string[] names) => NewDomain(names.AsEnumerable());
-
-    /// <summary>
-    /// Crea un nuevo nombre de dominio dados los componentes de nombres especificados.
-    /// </summary>
-    /// <param name="names">
-    /// Nombres a utilizar para generar el nombre de dominio.
-    /// </param>
-    /// <returns>
-    /// Una cadena con un nombre de dominio.
-    /// </returns>
-    public static string NewDomain(IEnumerable<string> names)
-    {
-        string[] top = { "com", "net", "edu", "gov", "org", "info", "io" };
-        string[] ctop = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            .Except(new[] { CultureInfo.InvariantCulture })
-            .Where(p => !p.IsNeutralCulture)
-            .Select(p => p.TwoLetterISOLanguageName.ToLower())
-            .Distinct()
-            .ToArray();
-        return $"{string.Concat(names)}.{top.Pick()}{(_rnd.CoinFlip() ? $".{ctop.Pick()}" : null)}".ToLower().Replace(" ", "");
-    }
-
-    private static string GetName()
-    {
-        return new[] { StringTables.MaleNames, StringTables.FemaleNames, StringTables.Surnames, StringTables.Lorem }.Pick().Pick();
     }
 
     /// <summary>
@@ -114,19 +88,76 @@ public class Internet
     }
 
     /// <summary>
-    /// Genera una dirección de correo electrónico aleatoria para el objeto
-    /// <see cref="Person"/> especificado.
+    /// Crea un nuevo nombre de dominio dados los componentes de nombres
+    /// especificados.
     /// </summary>
-    /// <param name="person">
-    /// Persona para la cual generar la dirección de correo.
+    /// <param name="names">
+    /// Nombres a utilizar para generar el nombre de dominio.
     /// </param>
     /// <returns>
-    /// Una dirección de correo con un formato válido. Subsecuentes
-    /// llamadas a este método podrán obtener direcciones de correo del
-    /// mismo dominio.
+    /// Una cadena con un nombre de dominio.
     /// </returns>
-    public static string FakeEmail(Person? person)
+    public static string NewDomain(params string[] names) => NewDomain(names.AsEnumerable());
+
+    /// <summary>
+    /// Crea un nuevo nombre de dominio dados los componentes de nombres especificados.
+    /// </summary>
+    /// <param name="names">
+    /// Nombres a utilizar para generar el nombre de dominio.
+    /// </param>
+    /// <returns>
+    /// Una cadena con un nombre de dominio.
+    /// </returns>
+    public static string NewDomain(IEnumerable<string> names)
     {
-        return $"{FakeUsername(person)}@{(fakeDomains ??= LoadDomains()).Pick()}";
+        return NewDomain(names, null);
+    }
+
+    /// <summary>
+    /// Crea un nuevo nombre de dominio dados los componentes de nombres
+    /// especificados.
+    /// </summary>
+    /// <param name="names">
+    /// Nombres a utilizar para generar el nombre de dominio.
+    /// </param>
+    /// <param name="countryHint">
+    /// Dirección que contiene una sugerencia de país para el nombre de
+    /// dominio.
+    /// </param>
+    /// <returns>
+    /// Una cadena con un nombre de dominio.
+    /// </returns>
+    public static string NewDomain(IEnumerable<string> names, Address? countryHint)
+    {
+        string[] top = { "com", "net", "edu", "gov", "org", "info", "io" };
+        var ctop = countryHint?.Country is not null ? GetTopDomainForCountry(countryHint.Country) : GetRandomCultureTopDomain();
+        return $"{string.Concat(names)}.{top.Pick()}{(_rnd.CoinFlip() ? $".{ctop}" : null)}".ToLower().Replace(" ", "");
+    }
+
+    private static string[] LoadDomains()
+    {
+        return Enumerable.Range(0, 15).Select(_ => NewDomain(GetName(), GetName())).ToArray();
+    }
+
+    private static string GetRandomCultureTopDomain()
+    {
+        return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+            .Except(new[] { CultureInfo.InvariantCulture })
+            .Where(p => !p.IsNeutralCulture)
+            .Select(p => p.TwoLetterISOLanguageName.ToLower())
+            .Distinct()
+            .ToArray().Pick();
+    }
+
+    private static string GetTopDomainForCountry(string countryName)
+    {
+        return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+            .Select(x => new RegionInfo(x.LCID))
+            .FirstOrDefault(region => region.EnglishName.Contains(countryName))?.TwoLetterISORegionName ?? GetRandomCultureTopDomain();
+    }
+
+    private static string GetName()
+    {
+        return new[] { StringTables.MaleNames, StringTables.FemaleNames, StringTables.Surnames, StringTables.Lorem }.Pick().Pick();
     }
 }

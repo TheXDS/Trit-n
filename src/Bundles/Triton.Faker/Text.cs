@@ -53,16 +53,14 @@ public static class Text
     /// </returns>
     public static string Lorem(in int words, in int wordsPerSentence, in int sentencesPerParagraph, in double delta)
     {
-        if (words < 1) throw Errors.ValueOutOfRange(nameof(words), 1, int.MaxValue);
-        if (wordsPerSentence < 1) throw Errors.ValueOutOfRange(nameof(wordsPerSentence), 1, int.MaxValue);
-        if (sentencesPerParagraph < 1) throw Errors.ValueOutOfRange(nameof(sentencesPerParagraph), 1, int.MaxValue);
+        Lorem_Contract(words, wordsPerSentence, sentencesPerParagraph, delta);
 
+        StringBuilder text = new();
         double wps = wordsPerSentence;
         double spp = sentencesPerParagraph;
-        var text = new StringBuilder();
-        var twc = 0; // Cuenta de palabras en total.
-        var swc = 0; // Cuenta de palabras por oración.
-        var psc = 0; // Cuenta de oraciones por párrafo.
+        int twc = 0; // Cuenta de palabras en total.
+        int swc = 0; // Cuenta de palabras por oración.
+        int psc = 0; // Cuenta de oraciones por párrafo.
         do
         {
             var word = StringTables.Lorem.Pick();
@@ -71,27 +69,7 @@ public static class Text
             swc++;
             if (swc > wps.Variate(delta))
             {
-                if (_rnd.CoinFlip())
-                {
-                    text.Append('.');
-                    psc++;
-                    swc = 0;
-                    if (psc > spp.Variate(delta))
-                    {
-                        text.AppendLine();
-                        psc = 0;
-                        swc = 0;
-                    }
-                    else
-                    {
-                        text.Append(' ');
-                    }
-                }
-                else
-                {
-                    text.Append(", ");
-                    swc = 1;
-                }
+                TerminateSentence(text, ref psc, ref swc, spp, delta);
             }
             else
             {
@@ -99,5 +77,38 @@ public static class Text
             }
         } while (twc < words);
         return swc != 0 ? $"{text.ToString().TrimEnd()}." : text.ToString();
+    }
+
+    private static void Lorem_Contract(in int words, in int wordsPerSentence, in int sentencesPerParagraph, in double delta)
+    {
+        if (words < 1) throw Errors.ValueOutOfRange(nameof(words), 1, int.MaxValue);
+        if (wordsPerSentence < 1) throw Errors.ValueOutOfRange(nameof(wordsPerSentence), 1, int.MaxValue);
+        if (sentencesPerParagraph < 1) throw Errors.ValueOutOfRange(nameof(sentencesPerParagraph), 1, int.MaxValue);
+        if (!delta.IsValid()) throw Errors.InvalidValue(nameof(delta));
+    }
+
+    private static void TerminateSentence(StringBuilder text, ref int psc, ref int swc, in double spp, in double delta)
+    {
+        if (_rnd.CoinFlip())
+        {
+            text.Append('.');
+            psc++;
+            swc = 0;
+            if (psc > spp.Variate(delta))
+            {
+                text.AppendLine();
+                psc = 0;
+                swc = 0;
+            }
+            else
+            {
+                text.Append(' ');
+            }
+        }
+        else
+        {
+            text.Append(", ");
+            swc = 1;
+        }
     }
 }

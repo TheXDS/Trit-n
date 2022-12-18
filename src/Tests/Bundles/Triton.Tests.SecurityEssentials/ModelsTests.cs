@@ -97,11 +97,11 @@ public class ModelsTests
         UserGroupMembership x = new()
         {
             Id = testId,
-            Credential = l,
+            SecurityObject = l,
             Group = g
         };
         Assert.AreEqual(testId, x.Id);
-        Assert.AreSame(l, x.Credential);
+        Assert.AreSame(l, x.SecurityObject);
         Assert.AreSame(g, x.Group);
     }
 

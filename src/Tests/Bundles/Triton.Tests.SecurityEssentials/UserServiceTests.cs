@@ -1,15 +1,13 @@
 #pragma warning disable CS1591
 
-namespace TheXDS.Triton.Tests.SecurityEssentials;
 using NUnit.Framework;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MCART.Helpers;
-using MCART.Types.Extensions;
+using TheXDS.MCART.Helpers;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Services;
-using Services;
+using TheXDS.Triton.Tests.Services;
+
+namespace TheXDS.Triton.Tests.SecurityEssentials;
 
 public class UserServiceTests
 {

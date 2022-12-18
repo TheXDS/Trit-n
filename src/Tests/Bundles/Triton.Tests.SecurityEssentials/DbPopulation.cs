@@ -1,12 +1,12 @@
 ﻿#pragma warning disable CS1591
 
-namespace TheXDS.Triton.Tests.SecurityEssentials;
-using Services;
-using System.Linq;
 using NUnit.Framework;
-using MCART.Types.Extensions;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Services;
+using TheXDS.Triton.Tests.Services;
+
+namespace TheXDS.Triton.Tests.SecurityEssentials;
 
 [SetUpFixture]
 public class DbPopulation
@@ -18,54 +18,78 @@ public class DbPopulation
         using var t = svc.GetTransaction();
         if (!t.All<LoginCredential>().Any())
         {
-            var lc = new LoginCredential()
-            {
-                Granted = PermissionFlags.View,
-                Revoked = PermissionFlags.Read,
-                Id = System.Guid.NewGuid(),
-                Enabled = true,
-                Username = "test",
-                PasswordHash = ((IUserService)svc).HashPassword("test".ToSecureString()),  
+            LoginCredential lc;
+            var creds = new LoginCredential[] {
+                new()
+                {
+                    Granted = PermissionFlags.All,
+                    Revoked = PermissionFlags.None,
+                    Id = Guid.NewGuid(),
+                    Enabled = true,
+                    Username = "root",
+                    PasswordHash = ((IUserService)svc).HashPassword("root".ToSecureString()),
+                },
+                new()
+                {
+                    Granted = PermissionFlags.None,
+                    Revoked = PermissionFlags.All,
+                    Id = Guid.NewGuid(),
+                    Enabled = false,
+                    Username = "disabled",
+                    PasswordHash = ((IUserService)svc).HashPassword("test".ToSecureString()),
+                },
+                new()
+                {
+                    Granted = PermissionFlags.Elevate,
+                    Revoked = PermissionFlags.All,
+                    Id = Guid.NewGuid(),
+                    Enabled = false,
+                    Username = "elevatable",
+                    PasswordHash = ((IUserService)svc).HashPassword("test".ToSecureString()),
+                },
+                lc = new LoginCredential()
+                {
+                    Granted = PermissionFlags.View,
+                    Revoked = PermissionFlags.Read,
+                    Id = Guid.NewGuid(),
+                    Enabled = true,
+                    Username = "test",
+                    PasswordHash = ((IUserService)svc).HashPassword("test".ToSecureString()),
+                }
             };
-            var dc = new LoginCredential()
-            {
-                Granted = PermissionFlags.None,
-                Revoked = PermissionFlags.All,
-                Id = System.Guid.NewGuid(),
-                Enabled = false,
-                Username = "disabled",
-                PasswordHash = ((IUserService)svc).HashPassword("test".ToSecureString()),  
-            };
+
             var g = new UserGroup()
             {
                 Granted = PermissionFlags.Create,
                 Revoked = PermissionFlags.Update,
                 DisplayName = "test group",
-                Id = System.Guid.NewGuid(),
+                Id = Guid.NewGuid(),
             };
             t.Create(new Session()
             {
                 Credential = lc,
-                Id = System.Guid.NewGuid(),
-                Timestamp = new System.DateTime(2022, 1, 1),
+                Id = Guid.NewGuid(),
+                Timestamp = new DateTime(2022, 1, 1),
                 TtlHours = int.MaxValue,
                 Token = "abcd1234"
             }.PushInto(lc.Sessions));
-            t.Create(new UserGroupMembership() {
-                Credential = lc,
+            t.Create(new UserGroupMembership()
+            {
+                SecurityObject = lc,
                 Group = g,
-                Id = System.Guid.NewGuid(),
+                Id = Guid.NewGuid(),
             }.PushInto(lc.Membership).PushInto(g.Membership));
             t.CreateMany(
                 new SecurityDescriptor()
                 {
-                    Id = System.Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     ContextId = "testViewContext",
                     Granted = PermissionFlags.Delete,
                     Revoked = PermissionFlags.Export
-                }.PushInto(lc.Descriptors)                    
+                }.PushInto(lc.Descriptors)
             );
-            t.CreateMany(lc, dc);
+            t.CreateMany(creds);
+            t.Create(lc);
             t.Create(g);
         }
     }
