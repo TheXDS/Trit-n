@@ -62,7 +62,6 @@ public class AuthenticationBrokerTests
         CheckState(broker, elevatable, true, true);
         Assert.AreNotSame(elevatable, broker.GetActor());
         Assert.AreSame(elevationResult.ReturnValue!.Credential, broker.GetActor());
-
     }
 
     [Test]

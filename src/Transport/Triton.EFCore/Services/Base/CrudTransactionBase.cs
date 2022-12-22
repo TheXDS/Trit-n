@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
+using TheXDS.MCART.Resources;
 using TheXDS.MCART.Types.Base;
+using TheXDS.Triton.EFCore.Resources.Strings;
 using static TheXDS.Triton.Services.FailureReason;
 
 namespace TheXDS.Triton.Services.Base
@@ -135,6 +137,36 @@ namespace TheXDS.Triton.Services.Base
             {
                 return ResultFromException(ex);
             }
+        }
+
+        /// <summary>
+        /// Envuelve una operación en un contexto seguro que obtendrá un
+        /// resultado de error cuando se produzca una excepción.
+        /// </summary>
+        /// <typeparam name="TResult">
+        /// Tipo de resultado de la operación.
+        /// </typeparam>
+        /// <param name="action">
+        /// Acción Crud a ejecutar.
+        /// </param>
+        /// <param name="op">
+        /// Operación a ejecutar.
+        /// </param>
+        /// <param name="args">
+        /// Argumentos a pasar a la operación.
+        /// </param>
+        /// <returns>
+        /// El resultado generado por la operación, o un 
+        /// <see cref="ServiceResult{T}"/> que representa un error en la
+        /// misma.
+        /// </returns>
+        protected ServiceResult<TResult?>? TryCall<TResult>(CrudAction action, Delegate op, params object?[]? args)
+        {
+            if (op.Method.ReturnType == typeof(void))
+            {
+                throw new InvalidOperationException(string.Format(Exceptions.NonVoidMethodExpected, typeof(TResult)));
+            }
+            return TryCall(action, op, out TResult result, args)?.CastUp(result);
         }
 
         /// <summary>
@@ -375,7 +407,7 @@ namespace TheXDS.Triton.Services.Base
             {
                 Model m => m,
                 EntityEntry e => e.Entity as Model,
-                IQueryable<Model> q => q.Count() == 1 ? q.Single() : null,
+                IQueryable<Model> q when q.Count() == 1 => q.Single(),
                 _ => null
             };
         }
