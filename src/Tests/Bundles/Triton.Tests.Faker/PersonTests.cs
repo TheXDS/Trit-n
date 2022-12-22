@@ -24,7 +24,6 @@ public class PersonTests
         Assert.IsInstanceOf<double>(p.Age);
         Assert.IsTrue(p.Age.IsValid());
         Assert.IsTrue(p.Age.IsBetween(0, 110));
-
     }
 
     [Test]

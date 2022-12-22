@@ -49,6 +49,6 @@ public class PerformanceMonitor : PerformanceMonitorBase
         if (!avg.IsValid()) avg = 0.0;
         if (milliseconds > max || !max.IsValid()) max = milliseconds;
         if (milliseconds < min || !min.IsValid()) min = milliseconds;
-        avg = (avg * evt + milliseconds) / ++evt;
+        avg = ((avg * evt) + milliseconds) / ++evt;
     }
 }

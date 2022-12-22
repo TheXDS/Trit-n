@@ -10,7 +10,6 @@ namespace TheXDS.Triton.Faker;
 /// </summary>
 public class Company
 {
-
     /// <summary>
     /// Obtiene un nombre para la compañía.
     /// </summary>
@@ -41,7 +40,6 @@ public class Company
     {
         return Employee.Get(this);
     }
-
 
     /// <summary>
     /// Obtiene un empleado en jefe de forma aleatoria.

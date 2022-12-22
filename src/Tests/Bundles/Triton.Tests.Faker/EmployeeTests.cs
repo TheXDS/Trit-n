@@ -27,7 +27,6 @@ public class EmployeeTests
         Assert.IsInstanceOf<double>(employee.Age);
         Assert.IsTrue(employee.Age.IsValid());
         Assert.IsTrue(employee.Age.IsBetween(18, 80));
-
         Assert.IsNotEmpty(employee.Email);
         Assert.IsTrue(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"));
         Assert.IsTrue(employee.Email.EndsWith($"@{company.DomainName}"));
@@ -51,7 +50,6 @@ public class EmployeeTests
         Assert.IsInstanceOf<double>(employee.Age);
         Assert.IsTrue(employee.Age.IsValid());
         Assert.IsTrue(employee.Age.IsBetween(18, 80));
-
         Assert.IsNotEmpty(employee.Email);
         Assert.IsTrue(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"));
         Assert.IsTrue(employee.Email.EndsWith($"@{company.DomainName}"));
@@ -103,5 +101,4 @@ public class EmployeeTests
         Assert.IsTrue(employee.Email.StartsWith(person.UserName));
         Assert.IsNotEmpty(employee.Position);
     }
-
 }

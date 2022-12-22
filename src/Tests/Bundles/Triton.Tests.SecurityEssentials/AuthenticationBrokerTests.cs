@@ -8,24 +8,6 @@ using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Tests.SecurityEssentials;
 
-public class AuthenticatedServiceTests
-{
-    private class TestAuthService : AuthenticatedService
-    {
-        public TestAuthService() : base(new TestUserService())
-        {
-        }
-    }
-
-    [Test]
-    public void Class_exposes_broker_test()
-    {
-        var service = new TestAuthService();
-        Assert.IsNotNull(service.AuthenticationBroker);
-        Assert.IsTrue(service.AuthenticationBroker.GetType().Implements<IAuthenticationBroker>());
-    }
-}
-
 public class AuthenticationBrokerTests
 {
     private readonly IUserService _svc = new TestUserService();
@@ -46,7 +28,6 @@ public class AuthenticationBrokerTests
         Assert.AreEqual(expectedElevatedValue, broker.Elevated);
         Assert.AreEqual(expectedCanElevateValue, broker.CanElevate());
     }
-
 
     [Test]
     public void New_instance_state_test()

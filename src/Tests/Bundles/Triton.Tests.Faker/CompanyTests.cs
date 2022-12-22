@@ -41,7 +41,6 @@ public class CompanyTests
         }
     }
 
-
     [Test]
     public void RndChief_Test()
     {

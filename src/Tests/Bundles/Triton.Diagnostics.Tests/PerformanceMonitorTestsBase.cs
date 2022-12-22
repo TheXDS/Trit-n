@@ -37,7 +37,6 @@ namespace TheXDS.Triton.Tests.Diagnostics
             Assert.AreEqual(2, perfMon.EventCount);
         }
 
-
         [Test]
         public async Task Monitor_skips_non_commits()
         {
