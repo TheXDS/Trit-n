@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Reflection;
 using TheXDS.MCART.Resources;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.EFCore.Resources.Strings;
@@ -133,6 +134,10 @@ namespace TheXDS.Triton.Services.Base
             { 
                 throw;
             }
+            catch (TargetInvocationException tiex)
+            {
+                return ResultFromException(tiex.InnerException!);
+            }
             catch (Exception ex)
             {
                 return ResultFromException(ex);
@@ -166,7 +171,8 @@ namespace TheXDS.Triton.Services.Base
             {
                 throw new InvalidOperationException(string.Format(Exceptions.NonVoidMethodExpected, typeof(TResult)));
             }
-            return TryCall(action, op, out TResult result, args)?.CastUp(result);
+            var svcResult = TryCall(action, op, out TResult result, args)?.CastUp(result) ?? new ServiceResult<TResult?>(result);
+            return svcResult;
         }
 
         /// <summary>

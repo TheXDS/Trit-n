@@ -93,8 +93,7 @@ public class CrudTransactionBaseTests
         }
 
         var result = test.Test_TryCall_void(CrudAction.Create, TestDelegate, true);
-        Assert.IsNotNull(result);
-        Assert.IsTrue(result!.Success);
+        Assert.IsNull(result);
         Assert.IsTrue(delegateRan);
     }
 
@@ -112,8 +111,7 @@ public class CrudTransactionBaseTests
 
         var result = test.Test_TryCall(CrudAction.Create, TestDelegate, out int returnValue, true);
 
-        Assert.IsNotNull(result);
-        Assert.IsTrue(result!.Success);
+        Assert.IsNull(result);
         Assert.IsTrue(delegateRan);
         Assert.AreEqual(1, returnValue);
     }
@@ -139,15 +137,15 @@ public class CrudTransactionBaseTests
     {
         var test = new TestClass();
 
-        int TestDelegate(bool arg) => throw new Exception() { HResult = unchecked((int)0xdead_dead) };
+        int TestDelegate(bool arg) => throw new Exception() { HResult = 0xdead };
 
-        var result = test.Test_TryCall(CrudAction.Create, TestDelegate, out string returnValue, true);
+        var result = test.Test_TryCall(CrudAction.Create, TestDelegate, out int returnValue, true);
 
         Assert.IsNotNull(result);
         Assert.IsFalse(result!.Success);
-        Assert.AreEqual(unchecked((int)0xdead_dead), (int)result.Reason!);
+        Assert.AreEqual(default(int), returnValue);
+        Assert.AreEqual(0xdead, (int)result.Reason!);
     }
-
 
     [Test]
     public void TryCall_with_ServiceResultTValue_test()
