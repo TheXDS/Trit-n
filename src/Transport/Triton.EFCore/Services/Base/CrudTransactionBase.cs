@@ -235,6 +235,10 @@ namespace TheXDS.Triton.Services.Base
             {
                 throw;
             }
+            catch (TargetInvocationException tiex)
+            {
+                return ResultFromException(tiex.InnerException!).CastUp<TModel>(default!);
+            }
             catch (Exception ex)
             {
                 return ResultFromException(ex).CastUp<ServiceResult<TModel?>>();
@@ -265,9 +269,26 @@ namespace TheXDS.Triton.Services.Base
         /// <see cref="ServiceResult"/> que representa un error en la
         /// operación.
         /// </returns>
-        protected Task<ServiceResult> TryCallAsync<TModel>(CrudAction action, Task op, TModel? entity) where TModel : Model
+        protected async Task<ServiceResult> TryCallAsync<TModel>(CrudAction action, Task op, TModel? entity) where TModel : Model
         {
-            return TryCallAsync(action, op, entity);
+            try
+            {
+                if (_configuration.RunProlog(action, entity) is { } r) return r.CastUp<ServiceResult<TModel?>>();
+                await op;
+                return _configuration.RunEpilog(action, entity)?.CastUp<ServiceResult<TModel?>>() ?? new ServiceResult<TModel?>(entity);
+            }
+            catch (InvalidCastException)
+            {
+                throw;
+            }
+            catch (TargetInvocationException tiex)
+            {
+                return ResultFromException(tiex.InnerException!);
+            }
+            catch (Exception ex)
+            {
+                return ResultFromException(ex).CastUp<ServiceResult<TModel?>>();
+            }
         }
 
         /// <summary>

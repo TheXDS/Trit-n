@@ -241,5 +241,12 @@ namespace TheXDS.Triton.Services
         {
             return _readTransaction.SearchAsync(query);
         }
+
+        /// <inheritdoc/>
+        protected override async ValueTask OnDisposeAsync()
+        {
+            await _writeTransaction.CommitAsync();
+            await base.OnDisposeAsync();
+        }
     }
 }

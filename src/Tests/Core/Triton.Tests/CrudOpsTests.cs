@@ -164,7 +164,7 @@ public class CrudOpsTests
     }
 
     [Test]
-    public void DeleteAndVerifyTransactionTest()
+    public void Delete_and_verify_transaction_test()
     {
         using (var t = _srv.GetWriteTransaction())
         {
@@ -176,11 +176,21 @@ public class CrudOpsTests
         }
     }
 
+    [Test]
     public async Task ReadAsync_Test()
     {
         await using var t = _srv.GetReadTransaction();
         User r = (await t.ReadAsync<User, string>("user1")).ReturnValue!;
         Assert.IsNotNull(r);
         Assert.IsAssignableFrom<User>(r);
+    }
+
+    [Test]
+    public async Task SearchAsync_test()
+    {
+        await using var t = _srv.GetReadTransaction();
+        var r = (await t.SearchAsync<User>(p => p.PublicName != null)).ReturnValue!;
+        Assert.IsNotNull(r);
+        Assert.NotZero(r.Length);
     }
 }

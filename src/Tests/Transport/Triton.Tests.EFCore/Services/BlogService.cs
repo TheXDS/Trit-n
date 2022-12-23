@@ -1,10 +1,9 @@
-﻿namespace TheXDS.Triton.Tests.EFCore.Services;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TheXDS.Triton.Services;
-using Models;
+using TheXDS.Triton.Tests.EFCore.Models;
 using TheXDS.Triton.Tests.Models;
+
+namespace TheXDS.Triton.Tests.EFCore.Services;
 
 /// <summary>
 /// Servicio de pruebas que permite administrar el contexto de datos
