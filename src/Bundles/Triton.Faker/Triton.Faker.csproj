@@ -9,6 +9,6 @@
     <EmbeddedResource Include="Resources\StringTables\*.deflate" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.16.0" />
+    <PackageReference Include="TheXDS.MCART" Version="0.16.1" />
   </ItemGroup>
 </Project>
