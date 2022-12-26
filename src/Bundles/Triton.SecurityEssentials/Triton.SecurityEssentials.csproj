@@ -4,7 +4,7 @@
 		<RootNamespace>TheXDS.Triton</RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="TheXDS.MCART.Security" Version="0.16.0" />
+	  <PackageReference Include="TheXDS.MCART.Security" Version="0.16.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
