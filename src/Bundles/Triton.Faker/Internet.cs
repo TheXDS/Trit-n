@@ -152,7 +152,7 @@ public class Internet
     private static string GetTopDomainForCountry(string countryName)
     {
         return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            .Select(x => new RegionInfo(x.LCID))
+            .Select(x => new RegionInfo(x.Name))
             .FirstOrDefault(region => region.EnglishName.Contains(countryName))?.TwoLetterISORegionName ?? GetRandomCultureTopDomain();
     }
 

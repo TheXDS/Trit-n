@@ -1,8 +1,6 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 using TheXDS.Triton.Faker;
 

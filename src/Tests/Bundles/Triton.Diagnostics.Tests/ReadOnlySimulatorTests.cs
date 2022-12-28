@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#pragma warning disable CS1591
+
+using NUnit.Framework;
 using TheXDS.Triton.Diagnostics.Middleware;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
@@ -6,7 +8,6 @@ using TheXDS.Triton.Tests.Models;
 
 namespace TheXDS.Triton.Tests.Diagnostics;
 
-#pragma warning disable CS1591
 public class ReadOnlySimulatorTests : MiddlewareTestsBase
 {
     protected static ServiceResult? RunSimulatorFail(IMiddlewareConfigurator testRepo, CrudAction action, Model? entity)

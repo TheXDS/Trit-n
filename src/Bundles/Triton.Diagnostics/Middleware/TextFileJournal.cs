@@ -28,6 +28,10 @@ public class TextFileJournal : TextJournal
         {
             if (value is not null)
             {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException(nameof(value));
+                }
                 _ = new FileInfo(value);
             }
             _path = value;
