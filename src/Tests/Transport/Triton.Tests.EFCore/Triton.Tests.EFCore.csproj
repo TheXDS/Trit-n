@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
     <ProjectReference Include="$(SolutionDir)\Core\Triton\Triton.csproj" />
     <ProjectReference Include="..\..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
   </ItemGroup>
