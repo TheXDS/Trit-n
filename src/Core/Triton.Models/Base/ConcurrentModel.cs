@@ -7,7 +7,7 @@ namespace TheXDS.Triton.Models.Base;
 /// versión de fila para permitir concurrencia de acceso.
 /// </summary>
 /// <typeparam name="T">Tipo de campo llave de la entidad.</typeparam>
-public abstract class ConcurrentModel<T> : Model<T> where T : notnull, IComparable<T>, IEquatable<T>
+public abstract class ConcurrentModel<T> : Model<T> where T : IComparable<T>, IEquatable<T>
 {
     /// <summary>
     /// Implementa un campo de versión de fila para permitir

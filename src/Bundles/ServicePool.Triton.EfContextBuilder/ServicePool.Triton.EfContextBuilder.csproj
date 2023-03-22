@@ -9,4 +9,8 @@
     <ProjectReference Include="..\Triton.EfContextBuilder\Triton.EfContextBuilder.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0-a001" />
+  </ItemGroup>
+
 </Project>

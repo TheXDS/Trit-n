@@ -22,7 +22,7 @@ public static class JournalMiddleware
     /// La misma instancia que <paramref name="config"/>, permitiendo el
     /// uso de sintaxis Fluent.
     /// </returns>
-    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config) where T : notnull, IJournalMiddleware, new()
+    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config) where T : IJournalMiddleware, new()
     {
         return config.UseJournal(new T(), default);
     }
@@ -43,7 +43,7 @@ public static class JournalMiddleware
     /// La misma instancia que <paramref name="config"/>, permitiendo el
     /// uso de sintaxis Fluent.
     /// </returns>
-    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton) where T : notnull, IJournalMiddleware, new()
+    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton) where T : IJournalMiddleware, new()
     {
         return config.UseJournal(journalSingleton, default);
     }
@@ -66,7 +66,7 @@ public static class JournalMiddleware
     /// La misma instancia que <paramref name="config"/>, permitiendo el
     /// uso de sintaxis Fluent.
     /// </returns>
-    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, JournalSettings configuration) where T : notnull, IJournalMiddleware, new()
+    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, JournalSettings configuration) where T : IJournalMiddleware, new()
     {
         return config.UseJournal(new T(), configuration);
     }
@@ -92,7 +92,7 @@ public static class JournalMiddleware
     /// La misma instancia que <paramref name="config"/>, permitiendo el
     /// uso de sintaxis Fluent.
     /// </returns>
-    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton, JournalSettings configuration) where T : notnull, IJournalMiddleware
+    public static IMiddlewareConfigurator UseJournal<T>(this IMiddlewareConfigurator config, T journalSingleton, JournalSettings configuration) where T : IJournalMiddleware
     {
         return config.AddLastEpilog((a, m) =>
         {

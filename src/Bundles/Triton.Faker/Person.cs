@@ -1,6 +1,5 @@
 ﻿using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Faker.Resources;
-using static TheXDS.MCART.Types.Extensions.RandomExtensions;
 using static TheXDS.Triton.Faker.Globals;
 
 namespace TheXDS.Triton.Faker;
@@ -142,7 +141,7 @@ public class Person
     /// </returns>
     public static Person Someone()
     {
-        return new Func<Person>[] { Baby, Kid, Adult, Old }.Pick().Invoke();
+        return new [] { Baby, Kid, Adult, Old }.Pick().Invoke();
     }
 
     /// <summary>

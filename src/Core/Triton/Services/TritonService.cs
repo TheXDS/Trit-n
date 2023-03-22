@@ -13,7 +13,7 @@ namespace TheXDS.Triton.Services;
 public class TritonService : ITritonService
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static T FindT<T>() where T : class => Objects.FindFirstObject<T>() ?? throw new MissingTypeException(typeof(T));
+    private static T FindT<T>() where T : class => ReflectionHelpers.FindFirstObject<T>() ?? throw new MissingTypeException(typeof(T));
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase 

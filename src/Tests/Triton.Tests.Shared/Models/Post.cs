@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TheXDS.Triton.Models.Base;
+﻿using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Tests.Models
 {

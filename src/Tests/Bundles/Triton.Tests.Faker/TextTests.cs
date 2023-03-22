@@ -1,7 +1,6 @@
 #pragma warning disable CS1591
 
 using NUnit.Framework;
-using System;
 using TheXDS.Triton.Faker;
 
 namespace TheXDS.Triton.Tests.Faker;

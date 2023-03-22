@@ -2,7 +2,6 @@
 using System.Text;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Faker.Resources;
-using static TheXDS.MCART.Types.Extensions.RandomExtensions;
 using static TheXDS.Triton.Faker.Globals;
 
 namespace TheXDS.Triton.Faker;
@@ -13,7 +12,7 @@ namespace TheXDS.Triton.Faker;
 /// </summary>
 public class Internet
 {
-    private static string[]? fakeDomains;
+    private static string[]? _fakeDomains;
 
     /// <summary>
     /// Genera una dirección de correo totalmente aleatoria.
@@ -25,7 +24,7 @@ public class Internet
     /// </returns>
     public static string FakeEmail()
     {
-        return $"{FakeUsername()}@{(fakeDomains ??= LoadDomains()).Pick()}";
+        return $"{FakeUsername()}@{(_fakeDomains ??= LoadDomains()).Pick()}";
     }
 
     /// <summary>
@@ -42,7 +41,7 @@ public class Internet
     /// </returns>
     public static string FakeEmail(Person? person)
     {
-        return $"{FakeUsername(person)}@{(fakeDomains ??= LoadDomains()).Pick()}";
+        return $"{FakeUsername(person)}@{(_fakeDomains ??= LoadDomains()).Pick()}";
     }
 
     /// <summary>

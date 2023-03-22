@@ -1,9 +1,6 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
-using System;
-using System.Linq;
-using TheXDS.Triton.Models;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;
 using TheXDS.Triton.Tests.Services;

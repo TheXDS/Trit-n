@@ -3,9 +3,9 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.Ext.TypeFactory" Version="0.16.1" />
+    <ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
+    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0-a001" />
   </ItemGroup>
 </Project>

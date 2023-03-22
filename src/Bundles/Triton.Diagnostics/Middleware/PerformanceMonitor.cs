@@ -8,22 +8,22 @@ namespace TheXDS.Triton.Diagnostics.Middleware;
 /// </summary>
 public class PerformanceMonitor : PerformanceMonitorBase
 {
-    private int evt;
-    private double avg;
-    private double min;
-    private double max;
+    private int _evt;
+    private double _avg;
+    private double _min;
+    private double _max;
 
     /// <inheritdoc/>
-    public override int EventCount => evt;
+    public override int EventCount => _evt;
 
     /// <inheritdoc/>
-    public override double AverageMs => avg;
+    public override double AverageMs => _avg;
 
     /// <inheritdoc/>
-    public override double MinMs => min;
+    public override double MinMs => _min;
 
     /// <inheritdoc/>
-    public override double MaxMs => max;
+    public override double MaxMs => _max;
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase
@@ -37,18 +37,18 @@ public class PerformanceMonitor : PerformanceMonitorBase
     /// <inheritdoc/>
     protected override void OnReset()
     {
-        avg = double.NaN;
-        evt = 0;
-        min = double.NaN;
-        max = double.NaN;
+        _avg = double.NaN;
+        _evt = 0;
+        _min = double.NaN;
+        _max = double.NaN;
     }
 
     /// <inheritdoc/>
     protected override void RegisterEvent(double milliseconds)
     {
-        if (!avg.IsValid()) avg = 0.0;
-        if (milliseconds > max || !max.IsValid()) max = milliseconds;
-        if (milliseconds < min || !min.IsValid()) min = milliseconds;
-        avg = ((avg * evt) + milliseconds) / ++evt;
+        if (!_avg.IsValid()) _avg = 0.0;
+        if (milliseconds > _max || !_max.IsValid()) _max = milliseconds;
+        if (milliseconds < _min || !_min.IsValid()) _min = milliseconds;
+        _avg = ((_avg * _evt) + milliseconds) / ++_evt;
     }
 }

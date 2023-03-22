@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection;
-using TheXDS.MCART.Resources;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.EFCore.Resources.Strings;
 using static TheXDS.Triton.Services.FailureReason;

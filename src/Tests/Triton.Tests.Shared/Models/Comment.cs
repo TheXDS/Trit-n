@@ -1,5 +1,4 @@
-﻿using System;
-using TheXDS.Triton.Models.Base;
+﻿using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.Tests.Models
 {

@@ -1,5 +1,4 @@
 ﻿using TheXDS.MCART.Types.Extensions;
-using static TheXDS.MCART.Types.Extensions.RandomExtensions;
 using static TheXDS.Triton.Faker.Globals;
 
 namespace TheXDS.Triton.Faker;

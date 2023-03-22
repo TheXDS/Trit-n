@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System.Globalization;
-using System.Linq;
 using TheXDS.Triton.Resources.Strings;
 
 namespace TheXDS.Triton.Tests.Resources

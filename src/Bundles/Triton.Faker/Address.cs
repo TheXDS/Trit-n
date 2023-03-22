@@ -1,4 +1,5 @@
-﻿using TheXDS.MCART.Types.Extensions;
+﻿using System.Globalization;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Faker.Resources;
 using static TheXDS.Triton.Faker.Globals;
 
@@ -12,7 +13,7 @@ public record Address(string AddressLine, string? AddressLine2, string City, str
     /// <inheritdoc/>
     public override string ToString()
     {
-        return $@"{string.Join(System.Environment.NewLine, new[] { AddressLine, AddressLine2, $"{City}, {Country} {Zip}" }.NotNull())}";
+        return $@"{string.Join(Environment.NewLine, new[] { AddressLine, AddressLine2, $"{City}, {Country} {Zip}" }.NotNull())}";
     }
 
     /// <summary>
@@ -31,8 +32,8 @@ public record Address(string AddressLine, string? AddressLine2, string City, str
             return string.Join(' ', l);
         }
         static string? RndLine2() => _rnd.CoinFlip() ? $"{new[] { "#", "Apt.", "House", "Building" }.Pick()} {_rnd.Next(1, 9999)}" : null;
-        static string RndCity() => string.Join(' ', new string?[] { Capitalize(StringTables.Surnames.Pick()), _rnd.CoinFlip() ? "City" : null }.NotNull());
-        static string RndCountry() => new System.Globalization.RegionInfo(System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).Pick().Name).EnglishName;
+        static string RndCity() => string.Join(' ', new [] { Capitalize(StringTables.Surnames.Pick()), _rnd.CoinFlip() ? "City" : null }.NotNull());
+        static string RndCountry() => new RegionInfo(CultureInfo.GetCultures(CultureTypes.SpecificCultures).Pick().Name).EnglishName;
         return new(RndAddress(), RndLine2(), RndCity(), RndCountry(), (ushort)_rnd.Next(10001, 99999));
     }
 

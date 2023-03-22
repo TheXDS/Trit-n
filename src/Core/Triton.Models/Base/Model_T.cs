@@ -5,7 +5,7 @@
 /// utilizar como Id de la entidad.
 /// </summary>
 /// <typeparam name="T">Tipo de campo llave de la entidad.</typeparam>
-public abstract class Model<T> : Model where T : notnull, IComparable<T>, IEquatable<T>
+public abstract class Model<T> : Model where T : IComparable<T>, IEquatable<T>
 {
     /// <inheritdoc/>
     public sealed override string IdAsString => Id?.ToString() ?? string.Empty;

@@ -36,7 +36,7 @@ namespace TheXDS.Triton.Services
         /// <returns></returns>
         public QueryServiceResult<TModel> All<TModel>() where TModel : Model
         {
-            var result = TryCall(CrudAction.Read, (Func<DbSet<TModel>>)_context.Set<TModel>, out DbSet<TModel> dbSet, null)?.CastUp<QueryServiceResult<TModel>>();
+            var result = TryCall(CrudAction.Read, (Func<DbSet<TModel>>)_context.Set<TModel>, out DbSet<TModel>? dbSet, null)?.CastUp<QueryServiceResult<TModel>>();
             return dbSet is null ? result ?? FailureReason.DbFailure : new QueryServiceResult<TModel>(dbSet);
         }
 

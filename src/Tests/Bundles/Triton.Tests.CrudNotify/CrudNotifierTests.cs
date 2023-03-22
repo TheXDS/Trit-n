@@ -1,6 +1,5 @@
 #pragma warning disable CS1591
 
-using System.Threading.Tasks;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;

@@ -91,10 +91,10 @@ public static class ContextBuilder
         {
             t.Builder.AddAutoProperty($"{j.Name}{(j.Name.EndsWith("s") ? "es" : "s")}", typeof(DbSet<>).MakeGenericType(j));
         }
-        if (configurationCallback is { Method: MethodInfo callback })
+        if (configurationCallback is { Method: { } callback })
         {
             if (!callback.IsStatic) throw new InvalidOperationException();
-            if (typeof(DbContext).GetMethod("OnConfiguring", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(DbContextOptionsBuilder) }, null) is { } oc)
+            if (typeof(DbContext).GetMethod("OnConfiguring", BindingFlags.NonPublic | BindingFlags.Instance, null, new [] { typeof(DbContextOptionsBuilder) }, null) is { } oc)
             {
                 t.Builder.AddOverride(oc).Il.LoadArg1().Call(callback).Return();
             }
@@ -187,7 +187,7 @@ public static class ContextBuilder
     /// </exception>
     public static ITypeBuilder<DbContext> Build(Action<DbContextOptionsBuilder>? configurationCallback)
     {
-        return Build(Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
+        return Build(ReflectionHelpers.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public static class ContextBuilder
     /// </exception>
     public static ITypeBuilder<DbContext> Build(string name, Action<DbContextOptionsBuilder>? configurationCallback)
     {
-        return Build(name, Objects.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
+        return Build(name, ReflectionHelpers.GetTypes<Model>().Where(p => !p.IsAbstract).ToArray(), configurationCallback);
     }
 
     /// <summary>

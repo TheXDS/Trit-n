@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using TheXDS.MCART.Events;
 using TheXDS.MCART.Types.Base;
-using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
@@ -14,7 +13,7 @@ namespace TheXDS.Triton.Diagnostics.Middleware;
 public abstract class PerformanceMonitorBase : NotifyPropertyChanged, ITransactionMiddleware
 {
     private readonly Stopwatch _stopwatch = new();
-    private readonly CrudAction[] AllowedActions =
+    private readonly CrudAction[] _allowedActions =
     {
         CrudAction.Commit,
         CrudAction.Read,
@@ -77,23 +76,20 @@ public abstract class PerformanceMonitorBase : NotifyPropertyChanged, ITransacti
 
     ServiceResult? ITransactionMiddleware.PrologAction(CrudAction arg1, Model? _)
     {
-        if (AllowedActions.Contains (arg1) && !_stopwatch.IsRunning) _stopwatch.Restart();
+        if (_allowedActions.Contains (arg1) && !_stopwatch.IsRunning) _stopwatch.Restart();
         return null;
     }
 
     ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction arg1, Model? _)
     {
-        if (AllowedActions.Contains(arg1))
-        {
-            _stopwatch.Stop();
-            RegisterEvent(_stopwatch.Elapsed.TotalMilliseconds);
-            var ms = _stopwatch.Elapsed.TotalMilliseconds;
-            Elapsed?.Invoke(this, AverageMs);
-            Notify(nameof(EventCount));
-            Notify(nameof(AverageMs));
-            Notify(nameof(MinMs));
-            Notify(nameof(MaxMs));
-        }
+        if (!_allowedActions.Contains(arg1)) return null;
+        _stopwatch.Stop();
+        RegisterEvent(_stopwatch.Elapsed.TotalMilliseconds);
+        Elapsed?.Invoke(this, AverageMs);
+        Notify(nameof(EventCount));
+        Notify(nameof(AverageMs));
+        Notify(nameof(MinMs));
+        Notify(nameof(MaxMs));
         return null;
     }
 }

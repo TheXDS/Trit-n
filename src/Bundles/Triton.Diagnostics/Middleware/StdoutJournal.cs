@@ -7,10 +7,10 @@
 public class StdoutJournal : TextJournal
 {
     /// <inheritdoc/>
-    protected override void WriteText(System.Collections.Generic.IEnumerable<string> lines)
+    protected override void WriteText(IEnumerable<string> lines)
     {
-        using var stdout = System.Console.OpenStandardOutput();
-        using var writer = new System.IO.StreamWriter(stdout);
+        using var stdout = Console.OpenStandardOutput();
+        using var writer = new StreamWriter(stdout);
         foreach (var j in lines)
         {
             writer.WriteLine(j);

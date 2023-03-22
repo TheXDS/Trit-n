@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.ServicePool.Triton.Resources;
 using TheXDS.Triton.Middleware;
@@ -28,7 +29,7 @@ internal class TritonConfigurable : ITritonConfigurable
     /// <inheritdoc/>
     public ITritonConfigurable DiscoverContexts()
     {
-        foreach (var j in MCART.Helpers.Objects.GetTypes<DbContext>(true).Where(p => p.GetConstructor(Type.EmptyTypes) is not null))
+        foreach (var j in ReflectionHelpers.GetTypes<DbContext>(true).Where(p => p.GetConstructor(Type.EmptyTypes) is not null))
         {
             UseContext(j);
         }

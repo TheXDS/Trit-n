@@ -92,6 +92,6 @@ public static class ServicePoolEfContextBuilderExtensions
     /// </returns>
     public static ITritonConfigurable UseDynamicContext(this ITritonConfigurable configurable, Func<Type, bool> modelFilter, Action<DbContextOptionsBuilder>? optionsCallback = null)
     {
-        return UseDynamicContext(configurable, Objects.PublicTypes<Model>().Where(modelFilter).ToArray(), optionsCallback);            
+        return UseDynamicContext(configurable, ReflectionHelpers.PublicTypes<Model>().Where(modelFilter).ToArray(), optionsCallback);            
     }
 }

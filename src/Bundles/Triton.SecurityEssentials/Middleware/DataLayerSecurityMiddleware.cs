@@ -34,7 +34,7 @@ public class DataLayerSecurityMiddleware : ITransactionMiddleware
     ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, Model? entity)
     {
         if (entity is null) return null;
-        if (_securityActorProvider.GetActor() is not SecurityObject actor) return ServiceResult.FailWith<ServiceResult>(FailureReason.Tamper);
+        if (_securityActorProvider.GetActor() is not { } actor) return ServiceResult.FailWith<ServiceResult>(FailureReason.Tamper);
 
         var entityType = entity.GetType();
 

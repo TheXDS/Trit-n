@@ -1,9 +1,7 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Cryptography;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
@@ -31,7 +29,7 @@ namespace TheXDS.Triton.Tests
         public void ConcurrentModel_T_includes_RowVersion()
         {
             var t = typeof(ConcurrentTestModel);
-            Assert.NotNull(t.GetProperties().SingleOrDefault(p => p.IsReadWrite() && p.PropertyType == typeof(byte[]) && p.HasAttr<TimestampAttribute>()));
+            Assert.NotNull(t.GetProperties().SingleOrDefault(p => p.IsReadWrite() && p.PropertyType == typeof(byte[]) && p.HasAttribute<TimestampAttribute>()));
             var x = new ConcurrentTestModel();
             Assert.AreEqual(default(bool[]), x.RowVersion);
             var a = RandomNumberGenerator.GetBytes(16);
@@ -54,7 +52,7 @@ namespace TheXDS.Triton.Tests
         [Test]
         public void Model_ctor_throws_on_null_id()
         {
-            Assert.Throws<ArgumentNullException>(() => new TestModel(null!));
+            Assert.Throws<ArgumentNullException>(() => _ = new TestModel(null!));
         }
 
         [Test]
