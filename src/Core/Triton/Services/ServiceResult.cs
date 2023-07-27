@@ -252,7 +252,7 @@ public class ServiceResult : IEquatable<ServiceResult>, IEquatable<Exception>
     /// <param name="success">
     /// Valor que indica si la operación ha tenido éxito o no.
     /// </param>
-    public static implicit operator ServiceResult(in bool success)=> success ? Ok : FailWith<ServiceResult>(FailureReason.Unknown);
+    public static implicit operator ServiceResult(in bool success) => success ? Ok : FailWith<ServiceResult>(FailureReason.Unknown);
 
     /// <summary>
     /// Permite utilizar un <see cref="ServiceResult"/> en una

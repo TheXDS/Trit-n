@@ -29,7 +29,7 @@ public class ServiceResult<T> : ServiceResult
     /// personalizado a mostrar.
     /// </summary>
     /// <param name="message">Mensaje descriptivo del resultado.</param>
-    public ServiceResult(string message): base(message)
+    public ServiceResult(string message) : base(message)
     {
     }
 

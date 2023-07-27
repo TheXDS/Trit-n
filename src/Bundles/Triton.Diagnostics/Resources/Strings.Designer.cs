@@ -8,102 +8,101 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TheXDS.Triton.Diagnostics.Resources {
-    using System;
+namespace TheXDS.Triton.Diagnostics.Resources; 
+using System;
+
+
+/// <summary>
+///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+/// </summary>
+// StronglyTypedResourceBuilder generó automáticamente esta clase
+// a través de una herramienta como ResGen o Visual Studio.
+// Para agregar o quitar un miembro, edite el archivo .ResX y, a continuación, vuelva a ejecutar ResGen
+// con la opción /str o recompile su proyecto de VS.
+[global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+internal class Strings {
     
+    private static global::System.Resources.ResourceManager resourceMan;
+    
+    private static global::System.Globalization.CultureInfo resourceCulture;
+    
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+    internal Strings() {
+    }
     
     /// <summary>
-    ///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+    ///   Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
     /// </summary>
-    // StronglyTypedResourceBuilder generó automáticamente esta clase
-    // a través de una herramienta como ResGen o Visual Studio.
-    // Para agregar o quitar un miembro, edite el archivo .ResX y, a continuación, vuelva a ejecutar ResGen
-    // con la opción /str o recompile su proyecto de VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
-        
-        private static global::System.Resources.ResourceManager resourceMan;
-        
-        private static global::System.Globalization.CultureInfo resourceCulture;
-        
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Strings() {
+    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+    internal static global::System.Resources.ResourceManager ResourceManager {
+        get {
+            if (object.ReferenceEquals(resourceMan, null)) {
+                global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Triton.Diagnostics.Resources.Strings", typeof(Strings).Assembly);
+                resourceMan = temp;
+            }
+            return resourceMan;
         }
-        
-        /// <summary>
-        ///   Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
-        /// </summary>
-        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Triton.Diagnostics.Resources.Strings", typeof(Strings).Assembly);
-                    resourceMan = temp;
-                }
-                return resourceMan;
-            }
+    }
+    
+    /// <summary>
+    ///   Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+    ///   búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+    /// </summary>
+    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+    internal static global::System.Globalization.CultureInfo Culture {
+        get {
+            return resourceCulture;
         }
-        
-        /// <summary>
-        ///   Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
-        ///   búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
-        /// </summary>
-        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
-            get {
-                return resourceCulture;
-            }
-            set {
-                resourceCulture = value;
-            }
+        set {
+            resourceCulture = value;
         }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a La operación se ha completado exitosamente, pero el escritor de bitácora encontró un error.
-        ///{0}: {1}.
-        /// </summary>
-        internal static string JournalError {
-            get {
-                return ResourceManager.GetString("JournalError", resourceCulture);
-            }
+    }
+    
+    /// <summary>
+    ///   Busca una cadena traducida similar a La operación se ha completado exitosamente, pero el escritor de bitácora encontró un error.
+    ///{0}: {1}.
+    /// </summary>
+    internal static string JournalError {
+        get {
+            return ResourceManager.GetString("JournalError", resourceCulture);
         }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Se.
-        /// </summary>
-        internal static string NoActorProviderSubst {
-            get {
-                return ResourceManager.GetString("NoActorProviderSubst", resourceCulture);
-            }
+    }
+    
+    /// <summary>
+    ///   Busca una cadena traducida similar a Se.
+    /// </summary>
+    internal static string NoActorProviderSubst {
+        get {
+            return ResourceManager.GetString("NoActorProviderSubst", resourceCulture);
         }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a {0} ha ejecutado una operación &apos;{1}&apos;.
-        /// </summary>
-        internal static string XRanOperation {
-            get {
-                return ResourceManager.GetString("XRanOperation", resourceCulture);
-            }
+    }
+    
+    /// <summary>
+    ///   Busca una cadena traducida similar a {0} ha ejecutado una operación &apos;{1}&apos;.
+    /// </summary>
+    internal static string XRanOperation {
+        get {
+            return ResourceManager.GetString("XRanOperation", resourceCulture);
         }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a {0} sobre el modelo {1} {2}.
-        /// </summary>
-        internal static string XWithData {
-            get {
-                return ResourceManager.GetString("XWithData", resourceCulture);
-            }
+    }
+    
+    /// <summary>
+    ///   Busca una cadena traducida similar a {0} sobre el modelo {1} {2}.
+    /// </summary>
+    internal static string XWithData {
+        get {
+            return ResourceManager.GetString("XWithData", resourceCulture);
         }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a {0} sin obtener datos..
-        /// </summary>
-        internal static string XWithNoData {
-            get {
-                return ResourceManager.GetString("XWithNoData", resourceCulture);
-            }
+    }
+    
+    /// <summary>
+    ///   Busca una cadena traducida similar a {0} sin obtener datos..
+    /// </summary>
+    internal static string XWithNoData {
+        get {
+            return ResourceManager.GetString("XWithNoData", resourceCulture);
         }
     }
 }

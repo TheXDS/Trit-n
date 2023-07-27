@@ -17,7 +17,7 @@ public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Mode
 
     /// <inheritdoc/>
     public Type ElementType => _result?.ElementType ?? throw new InvalidOperationException();
-
+              
     /// <inheritdoc/>
     public Expression Expression => _result?.Expression ?? throw new InvalidOperationException();
 
@@ -32,9 +32,9 @@ public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Mode
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/> exitoso sin resultados.
+    /// <see cref="QueryServiceResult{T}"/> sin resultados.
     /// </summary>
-    public QueryServiceResult()
+    public QueryServiceResult() : base(FailureReason.NotFound)
     {
     }
 
@@ -126,4 +126,13 @@ public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Mode
     /// Motivo por el cual la operación ha fallado.
     /// </param>
     public static implicit operator QueryServiceResult<T>(in FailureReason reason) => new(reason);
+
+    /// <summary>
+    /// Convierte implícitamente un <see cref="QueryServiceResult{T}"/> en un
+    /// <see cref="bool"/>.
+    /// </summary>
+    /// <param name="result">
+    /// Objeto a convertir.
+    /// </param>
+    public static implicit operator bool(in QueryServiceResult<T> result) => result.Success;
 }
