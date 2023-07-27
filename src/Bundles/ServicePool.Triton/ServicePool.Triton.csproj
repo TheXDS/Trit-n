@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.ServicePool" Version="1.0.4" />
+    <PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />

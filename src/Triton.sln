@@ -78,6 +78,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.Faker", "Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.SecurityEssentials", "Tests\Bundles\Triton.Tests.SecurityEssentials\Triton.Tests.SecurityEssentials.csproj", "{9BBA1578-9EDC-46BA-B895-DAB65D83C0F0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{E06D4205-D7F8-44E7-A556-C5F08188F46E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{1A768325-E365-4BFD-9E23-25348A4EF7F6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{F0E2A344-A56E-48B5-99CB-F54744F1C3DD}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
+		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +217,9 @@ Global
 		{CC7B73C0-6080-421C-8C91-5F52E772C90B} = {2AB10B4D-DA46-4D6A-A30F-EE52EE2632AE}
 		{5161A581-BF83-4071-8330-EAC1FB77AAF0} = {2AB10B4D-DA46-4D6A-A30F-EE52EE2632AE}
 		{9BBA1578-9EDC-46BA-B895-DAB65D83C0F0} = {2AB10B4D-DA46-4D6A-A30F-EE52EE2632AE}
+		{E06D4205-D7F8-44E7-A556-C5F08188F46E} = {F76AFAD2-F7DA-48B6-BAA1-EFE8AF99FA17}
+		{1A768325-E365-4BFD-9E23-25348A4EF7F6} = {E06D4205-D7F8-44E7-A556-C5F08188F46E}
+		{F0E2A344-A56E-48B5-99CB-F54744F1C3DD} = {1A768325-E365-4BFD-9E23-25348A4EF7F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6545C72E-7B60-45C6-A03A-1F5E78BA9FFE}

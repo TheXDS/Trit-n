@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0-a001" />
+    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0-a003" />
   </ItemGroup>
 
 </Project>
