@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
@@ -6,6 +6,6 @@
     <ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0-a003" />
+    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0-a004" />
   </ItemGroup>
 </Project>
