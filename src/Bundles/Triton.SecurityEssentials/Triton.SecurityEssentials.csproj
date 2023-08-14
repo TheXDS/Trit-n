@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<RootNamespace>TheXDS.Triton</RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="TheXDS.MCART.Security" Version="0.17.0-a004" />
+	  <PackageReference Include="TheXDS.MCART.Security" Version="0.17.0-a005" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
