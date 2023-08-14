@@ -18,7 +18,7 @@ public partial class CrudOpsTests
     [TestCaseSource(nameof(SimpleReadFailures))]
     public FailureReason FailToRead_Test(object id)
     {
-        using var t = TritonEfTestClass._srv.GetTransaction();
+        using var t = _srv.GetTransaction();
         var post = t.Read<Post>(id);
         Assert.IsFalse(post.Success);
         Assert.IsNull(post.ReturnValue);

@@ -15,15 +15,15 @@ public class JournalMiddlewareTests : MiddlewareTestsBase
         public record Entry(CrudAction Action, Model? Entity, JournalSettings Settings);
 
         public List<Entry> Entries { get; } = new();
-        public void Log(CrudAction action, Model? entity, JournalSettings settings)
+        public void Log(CrudAction action, IEnumerable<Model>? entity, JournalSettings settings)
         {
-            Entries.Add(new(action, entity, settings));
+            if (entity is not null) Entries.AddRange(entity.Select(p => new Entry(action, p, settings)));
         }
     }
 
     private class BrokenJournal : IJournalMiddleware
     {
-        public void Log(CrudAction action, Model? entity, JournalSettings settings)
+        public void Log(CrudAction action, IEnumerable<Model>? entity, JournalSettings settings)
         {
             throw new Exception("Test");
         }
@@ -35,7 +35,7 @@ public class JournalMiddlewareTests : MiddlewareTestsBase
         var j = new TestJournal();
         var r = new TransactionConfiguration().UseJournal(j);
         var u = new User("1", "Test");
-        await Run(r, CrudAction.Read, u);
+        await Run(r, CrudAction.Read, new[] { u });
         Assert.AreEqual(1, j.Entries.Count);
         Assert.AreSame(u, j.Entries[0].Entity);
         Assert.AreEqual(CrudAction.Read, j.Entries[0].Action);
@@ -46,7 +46,7 @@ public class JournalMiddlewareTests : MiddlewareTestsBase
     {
         var r = new TransactionConfiguration().UseJournal<BrokenJournal>();
         var u = new User("1", "Test");
-        var result = await Run(r, CrudAction.Read, u);
+        var result = await Run(r, CrudAction.Read, new[] { u });
         Assert.NotNull(result);
         Assert.IsTrue(result!.Success);
     }

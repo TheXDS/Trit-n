@@ -20,7 +20,7 @@ public class InMemoryTransFactory : ITransactionFactory
     /// Una transacción conectada a un almacén volátil sin persistencia en
     /// la memoria de la aplicación.
     /// </returns>
-    public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration)
+    public ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration)
     {
         return new InMemoryCrudTransaction(configuration);
     }

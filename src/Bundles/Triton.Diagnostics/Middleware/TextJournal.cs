@@ -12,29 +12,32 @@ namespace TheXDS.Triton.Diagnostics.Middleware;
 public abstract class TextJournal : IJournalMiddleware
 {
     /// <inheritdoc/>
-    public void Log(CrudAction action, Model? entity, JournalSettings settings)
+    public void Log(CrudAction action, IEnumerable<Model>? entities, JournalSettings settings)
     {
         string GetText() => $"{DateTime.Now:s}: {string.Format(St.XRanOperation, settings.ActorProvider?.GetCurrentActor() ?? St.NoActorProviderSubst, action)}";
         List<string> lines = new();
-        if (entity is null)
+        if (entities is null)
         {
             lines.Add(string.Format(St.XWithNoData, GetText()));
         }
         else
         {
-            lines.Add(string.Format(St.XWithData, GetText(), entity.GetType().NameOf(), entity.IdAsString));
-            switch (action)
+            foreach (var entity in entities)
             {
-                case CrudAction.Create:
-                    AddNewValues(lines, entity);
-                    break;
-                case CrudAction.Update:
-                    AddUpdatedValues(lines, entity, settings.OldValueProvider);
-                    break;
-                case CrudAction.Read:
-                case CrudAction.Delete:
-                    lines.Add($"  - Id: {entity.IdAsString}");
-                    break;
+                lines.Add(string.Format(St.XWithData, GetText(), entities.GetType().NameOf(), entity.IdAsString));
+                switch (action)
+                {
+                    case CrudAction.Create:
+                        AddNewValues(lines, entity);
+                        break;
+                    case CrudAction.Update:
+                        AddUpdatedValues(lines, entity, settings.OldValueProvider);
+                        break;
+                    case CrudAction.Read:
+                    case CrudAction.Delete:
+                        lines.Add($"  - Id: {entity.IdAsString}");
+                        break;
+                }
             }
         }
         WriteText(lines);

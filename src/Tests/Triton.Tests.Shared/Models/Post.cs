@@ -10,7 +10,7 @@ public class Post : Model<long>
     /// <summary>
     /// Título del <see cref="Post"/>.
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = null!;
 
     /// <summary>
     /// Fecha de creación del <see cref="Post"/>.
@@ -26,7 +26,7 @@ public class Post : Model<long>
     /// <summary>
     /// Contenido del <see cref="Post"/>.
     /// </summary>
-    public string Content { get; set; }
+    public string Content { get; set; } = null!;
 
     /// <summary>
     /// Referencia al autor del <see cref="Post"/>.
@@ -88,4 +88,11 @@ public class Post : Model<long>
     /// <param name="title">Tìtulo del post.</param>
     /// <param name="content">Contenido del post.</param>
     public Post(string title, string content) : this (title, content, DateTime.Now) { }
+
+    /// <summary>
+    /// Inicializa una nueva instancia del modelo <see cref="Post"/>.
+    /// </summary>
+    public Post()
+    {
+    }
 }

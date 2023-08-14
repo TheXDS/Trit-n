@@ -28,6 +28,15 @@ public class User : Model<string>
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     /// <summary>
+    /// Inicializa una nueva instancia del modelo <see cref="User"/>.
+    /// </summary>
+    public User()
+    {
+        Id = string.Empty;
+        PublicName = string.Empty;
+    }
+
+    /// <summary>
     /// Inicializa una nueva instancia del modelo <see cref="User"/>,
     /// especificando el valor de los campos que no pueden ser
     /// <see langword="null"/>.
@@ -49,5 +58,6 @@ public class User : Model<string>
     public User(string id, string publicName, DateTime joined) : base(id)
     {
         PublicName = publicName;
+        Joined = joined;
     }
 }

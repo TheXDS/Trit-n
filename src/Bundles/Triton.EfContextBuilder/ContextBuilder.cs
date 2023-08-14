@@ -227,7 +227,7 @@ public static class ContextBuilder
     /// Un <see cref="ITransactionFactory"/> conectado a un contexto de
     /// datos de Entity Framework Core generado dinámicamente.
     /// </returns>
-    public static ITransactionFactory GetEfTransFactory(this TypeBuilder<DbContext> type)
+    public static ITransactionFactory GetEfTransFactory(this ITypeBuilder<DbContext> type)
     {
         return typeof(EfCoreTransFactory<>).MakeGenericType(type.Builder.CreateType()!).New<ITransactionFactory>();
     }

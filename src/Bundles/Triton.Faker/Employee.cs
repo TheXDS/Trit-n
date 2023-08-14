@@ -60,10 +60,7 @@ public class Employee : Person
     /// </returns>
     public static Employee FromPerson(Person person, Company company)
     {
-        return new(
-            $"{person.UserName}@{company.DomainName}",
-            GetRandomPosition(),
-            person);
+        return new(GetRandomPosition(), person, company);
     }
 
     /// <summary>
@@ -80,16 +77,13 @@ public class Employee : Person
     /// </returns>
     public static Employee ChiefFromPerson(Person person, Company company)
     {
-        return new(
-            $"{person.UserName}@{company.DomainName}",
-            GetRandomChiefPosition(),
-            person);
+        return new(GetRandomChiefPosition(), person, company);
     }
 
-    private Employee(string email, string position, Person person)
+    private Employee(string position, Person person, Company company)
         : base(person.FirstName, person.Surname, person.Gender, person.Birth)
     {
-        Email = email;
+        Email = $"{person.UserName}@{company.DomainName}";
         Position = position;
         SetUserName(person.UserName);
     }

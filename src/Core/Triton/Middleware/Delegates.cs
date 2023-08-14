@@ -4,17 +4,17 @@ using TheXDS.Triton.Services;
 namespace TheXDS.Triton.Middleware;
 
 /// <summary>
-/// Describe un método definido dentro de un
+/// Describe un método definido dentro de un <see cref="CrudAction"/> y un
 /// <see cref="ITransactionMiddleware"/> que acepta un
-/// <see cref="CrudAction"/> y un <see cref="Model"/> como entrada, realiza
-/// una operación de servicio y devuelve un <see cref="ServiceResult"/> a
-/// la hora de ejecutar acciones Crud.
+/// conjunto de objetos de tipo <see cref="Model"/> como entrada, realiza una
+/// operación de servicio y devuelve un <see cref="ServiceResult"/> a la hora
+/// de ejecutar acciones Crud.
 /// </summary>
 /// <param name="crudAction">
-/// Acción Crud ejecutada sobre la entidad.
+/// Acción Crud ejecutada sobre las entidades.
 /// </param>
-/// <param name="entity">
-/// Entidad sobre la cual se ha ejecutado una acción Crud.
+/// <param name="entities">
+/// Entidades sobre las cuales se ha ejecutado una acción Crud.
 /// </param>
 /// <returns>
 /// <see langword="null"/> si la acción ha sido satisfactoria y la
@@ -22,4 +22,4 @@ namespace TheXDS.Triton.Middleware;
 /// <see cref="ServiceResult"/> que describe el error que ha ocurrido en la
 /// acción.
 /// </returns>
-public delegate ServiceResult? MiddlewareAction(CrudAction crudAction, Model? entity);
+public delegate ServiceResult? MiddlewareAction(CrudAction crudAction, IEnumerable<Model>? entities);

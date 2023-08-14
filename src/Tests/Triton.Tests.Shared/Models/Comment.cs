@@ -25,7 +25,7 @@ public class Comment : Model<long>
     /// <summary>
     /// Contenido del comentario.
     /// </summary>
-    public string Content { get; set; }
+    public string Content { get; set; } = null!;
 
     /// <summary>
     /// Inicializa una nueva instancia del modelo <see cref="Comment"/>,
@@ -83,5 +83,12 @@ public class Comment : Model<long>
         }
         Content = content;
         Timestamp = timestamp;
+    }
+
+    /// <summary>
+    /// Inicializa una nueva instancia del modelo <see cref="Comment"/>.
+    /// </summary>
+    public Comment()
+    {
     }
 }

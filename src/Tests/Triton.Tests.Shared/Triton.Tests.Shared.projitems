@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\BrokenCrudTransaction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TestCrudTransaction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TestTransFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)services\TransactionMiddlewareExecutionTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringResourceTestClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringResourceTestClass_T.cs" />
   </ItemGroup>

@@ -133,14 +133,14 @@ public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunn
     /// <param name="action">
     /// Acción Crud a intentar realizar.
     /// </param>
-    /// <param name="entity">
-    /// Entidad sobre la cual se ejecutará la acción.
+    /// <param name="entities">
+    /// Entidades sobre las cuales se ejecutará la acción.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> con el resultado del prólogo que ha,
     /// fallado o <see langword="null"/> si la operación puede continuar.
     /// </returns>
-    public ServiceResult? RunProlog(in CrudAction action, Model? entity) => Run(_prologs, action, entity);
+    public ServiceResult? RunProlog(in CrudAction action, IEnumerable<Model>? entities) => Run(_prologs, action, entities);
 
     /// <summary>
     /// Realiza comprobaciones adicionales después de ejecutar una
@@ -150,14 +150,14 @@ public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunn
     /// <param name="action">
     /// Acción Crud que se ha realizado.
     /// </param>
-    /// <param name="entity">
-    /// Entidad sobre la cual se ha ejecutado la acción.
+    /// <param name="entities">
+    /// Entidades sobre las cuales se ha ejecutado la acción.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> con el resultado del epílogo que ha,
     /// fallado o <see langword="null"/> si la operación puede continuar.
     /// </returns>
-    public ServiceResult? RunEpilog(in CrudAction action, Model? entity) => Run(_epilogs, action, entity);
+    public ServiceResult? RunEpilog(in CrudAction action, IEnumerable<Model>? entities) => Run(_epilogs, action, entities);
 
     private static void AttachAt(IMiddlewareActionList list, MiddlewareAction action, in ActionPosition position)
     {
@@ -174,11 +174,12 @@ public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunn
                 break;
         }
     }
-    private static ServiceResult? Run(IEnumerable<MiddlewareAction> collection, in CrudAction action, Model? entity)
+
+    private static ServiceResult? Run(IEnumerable<MiddlewareAction> collection, in CrudAction action, IEnumerable<Model>? entities)
     {
         foreach (var j in collection)
         {
-            if (j.Invoke(action, entity) is { } r) return r;
+            if (j.Invoke(action, entities) is { } r) return r;
         }
         return null;
     }

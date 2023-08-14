@@ -133,7 +133,7 @@ public class CrudOpsTests
     public void CreateMany_test()
     {
         using var t = _srv.GetWriteTransaction();
-        Assert.AreEqual(ServiceResult.Ok, t.CreateMany(new Model[] {
+        Assert.AreEqual(ServiceResult.Ok, t.Create(new Model[] {
             new User("user7", "User #7"),
             new User("user8", "User #8"),
             new User("user9", "User #9"),

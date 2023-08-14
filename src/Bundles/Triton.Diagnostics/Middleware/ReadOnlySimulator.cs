@@ -24,7 +24,7 @@ public static class ReadOnlySimulator
             config.AddLastProlog(SkipActualCall);
         }
 
-        private ServiceResult? SkipActualCall(CrudAction arg1, Model? arg2)
+        private ServiceResult? SkipActualCall(CrudAction arg1, IEnumerable<Model>? arg2)
         {
             if (arg1 == CrudAction.Read) return null;
             return (_runEpilogs ? (_config ?? throw new TamperException()).GetRunner().RunEpilog(arg1, arg2) : null) ?? ServiceResult.Ok;

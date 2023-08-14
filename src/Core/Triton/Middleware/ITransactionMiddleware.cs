@@ -16,8 +16,8 @@ public interface ITransactionMiddleware
     /// <param name="action">
     /// Acción Crud que se realizará.
     /// </param>
-    /// <param name="entity">
-    /// Entidad sobre al cual se ejecutará una operación Crud. Para
+    /// <param name="entities">
+    /// Entidades sobre las cual se ejecutará una operación Crud. Para
     /// operaciones de lectura o de Query, este parámetro puede ser
     /// <see langword="null"/>.
     /// </param>
@@ -26,7 +26,7 @@ public interface ITransactionMiddleware
     /// correctamente, o un <see cref="ServiceResult"/> que describa
     /// una falla en caso que esta ocurra.
     /// </returns>
-    ServiceResult? PrologAction(CrudAction action, Model? entity) => null;
+    ServiceResult? PrologAction(CrudAction action, IEnumerable<Model>? entities) => null;
 
     /// <summary>
     /// Define una serie de acciones a realizar después de la operación
@@ -35,8 +35,8 @@ public interface ITransactionMiddleware
     /// <param name="action">
     /// Acción Crud que se realizará.
     /// </param>
-    /// <param name="entity">
-    /// Entidad sobre al cual se ha ejecutado una operación Crud. Para
+    /// <param name="entities">
+    /// Entidades sobre al cual se ha ejecutado una operación Crud. Para
     /// operaciones de lectura o de Query, este parámetro puede ser
     /// <see langword="null"/>.
     /// </param>
@@ -45,5 +45,5 @@ public interface ITransactionMiddleware
     /// correctamente, o un <see cref="ServiceResult"/> que describa
     /// una falla en caso que esta ocurra.
     /// </returns>
-    ServiceResult? EpilogAction(CrudAction action, Model? entity) => null;
+    ServiceResult? EpilogAction(CrudAction action, IEnumerable<Model>? entities) => null;
 }

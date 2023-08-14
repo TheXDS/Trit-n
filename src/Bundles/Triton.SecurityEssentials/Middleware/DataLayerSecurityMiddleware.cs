@@ -31,12 +31,12 @@ public class DataLayerSecurityMiddleware : ITransactionMiddleware
         _userService = userService;
     }
 
-    ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, Model? entity)
+    ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, IEnumerable<Model>? entities)
     {
-        if (entity is null) return null;
+        if (entities is null) return null;
         if (_securityActorProvider.GetActor() is not { } actor) return ServiceResult.FailWith<ServiceResult>(FailureReason.Tamper);
 
-        var entityType = entity.GetType();
+        var entityType = entities.GetType();
 
         return _userService.CheckAccess(actor, GetModelContextString(action, entityType), MapCrudActionToFlags(action)).ReturnValue == true
             ? null
@@ -57,8 +57,8 @@ public class DataLayerSecurityMiddleware : ITransactionMiddleware
     /// </returns>
     public static string GetModelContextString(CrudAction action, Type model)
     {
-        if (!model.Implements<Model>()) throw Errors.UnexpectedType(model, typeof(Model));
-        return $"{typeof(CrudAction).FullName}.{action};{model.CSharpName()}";
+        if (!model.Implements<IEnumerable<Model>>()) throw Errors.UnexpectedType(model, typeof(IEnumerable<Model>));
+        return $"{typeof(CrudAction).FullName}.{action};{model.GetCollectionType().CSharpName()}";
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class DataLayerSecurityMiddleware : ITransactionMiddleware
     /// </returns>
     public static string GetModelContextString<TModel>(CrudAction action) where TModel : Model
     {
-        return GetModelContextString(action, typeof(TModel));
+        return GetModelContextString(action, typeof(TModel[]));
     }
 
     private static PermissionFlags MapCrudActionToFlags(CrudAction action)

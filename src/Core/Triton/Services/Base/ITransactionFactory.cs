@@ -18,7 +18,7 @@ public interface ITransactionFactory
     /// Una transacción que permite leer información de la base de 
     /// datos.
     /// </returns>
-    ICrudReadTransaction GetReadTransaction(IMiddlewareRunner configuration) => GetTransaction(configuration);
+    ICrudReadTransaction GetReadTransaction(IMiddlewareConfigurator configuration) => GetTransaction(configuration);
 
     /// <summary>
     /// Fabrica una transacción que permite escribir información en la
@@ -31,7 +31,7 @@ public interface ITransactionFactory
     /// Una transacción que permite escribir información en la base de
     /// datos.
     /// </returns>
-    ICrudWriteTransaction GetWriteTransaction(IMiddlewareRunner configuration) => GetTransaction(configuration);
+    ICrudWriteTransaction GetWriteTransaction(IMiddlewareConfigurator configuration) => GetTransaction(configuration);
 
     /// <summary>
     /// Fabrica una transacción que permite leer y escribir información
@@ -44,5 +44,5 @@ public interface ITransactionFactory
     /// Una transacción que permite leer y escribir información en la
     /// base de datos.
     /// </returns>
-    ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration);
+    ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration);
 }

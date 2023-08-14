@@ -37,7 +37,7 @@ public class DataLayerMiddlewareTests
         var b = CrudAction.Create.ToString();
         var c = typeof(LoginCredential).CSharpName();
 
-        Assert.AreEqual($"{a}.{b};{c}", DataLayerSecurityMiddleware.GetModelContextString(CrudAction.Create, typeof(LoginCredential)));
+        Assert.AreEqual($"{a}.{b};{c}", DataLayerSecurityMiddleware.GetModelContextString(CrudAction.Create, typeof(LoginCredential[])));
     }
 
     [Test]
@@ -57,15 +57,15 @@ public class DataLayerMiddlewareTests
         var disabled = await GetCredential("disabled", svc);
 
         prov.SecurityObject = null;
-        Assert.AreEqual(FailureReason.Tamper, middleware.PrologAction(CrudAction.Create, new LoginCredential())!.Reason);
-        Assert.AreEqual(FailureReason.Tamper, middleware.PrologAction(CrudAction.Create, new LoginCredential())!.Reason);
+        Assert.AreEqual(FailureReason.Tamper, middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() })!.Reason);
+        Assert.AreEqual(FailureReason.Tamper, middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() })!.Reason);
 
         prov.SecurityObject =  root;
         Assert.IsNull(middleware.PrologAction(CrudAction.Commit, null));
-        Assert.IsNull(middleware.PrologAction(CrudAction.Create, new LoginCredential()));
+        Assert.IsNull(middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() }));
 
         prov.SecurityObject = disabled;
         Assert.IsNull(middleware.PrologAction(CrudAction.Commit, null));
-        Assert.AreEqual(FailureReason.Forbidden, middleware.PrologAction(CrudAction.Create, new LoginCredential())!.Reason);
+        Assert.AreEqual(FailureReason.Forbidden, middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() })!.Reason);
     }
 }

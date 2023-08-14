@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
@@ -15,9 +16,80 @@ namespace TheXDS.Triton.InMemory.Services;
 /// </summary>
 public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
 {
-    private static readonly List<Model> Models = new();
+    private class PreconditionsCheckDefaultMiddleware : ITransactionMiddleware
+    {
+        private readonly List<Model> _storeRef;
+        private readonly List<Model> _tempRef;
 
+        private readonly Dictionary<CrudAction, Func<IEnumerable<Model>?, ServiceResult?>> _prologPreconditions = new();
+
+        public PreconditionsCheckDefaultMiddleware(List<Model> storeRef, List<Model> tempRef)
+        {
+            _storeRef = storeRef;
+            _tempRef = tempRef;
+
+            _prologPreconditions.Add(CrudAction.Create, e =>
+                e.NotNull().Any(p => FindInternal(p.GetType(), p.IdAsString) is not null)
+                ? (ServiceResult)FailureReason.EntityDuplication
+                : null);
+
+            _prologPreconditions.Add(CrudAction.Update, CheckExists);
+            _prologPreconditions.Add(CrudAction.Delete, CheckExists);
+        }
+
+        private ServiceResult? CheckExists(IEnumerable<Model>? entities)
+        {
+            return entities.NotNull().All(p => FullSet(p.GetType()).Any(q => p.IdAsString == q.IdAsString))
+                ? null
+                : (ServiceResult)FailureReason.NotFound;
+        }
+
+        private Model? FindInternal(Type model, object key)
+        {
+            return FullSet(model).FirstOrDefault(p => p.IdAsString == key.ToString());
+        }
+
+        private IEnumerable<Model> FullSet(Type model)
+        {
+            return FullSet().OfType(model);
+        }
+
+        private IEnumerable<Model> FullSet()
+        {
+            return _storeRef.Concat(_tempRef);
+        }
+
+        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, IEnumerable<Model>? entities)
+        {
+            return _prologPreconditions.TryGetValue(action, out var func) ? func(entities) : null;
+        }
+    }
+
+    private static readonly object _syncLock = new();
+    private static readonly List<Model> _store = new();
     private readonly List<Model> _temp = new();
+
+    private ServiceResult Execute(CrudAction action, Action operation, IEnumerable<Model>? middlewareData = null)
+    {
+        return Execute(action, () => { operation.Invoke(); return ServiceResult.Ok; }, middlewareData);
+    }
+
+    private TResult Execute<TResult>(CrudAction action, Func<TResult> operation, IEnumerable<Model>? middlewareData = null)
+        where TResult : ServiceResult, new()
+    {
+        return Execute(action, () => (operation.Invoke(), middlewareData), middlewareData);
+    }
+
+    private TResult Execute<TResult>(CrudAction action, Func<(TResult, IEnumerable<Model>?)> operation, IEnumerable<Model>? prologData = null)
+        where TResult : ServiceResult, new()
+    {
+        lock (_syncLock)
+        {
+            if (Configuration.RunProlog(action, prologData) is { } failure) return failure.CastUp<TResult>();
+            var (result, epilogData) = operation.Invoke();
+            return (result.Success ? Configuration.RunEpilog(action, epilogData)?.CastUp<TResult>() : null) ?? result;
+        }
+    }
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase
@@ -26,9 +98,10 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// <param name="configuration">
     /// Configuración de transacciones a utilizar.
     /// </param>
-    public InMemoryCrudTransaction(IMiddlewareRunner configuration)
+    public InMemoryCrudTransaction(IMiddlewareConfigurator configuration)
     {
-        Configuration = configuration;
+        configuration.Attach(new PreconditionsCheckDefaultMiddleware(_store, _temp));
+        Configuration = configuration.GetRunner();
     }
 
     /// <summary>
@@ -36,6 +109,14 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// en esta transacción.
     /// </summary>
     public IMiddlewareRunner Configuration { get; }
+
+    /// <summary>
+    /// Limpia la base de datos en memoria.
+    /// </summary>
+    public static void Wipe()
+    {
+        lock (_syncLock) _store.Clear();
+    }
 
     /// <summary>
     /// Obtiene un <see cref="ServiceResult"/> con un Query de todas las
@@ -51,55 +132,67 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// </returns>
     public QueryServiceResult<TModel> All<TModel>() where TModel : Model
     {
-        lock (((ICollection)Models).SyncRoot)
+        return Execute(CrudAction.Query, () =>
         {
-            return new QueryServiceResult<TModel>(Models.Concat(_temp).Distinct().OfType<TModel>().AsQueryable());
-        }
+            var r = new QueryServiceResult<TModel>(FullSet<TModel>().AsQueryable());
+            return (r, r);
+        });
     }
-    
+
     /// <summary>
     /// Guarda los cambios en la base de datos de forma asíncrona.
     /// </summary>
     /// <returns></returns>
     public Task<ServiceResult> CommitAsync()
     {
-        Models.AddRange(_temp.Where(p => !Models.Contains(p)));
-        _temp.Clear();
-        return Task.FromResult(ServiceResult.Ok);
+        return Task.FromResult(Execute(CrudAction.Commit, () => {
+            foreach (var t in _temp.GroupBy(p => p.GetType()))
+            {
+                var newItemIds = _temp.OfType(t.Key).Select(p => p.IdAsString).ToArray();
+                _store.RemoveAll(p => p.GetType() == t.Key && newItemIds.Contains(p.IdAsString));
+            }
+            _store.AddRange(_temp);
+            var committed = _temp.ToArray();
+            _temp.Clear();
+            return ServiceResult.Ok;
+        }));
     }
 
     /// <summary>
     /// Crea una nueva entidad en la base de datos.
     /// </summary>
     /// <typeparam name="TModel">Modelo de la nueva entidad.</typeparam>
-    /// <param name="newEntity">
+    /// <param name="newEntities">
     /// Nueva entidad a agregar a la base de datos.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> que representa el éxito o fracaso de
     /// la operación.
     /// </returns>
-    public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
+    public ServiceResult Create<TModel>(params TModel[] newEntities) where TModel : Model
     {
-        if (Models.Concat(_temp).Contains(newEntity)) return FailureReason.EntityDuplication;
-        _temp.Add(newEntity);
-        return ServiceResult.Ok;
+        return Execute(CrudAction.Create, () => _temp.AddRange(newEntities), newEntities);
     }
 
     /// <summary>
     /// Elimina una entidad de la base de datos.
     /// </summary>
     /// <typeparam name="TModel">Modelo de la entidad.</typeparam>
-    /// <param name="entity">
+    /// <param name="entities">
     /// Entidad a eliminar de la base de datos.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> que representa el éxito o fracaso de
     /// la operación.
     /// </returns>
-    public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
+    public ServiceResult Delete<TModel>(params TModel[] entities) where TModel : Model
     {
-        return !Models.Remove(entity) || _temp.Remove(entity) ? new ServiceResult(FailureReason.NotFound) : ServiceResult.Ok;
+        return Execute(CrudAction.Delete, () => {
+            foreach (var entity in entities)
+            {
+                _ = _store.Remove(entity) || _temp.Remove(entity);
+            }
+        }, entities);
     }
 
     /// <summary>
@@ -109,20 +202,51 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// <typeparam name="TKey">
     /// Tipo del campo llave utilizado para identificar a la entidad.
     /// </typeparam>
-    /// <param name="key">
-    /// Valor del campo llave utilizado para identificar a la entidad.
+    /// <param name="keys">
+    /// Llaves de las entidades que deberán ser eliminadas de la base de datos.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> que representa el éxito o fracaso de
     /// la operación.
     /// </returns>
-    public ServiceResult Delete<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
+    public ServiceResult Delete<TModel, TKey>(params TKey[] keys)
+        where TModel : Model<TKey>, new()
         where TKey : IComparable<TKey>, IEquatable<TKey>
     {
-        return Models.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
-            ? Delete(e)
-            : new ServiceResult(FailureReason.NotFound);
+        return Execute(CrudAction.Delete, () =>
+        {
+            var entities = FullSet<TModel>().Where(p => keys.Contains(p.Id)).ToArray();
+            foreach (var entity in entities)
+            {
+                _ = _store.Remove(entity) || _temp.Remove(entity);
+            }
+            return (ServiceResult.Ok, entities);
+        }, keys.Select(p => new TModel { Id = p }));
+    }
+
+    /// <summary>
+    /// Elimina una entidad de la base de datos.
+    /// </summary>
+    /// <typeparam name="TModel">Modelo de la entidad.</typeparam>
+    /// <param name="keys">
+    /// Llaves de las entidades que deberán ser eliminadas de la base de datos.
+    /// </param>
+    /// <returns>
+    /// Un <see cref="ServiceResult"/> que representa el éxito o fracaso de
+    /// la operación.
+    /// </returns>
+    public ServiceResult Delete<TModel>(params string[] keys)
+        where TModel : Model, new()
+    {
+        return Execute(CrudAction.Delete, () =>
+        {
+            var entities = FullSet<TModel>().Where(p => keys.Contains(p.IdAsString));
+            foreach (var entity in entities)
+            {
+                _ = _store.Remove(entity) || _temp.Remove(entity);
+            }
+            return (ServiceResult.Ok, entities);
+        }, null);
     }
 
     /// <summary>
@@ -140,25 +264,20 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// la operación, incluyendo a la entidad obtenida.
     /// </returns>
     public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
-        where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
+        where TModel : Model<TKey>, new()
+        where TKey : IComparable<TKey>, IEquatable<TKey>
     {
-        return Task.FromResult(Models.Concat(_temp).FirstOrDefault(p => p.IdAsString == key.ToString()) is TModel e
-            ? new ServiceResult<TModel?>(e)
-            : new ServiceResult<TModel?>(FailureReason.NotFound));
-    }
-
-    /// <inheritdoc/>
-    public async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model
-    {
-        return (await Models.OfType<TModel>().AsQueryable().Where(predicate).ToListAsync()).ToArray();
+        return Task.FromResult(Execute(CrudAction.Read, () =>
+            FullSet<TModel>().FirstOrDefault(p => p.Id.Equals(key)) is { } e
+            ? (new ServiceResult<TModel?>(e), new[] { e })
+            : (FailureReason.NotFound, null), new Model[] { new TModel { Id = key } }));
     }
 
     /// <summary>
     /// Actualiza los datos de una entidad existente.
     /// </summary>
     /// <typeparam name="TModel">Modelo de la entidad.</typeparam>
-    /// <param name="entity">
+    /// <param name="entities">
     /// Entidad con los nuevos datos a ser escritos. Debe existir en la
     /// base de datos una entidad con el mismo Id de este objeto.
     /// </param>
@@ -166,9 +285,45 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// Un <see cref="ServiceResult"/> que representa el éxito o fracaso de
     /// la operación.
     /// </returns>
-    public ServiceResult Update<TModel>(TModel entity) where TModel : Model
+    public ServiceResult Update<TModel>(params TModel[] entities) where TModel : Model
     {
-        return Models.Concat(_temp).Contains(entity) ? ServiceResult.Ok : new ServiceResult(FailureReason.NotFound);
+        var oldEntities = entities.Select(p => FullSet<TModel>().First(q => p.IdAsString == q.IdAsString)).ToArray();
+        return Execute(CrudAction.Update, () => {
+            foreach (var (newData, oldData) in entities.Zip(oldEntities))
+            {
+                newData.ShallowCopyTo(oldData);
+            }
+            return (ServiceResult.Ok, entities);
+        }, oldEntities);
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult CreateOrUpdate<TModel>(params TModel[] entities) where TModel : Model
+    {
+        return Execute(CrudAction.Create | CrudAction.Update, () =>
+        {
+            var oldEntities = entities.Select(p => FullSet<TModel>().First(q => p.IdAsString == q.IdAsString)).ToArray();
+            foreach (var (newData, oldData) in entities.Zip(oldEntities))
+            {
+                newData.ShallowCopyTo(oldData);
+            }
+            _temp.AddRange(entities.Except(FullSet<TModel>()));
+            return (ServiceResult.Ok, entities);
+        }, entities);
+    }
+
+    /// <inheritdoc/>
+    public async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model
+    {
+
+
+        return (await _store.OfType<TModel>().AsQueryable().Where(predicate).ToListAsync()).ToArray();
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Discard()
+    {
+        return Execute(CrudAction.Discard, () => _temp.Clear(), _temp);
     }
 
     /// <summary>
@@ -190,5 +345,10 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     protected override async ValueTask OnDisposeAsync()
     {
         if (_temp.Any()) await CommitAsync().ConfigureAwait(false);
+    }
+
+    private IEnumerable<TModel> FullSet<TModel>()
+    {
+        return _store.Concat(_temp).OfType<TModel>();
     }
 }

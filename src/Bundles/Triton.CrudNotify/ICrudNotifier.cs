@@ -22,5 +22,5 @@ public interface ICrudNotifier
     /// <returns>
     /// El resultado de una operación de servicio.
     /// </returns>
-    ServiceResult NotifyPeers(CrudAction action, Model? entity);
+    ServiceResult NotifyPeers(CrudAction action, IEnumerable<Model>? entity);
 }

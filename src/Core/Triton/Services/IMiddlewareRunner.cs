@@ -13,8 +13,8 @@ public interface IMiddlewareRunner
     /// Ejecuta los Middlewares asociados al epílogo de una operación CRUD.
     /// </summary>
     /// <param name="action">Acción CRUD ejecutada.</param>
-    /// <param name="entity">
-    /// Entidad sobre la cual se ha ejecutado la operación.
+    /// <param name="entities">
+    /// Entidades sobre la cual se ha ejecutado la operación.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> si un middleware indica que la
@@ -22,14 +22,14 @@ public interface IMiddlewareRunner
     /// la ejecución de la cadena de Middlewares se completó
     /// satisfactoriamente.
     /// </returns>
-    ServiceResult? RunEpilog(in CrudAction action, Model? entity);
+    ServiceResult? RunEpilog(in CrudAction action, IEnumerable<Model>? entities);
 
     /// <summary>
     /// Ejecuta los Middlewares asociados al prólogo de una operación CRUD.
     /// </summary>
     /// <param name="action">Acción CRUD ejecutada.</param>
-    /// <param name="entity">
-    /// Entidad sobre la cual se ejecutará la operación.
+    /// <param name="entities">
+    /// Entidades sobre la cual se ejecutará la operación.
     /// </param>
     /// <returns>
     /// Un <see cref="ServiceResult"/> si un middleware indica que la
@@ -37,5 +37,5 @@ public interface IMiddlewareRunner
     /// la ejecución de la cadena de Middlewares se completó
     /// satisfactoriamente.
     /// </returns>
-    ServiceResult? RunProlog(in CrudAction action, Model? entity);
+    ServiceResult? RunProlog(in CrudAction action, IEnumerable<Model>? entities);
 }

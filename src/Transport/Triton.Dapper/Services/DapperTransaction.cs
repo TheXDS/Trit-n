@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System.Data;
 using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
@@ -16,12 +17,14 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
     private readonly IDbConnection _connection;
     private readonly IDbTransaction _transaction;
     private readonly IDictionary<Type, DapperModelDescriptor> overrides;
+    private readonly IMiddlewareRunner runner;
 
-    internal DapperTransaction(IDbConnection connection, IDictionary<Type, DapperModelDescriptor> overrides)
+    internal DapperTransaction(IDbConnection connection, IDictionary<Type, DapperModelDescriptor> overrides, IMiddlewareRunner runner)
     {
         _connection = connection;
         _transaction = _connection.BeginTransaction();
         this.overrides = overrides;
+        this.runner = runner;
     }
 
     /// <inheritdoc/>
@@ -66,11 +69,17 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
     }
 
     /// <inheritdoc/>
-    public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
+    public ServiceResult Create<TModel>(params TModel[] newEntities) where TModel : Model
     {
         try
         {
-            _connection.Execute($"INSERT INTO {GetTableName<TModel>()} ({EnumerateColumns<TModel>()}) VALUES ({string.Concat(",", EnumerateProps<TModel>("@"))});", newEntity, _transaction);
+            var tblName = GetTableName<TModel>();
+            var columns = string.Concat(",", EnumerateColumns<TModel>());
+            var values = string.Concat(",", EnumerateProps<TModel>("@"));
+            foreach (var entity in newEntities)
+            {
+                _connection.Execute($"INSERT INTO {tblName} ({columns}) VALUES ({values});", entity, _transaction);
+            }
             return ServiceResult.Ok;
         }
         catch (Exception ex)
@@ -80,11 +89,16 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
     }
 
     /// <inheritdoc/>
-    public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
+    public ServiceResult Delete<TModel>(params TModel[] entities) where TModel : Model
     {
         try
         {
-            _connection.Execute($"DELETE FROM {GetTableName<TModel>()} WHERE {GetProp<TModel>("Id")} = @Id;", entity, _transaction);
+            var tblName = GetTableName<TModel>();
+            var idColumn = GetProp<TModel>("Id");
+            foreach (var entity in entities)
+            {
+                _connection.Execute($"DELETE FROM {tblName} WHERE {idColumn} = @Id;", entity, _transaction);
+            }
             return ServiceResult.Ok;
         }
         catch (Exception ex)
@@ -94,13 +108,24 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
     }
 
     /// <inheritdoc/>
-    public ServiceResult Delete<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
+    public ServiceResult Delete<TModel, TKey>(params TKey[] keys)
+        where TModel : Model<TKey>, new()
         where TKey : IComparable<TKey>, IEquatable<TKey>
     {
+        return Delete<TModel>(keys.Select(p => p.ToString()).NotNull().ToArray());
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Delete<TModel>(params string[] stringKeys) where TModel : Model, new()
+    {
         try
         {
-            _connection.Execute($"DELETE FROM {GetTableName<TModel>()} WHERE {GetProp<TModel>("Id")} = @Id;", new { Id = key }, _transaction);
+            var tblName = GetTableName<TModel>();
+            var idColumn = GetProp<TModel>("Id");
+            foreach (var key in stringKeys)
+            {
+                _connection.Execute($"DELETE FROM {tblName} WHERE {idColumn} = @Id;", new { Id = key }, _transaction);
+            }
             return ServiceResult.Ok;
         }
         catch (Exception ex)
@@ -111,7 +136,7 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
 
     /// <inheritdoc/>
     public async Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
+        where TModel : Model<TKey>, new()
         where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
     {
         try
@@ -125,17 +150,54 @@ public class DapperTransaction : AsyncDisposable, ICrudReadWriteTransaction
     }
 
     /// <inheritdoc/>
-    public ServiceResult Update<TModel>(TModel entity) where TModel : Model
+    public ServiceResult CreateOrUpdate<TModel>(params TModel[] entities) where TModel : Model
     {
         try
         {
-            _connection.Execute($"UPDATE {GetTableName<TModel>()} SET { EnumColEqProp<TModel>() } WHERE {GetProp<TModel>("Id")} = @Id;", entity, _transaction);
+            var tblName = GetTableName<TModel>();
+            var createColumns = string.Concat(",", EnumerateColumns<TModel>());
+            var createValues = string.Concat(",", EnumerateProps<TModel>("@"));
+            var updateColumns = EnumColEqProp<TModel>();
+            var idColumn = GetProp<TModel>("Id");
+            foreach (var entity in entities)
+            {
+                _connection.Execute($@"IF NOT EXISTS ( SELECT TOP 1 FROM {tblName} WHERE {idColumn} = @Id )
+INSERT INTO {tblName} ({createColumns}) VALUES ({createValues});
+ELSE UPDATE {tblName} SET {updateColumns} WHERE {idColumn} = @Id;", entity, _transaction);
+            }
             return ServiceResult.Ok;
         }
         catch (Exception ex)
         {
             return ex;
         }
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Update<TModel>(params TModel[] entities) where TModel : Model
+    {
+        try
+        {
+            var tblName = GetTableName<TModel>();
+            var columns = EnumColEqProp<TModel>();
+            var idColumn = GetProp<TModel>("Id");
+            foreach (var entity in entities)
+            {
+                _connection.Execute($"UPDATE {tblName} SET { columns } WHERE {idColumn} = @Id;", entity, _transaction);
+            }
+            return ServiceResult.Ok;
+        }
+        catch (Exception ex)
+        {
+            return ex;
+        }
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Discard()
+    {
+        _transaction.Rollback();
+        return ServiceResult.Ok;
     }
 
     /// <inheritdoc/>

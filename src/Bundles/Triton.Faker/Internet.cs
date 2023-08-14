@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Faker.Resources;
@@ -10,9 +11,17 @@ namespace TheXDS.Triton.Faker;
 /// Contiene funciones de generación de datos de pruebas en el contexto de
 /// cuentas en línea e internet.
 /// </summary>
-public class Internet
+public static class Internet
 {
-    private static string[]? _fakeDomains;
+    private static string[] _fakeDomains;
+
+    /// <summary>
+    /// Inicializa la clase <see cref="Internet"/>
+    /// </summary>
+    static Internet()
+    {
+        UseDomains(null);
+    }
 
     /// <summary>
     /// Genera una dirección de correo totalmente aleatoria.
@@ -24,7 +33,7 @@ public class Internet
     /// </returns>
     public static string FakeEmail()
     {
-        return $"{FakeUsername()}@{(_fakeDomains ??= LoadDomains()).Pick()}";
+        return $"{FakeUsername()}@{_fakeDomains.Pick()}";
     }
 
     /// <summary>
@@ -41,7 +50,7 @@ public class Internet
     /// </returns>
     public static string FakeEmail(Person? person)
     {
-        return $"{FakeUsername(person)}@{(_fakeDomains ??= LoadDomains()).Pick()}";
+        return $"{FakeUsername(person)}@{_fakeDomains.Pick()}";
     }
 
     /// <summary>
@@ -133,9 +142,38 @@ public class Internet
         return $"{string.Concat(names)}.{top.Pick()}{(_rnd.CoinFlip() ? $".{ctop}" : null)}".ToLower().Replace(" ", "");
     }
 
-    private static string[] LoadDomains()
+    /// <summary>
+    /// Indica al generador de dominios que debe utilizar los dominios especificados.
+    /// </summary>
+    /// <param name="domainNames"></param>
+    [MemberNotNull(nameof(_fakeDomains))]
+    public static void UseDomains(IEnumerable<string?>? domainNames)
     {
-        return Enumerable.Range(0, 15).Select(_ => NewDomain(GetName(), GetName())).ToArray();
+        _fakeDomains = (domainNames.NotNull().OrNull() ?? GetFauxDomains(15)).ToArray();
+    }
+
+    /// <summary>
+    /// Indica al generador de dominios que debe utilizar dominios falsos
+    /// generados automáticamente.
+    /// </summary>
+    /// <param name="count">Cantidad de dominios a generar.</param>
+    public static void UseFauxDomains(in int count)
+    {
+        if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
+        UseDomains(GetFauxDomains(count));
+    }
+
+    /// <summary>
+    /// Obtiene una lista de dominios web falsos.
+    /// </summary>
+    /// <param name="count">Cantidad de dominios a generar.</param>
+    /// <returns>
+    /// Un arreglo de dominios falsos generados aleatoriamente.
+    /// </returns>
+    public static IEnumerable<string> GetFauxDomains(in int count)
+    {
+        if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
+        return Enumerable.Range(0, count).Select(_ => NewDomain(GetName(), GetName()));
     }
 
     private static string GetRandomCultureTopDomain()

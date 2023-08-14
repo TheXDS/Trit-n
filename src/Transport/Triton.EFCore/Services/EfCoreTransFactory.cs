@@ -53,9 +53,9 @@ public class EfCoreTransFactory<T> : ITransactionFactory where T : DbContext, ne
     /// Una transacción que permite leer información desde el contexto de
     /// datos.
     /// </returns>
-    public ICrudReadTransaction GetReadTransaction(IMiddlewareRunner configuration)
+    public ICrudReadTransaction GetReadTransaction(IMiddlewareConfigurator configuration)
     {
-        return new CrudReadTransaction<T>(configuration);
+        return new CrudReadTransaction<T>(configuration.GetRunner());
     }
 
     /// <summary>
@@ -69,9 +69,9 @@ public class EfCoreTransFactory<T> : ITransactionFactory where T : DbContext, ne
     /// Una transacción que permite escribir información desde el contexto
     /// de datos.
     /// </returns>
-    public ICrudWriteTransaction GetWriteTransaction(IMiddlewareRunner configuration)
+    public ICrudWriteTransaction GetWriteTransaction(IMiddlewareConfigurator configuration)
     {
-        return new CrudWriteTransaction<T>(configuration);
+        return new CrudWriteTransaction<T>(configuration.GetRunner());
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ public class EfCoreTransFactory<T> : ITransactionFactory where T : DbContext, ne
     /// Una transacción que permite leer y escribir información desde el 
     /// contexto de datos.
     /// </returns>
-    public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration)
+    public ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration)
     {
-        return new CrudTransaction<T>(configuration);
+        return new CrudTransaction<T>(configuration.GetRunner());
     }
 }

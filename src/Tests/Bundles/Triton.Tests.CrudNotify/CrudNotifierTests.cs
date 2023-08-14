@@ -13,14 +13,14 @@ public class CrudNotifierTests
 {
     private static CrudAction Action { get; set; }
     
-    private static Model? Entity { get; set; }
+    private static IEnumerable<Model>? Entities { get; set; }
     
     private class TestNotifier : ICrudNotifier
     {
-        public ServiceResult NotifyPeers(CrudAction action, Model? entity)
+        public ServiceResult NotifyPeers(CrudAction action, IEnumerable<Model>? entities)
         {
             Action = action;
-            Entity = entity;
+            Entities = entities;
             return ServiceResult.Ok;
         }
     }
@@ -35,9 +35,9 @@ public class CrudNotifierTests
             User u = new("cntest", "CrudNotify user");
             t.Create(u);
             Assert.AreEqual(CrudAction.Create, Action);
-            Assert.AreSame(u, Entity);
+            Assert.AreSame(u, Entities!.ToArray()[0]);
         }
         Assert.AreEqual(CrudAction.Commit, Action);
-        Assert.IsNull(Entity);
+        Assert.IsNull(Entities);
     }
 }

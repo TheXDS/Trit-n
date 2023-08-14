@@ -60,7 +60,7 @@ public class CrudReadTransaction<T> : CrudTransactionBase<T>, ICrudReadTransacti
     /// entidad con el campo llave especificado, el valor de resultado
     /// será <see langword="null"/>.
     /// </returns>
-    public ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
+    public ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey>, new() where TKey : IComparable<TKey>, IEquatable<TKey>
     {
         var result = TryCall(CrudAction.Read, _context.Find<TModel>, out TModel? entity, new object?[] { new object[] { key } })?.CastUp<ServiceResult<TModel?>>();
         return  entity is null ? result ?? FailureReason.NotFound : entity;
@@ -83,7 +83,7 @@ public class CrudReadTransaction<T> : CrudTransactionBase<T>, ICrudReadTransacti
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
+    public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey>, new() where TKey : IComparable<TKey>, IEquatable<TKey>
     {
         return TryCallAsync(CrudAction.Read, _context.FindAsync<TModel>(new object[] { key }));
     }

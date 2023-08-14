@@ -14,12 +14,12 @@ public class TransactionConfigurationTests
     {
         bool ranFirst = false;
         bool ranLast = false;
-        ServiceResult? FirstAction(CrudAction crudAction, Model? entity)
+        ServiceResult? FirstAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             ranFirst = !ranLast;
             return null;
         }
-        ServiceResult? DummyAction(CrudAction crudAction, Model? entity)
+        ServiceResult? DummyAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             ranLast = !ranFirst;
             return null;
@@ -38,12 +38,12 @@ public class TransactionConfigurationTests
     {
         bool ranFirst = false;
         bool ranLast = false;
-        ServiceResult? FirstAction(CrudAction crudAction, Model? entity)
+        ServiceResult? FirstAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             ranFirst = !ranLast;
             return null;
         }
-        ServiceResult? DummyAction(CrudAction crudAction, Model? entity)
+        ServiceResult? DummyAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             ranLast = !ranFirst;
             return null;
@@ -59,12 +59,12 @@ public class TransactionConfigurationTests
 
     private class Flaggy1TestMiddleware : ITransactionMiddleware
     {
-        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction crudAction, Model? entity)
+        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             _test_AttachAt_flag1 = !_test_AttachAt_flag2;
             return null;
         }
-        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction crudAction, Model? entity)
+        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             _test_AttachAt_flag1 = !_test_AttachAt_flag2;
             return null;
@@ -73,12 +73,12 @@ public class TransactionConfigurationTests
     
     private class Flaggy2TestMiddleware : ITransactionMiddleware
     {
-        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction crudAction, Model? entity)
+        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             _test_AttachAt_flag2 = !_test_AttachAt_flag1;
             return null;
         }
-        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction crudAction, Model? entity)
+        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction crudAction, IEnumerable<Model>? entity)
         {
             _test_AttachAt_flag2 = !_test_AttachAt_flag1;
             return null;

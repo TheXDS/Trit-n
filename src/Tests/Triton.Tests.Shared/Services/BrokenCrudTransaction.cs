@@ -28,30 +28,25 @@ public class BrokenCrudTransaction : Disposable, ICrudReadWriteTransaction
         return Task.FromResult((ServiceResult)FailureReason.ServiceFailure);
     }
 
-    ServiceResult ICrudWriteTransaction.Create<TModel>(TModel newEntity)
+    ServiceResult ICrudWriteTransaction.Create<TModel>(params TModel[] newEntity)
     {
         return FailureReason.ServiceFailure;
     }
 
-    ServiceResult ICrudWriteTransaction.Delete<TModel>(TModel entity)
+    ServiceResult ICrudWriteTransaction.Delete<TModel>(params TModel[] entity)
     {
         return FailureReason.ServiceFailure;
     }
 
-    ServiceResult ICrudWriteTransaction.Delete<TModel, TKey>(TKey key)
+    ServiceResult ICrudWriteTransaction.Delete<TModel, TKey>(params TKey[] key)
     {
         return FailureReason.ServiceFailure;
     }
 
     ValueTask IAsyncDisposable.DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         return ValueTask.CompletedTask;
-    }
-
-    /// <inheritdoc/>
-    public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
-    {
-        return Task.FromResult((ServiceResult<TModel?>)FailureReason.ServiceFailure);
     }
 
     Task<ServiceResult<TModel[]?>> ICrudReadTransaction.SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate)
@@ -59,7 +54,28 @@ public class BrokenCrudTransaction : Disposable, ICrudReadWriteTransaction
         return Task.FromResult((ServiceResult<TModel[]?>)FailureReason.ServiceFailure);
     }
 
-    ServiceResult ICrudWriteTransaction.Update<TModel>(TModel entity)
+    ServiceResult ICrudWriteTransaction.Update<TModel>(params TModel[] entity)
+    {
+        return FailureReason.ServiceFailure;
+    }
+
+    /// <inheritdoc/>
+    public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey>, new() where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
+    {
+        return Task.FromResult((ServiceResult<TModel?>)FailureReason.ServiceFailure);
+    }
+
+    ServiceResult ICrudWriteTransaction.CreateOrUpdate<TModel>(params TModel[] entities)
+    {
+        return FailureReason.ServiceFailure;
+    }
+
+    ServiceResult ICrudWriteTransaction.Delete<TModel>(params string[] stringKeys)
+    {
+        return FailureReason.ServiceFailure;
+    }
+
+    ServiceResult ICrudWriteTransaction.Discard()
     {
         return FailureReason.ServiceFailure;
     }

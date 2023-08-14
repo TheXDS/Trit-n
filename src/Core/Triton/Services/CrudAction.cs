@@ -9,25 +9,35 @@ public enum CrudAction : byte
     /// <summary>
     /// Escritura de la información en la base de datos.
     /// </summary>
-    Commit,
+    Commit = 0,
 
     /// <summary>
-    /// Crear.
+    /// Crear una entidad.
     /// </summary>
-    Create,
+    Create = 1,
 
     /// <summary>
-    /// Leer.
+    /// Leer una entidad.
     /// </summary>
-    Read,
+    Read = 2,
 
     /// <summary>
-    /// Actualizar.
+    /// Actualizar una entidad.
     /// </summary>
-    Update,
+    Update = 4,
 
     /// <summary>
-    /// Eliminar.
+    /// Eliminar una entidad.
     /// </summary>
-    Delete,
+    Delete = 8,
+
+    /// <summary>
+    /// Descartar cambios pendientes de escribir en la base de datos.
+    /// </summary>
+    Discard = 16,
+
+    /// <summary>
+    /// Enumerar directamente las entidades según una función de filtro.
+    /// </summary>
+    Query = 32,
 }

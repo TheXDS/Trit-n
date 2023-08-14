@@ -13,7 +13,7 @@ public abstract class MiddlewareTestsBase
         return Run(testRepo, action, null, delayMs);
     }
 
-    protected static async Task<ServiceResult?> Run(IMiddlewareConfigurator testRepo, CrudAction action, Model? entity, int delayMs = 100)
+    protected static async Task<ServiceResult?> Run(IMiddlewareConfigurator testRepo, CrudAction action, IEnumerable<Model>? entity, int delayMs = 100)
     {
         if (testRepo.GetRunner().RunProlog(action, entity) is { } pr) return pr;
         await Task.Delay(delayMs);

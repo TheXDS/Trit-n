@@ -21,5 +21,5 @@ public interface IJournalMiddleware
     /// <param name="settings">
     /// Opciones de configuración del Middleware de bitácora.
     /// </param>
-    void Log(CrudAction action, Model? entity, JournalSettings settings);
+    void Log(CrudAction action, IEnumerable<Model>? entity, JournalSettings settings);
 }

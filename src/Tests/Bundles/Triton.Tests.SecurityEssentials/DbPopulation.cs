@@ -79,7 +79,7 @@ public class DbPopulation
                 Group = g,
                 Id = Guid.NewGuid(),
             }.PushInto(lc.Membership).PushInto(g.Membership));
-            t.CreateMany(
+            t.Create(
                 new SecurityDescriptor()
                 {
                     Id = Guid.NewGuid(),
@@ -88,7 +88,7 @@ public class DbPopulation
                     Revoked = PermissionFlags.Export
                 }.PushInto(lc.Descriptors)
             );
-            t.CreateMany(creds);
+            t.Create(creds);
             t.Create(lc);
             t.Create(g);
         }

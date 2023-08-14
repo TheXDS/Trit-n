@@ -61,7 +61,7 @@ public class TextFileJournalTests
             : new JournalSettings();
         
         TextFileJournal j = new() { Path = p };
-        j.Log(action, withEntity ? new User("test", "Test user") : null, s);
+        j.Log(action, withEntity ? new[] { new User("test", "Test user") } : null, s);
         FileInfo f = new(p);
         Assert.NotZero(f.Length);
         f.Delete();

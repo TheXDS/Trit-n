@@ -1,4 +1,8 @@
-﻿using static TheXDS.Triton.Services.FailureReason;
+﻿using TheXDS.MCART.Types.Extensions;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using static TheXDS.Triton.Services.FailureReason;
+using System;
+using static System.Collections.Specialized.BitVector32;
 
 namespace TheXDS.Triton.Services;
 
@@ -62,22 +66,10 @@ public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransac
         return TryCallAsync<Model>(CrudAction.Commit, _context.SaveChangesAsync(), null) ?? Task.FromResult(ServiceResult.Ok);
     }
 
-    /// <summary>
-    /// Crea una nueva entidad en la base de datos.
-    /// </summary>
-    /// <typeparam name="TModel">
-    /// Modelo de la nueva entidad.
-    /// </typeparam>
-    /// <param name="newEntity">
-    /// Nueva entidad a agregar a la base de datos.
-    /// </param>
-    /// <returns>
-    /// El resultado reportado de la operación ejecutada por el
-    /// servicio subyacente.
-    /// </returns>
-    public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
+    /// <inheritdoc/>
+    public ServiceResult Create<TModel>(params TModel[] entities) where TModel : Model
     {
-        return Perform(CrudAction.Create, _context.Add, newEntity);
+        return TryCall(CrudAction.Create, _context.AddRange, entities);
     }
 
     /// <summary>
@@ -86,16 +78,16 @@ public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransac
     /// <typeparam name="TModel">
     /// Modelo de la entidad a eliminar.
     /// </typeparam>
-    /// <param name="entity">
+    /// <param name="entities">
     /// Entidad que deberá ser eliminada de la base de datos.
     /// </param>
     /// <returns>
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
+    public ServiceResult Delete<TModel>(params TModel[] entities) where TModel : Model
     {
-        return Perform(CrudAction.Delete, _context.Remove, entity);
+        return TryCall(CrudAction.Delete, _context.RemoveRange, entities);
     }
 
     /// <summary>
@@ -124,22 +116,53 @@ public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransac
         return Delete(e);
     }
 
-    /// <summary>
-    /// Actualiza los datos contenidos en una entidad dentro de la base
-    /// de datos.
-    /// </summary>
-    /// <typeparam name="TModel">
-    /// Modelo de la entidad a actualizar.
-    /// </typeparam>
-    /// <param name="entity">
-    /// Entidad que contiene la nueva información a escribir.
-    /// </param>
-    /// <returns>
-    /// El resultado reportado de la operación ejecutada por el
-    /// servicio subyacente.
-    /// </returns>
-    public ServiceResult Update<TModel>(TModel entity) where TModel : Model
+    /// <inheritdoc/>
+    public ServiceResult Update<TModel>(params TModel[] entities) where TModel : Model
     {
-        return Perform(CrudAction.Update, _context.Update, entity);
+        return TryCall(CrudAction.Update, _context.UpdateRange, entities);
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult CreateOrUpdate<TModel>(params TModel[] entities) where TModel : Model
+    {
+        return TryCall(CrudAction.Update | CrudAction.Create, e => {
+            var groups = e.Cast<TModel>().GroupBy(p => _context.Set<TModel>().Contains(p) ? CrudAction.Update : CrudAction.Create).ToDictionary(p => p.Key);
+            if (groups[CrudAction.Update].Any()) _context.UpdateRange(groups.Cast<object>().ToArray());
+            if (groups[CrudAction.Create].Any()) _context.AddRange(groups.Cast<object>().ToArray());
+        }, entities);
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Delete<TModel, TKey>(params TKey[] keys)
+        where TModel : Model<TKey>, new()
+        where TKey : IComparable<TKey>, IEquatable<TKey>
+    {
+        var entities = keys.Select(k => _context.Find<TModel>(k)).ToArray();
+        if (entities.Any(p => p is null)) return NotFound;
+
+        foreach (TModel entity in entities.NotNull())
+        {
+            if (Perform(CrudAction.Delete, _context.Remove, entity) is { } error) return error;
+        }
+        return ServiceResult.Ok;
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Delete<TModel>(params string[] stringKeys) where TModel : Model, new()
+    {
+        var entities = stringKeys.Select(k => _context.Find<TModel>(k)).ToArray();
+        if (entities.Any(p => p is null)) return NotFound;
+
+        foreach (TModel entity in entities.NotNull())
+        {
+            if (Perform(CrudAction.Delete, _context.Remove, entity) is { } error) return error;
+        }
+        return ServiceResult.Ok;
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Discard()
+    {
+        return TryCall(CrudAction.Discard, _context.ChangeTracker.Clear, null) ?? ServiceResult.Ok;
     }
 }

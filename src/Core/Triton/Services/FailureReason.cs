@@ -22,7 +22,7 @@ public enum FailureReason
     Forbidden,
 
     /// <summary>
-    /// Error en el servicio.
+    /// Error general en el servicio.
     /// </summary>
     ServiceFailure,
 

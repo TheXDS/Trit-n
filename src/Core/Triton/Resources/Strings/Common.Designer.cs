@@ -8,199 +8,200 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TheXDS.Triton.Resources.Strings; 
-using System;
-
-
-/// <summary>
-///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
-/// </summary>
-// StronglyTypedResourceBuilder generó automáticamente esta clase
-// a través de una herramienta como ResGen o Visual Studio.
-// Para agregar o quitar un miembro, edite el archivo .ResX y, a continuación, vuelva a ejecutar ResGen
-// con la opción /str o recompile su proyecto de VS.
-[global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
-[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-internal class Common {
+namespace TheXDS.Triton.Resources.Strings {
+    using System;
     
-    private static global::System.Resources.ResourceManager resourceMan;
-    
-    private static global::System.Globalization.CultureInfo resourceCulture;
-    
-    [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    internal Common() {
-    }
     
     /// <summary>
-    ///   Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+    ///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
     /// </summary>
-    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-    internal static global::System.Resources.ResourceManager ResourceManager {
-        get {
-            if (object.ReferenceEquals(resourceMan, null)) {
-                global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Triton.Resources.Strings.Common", typeof(Common).Assembly);
-                resourceMan = temp;
+    // StronglyTypedResourceBuilder generó automáticamente esta clase
+    // a través de una herramienta como ResGen o Visual Studio.
+    // Para agregar o quitar un miembro, edite el archivo .ResX y, a continuación, vuelva a ejecutar ResGen
+    // con la opción /str o recompile su proyecto de VS.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    internal class Common {
+        
+        private static global::System.Resources.ResourceManager resourceMan;
+        
+        private static global::System.Globalization.CultureInfo resourceCulture;
+        
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Common() {
+        }
+        
+        /// <summary>
+        ///   Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.Triton.Resources.Strings.Common", typeof(Common).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
             }
-            return resourceMan;
         }
-    }
-    
-    /// <summary>
-    ///   Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
-    ///   búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
-    /// </summary>
-    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-    internal static global::System.Globalization.CultureInfo Culture {
-        get {
-            return resourceCulture;
+        
+        /// <summary>
+        ///   Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+        ///   búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
+                return resourceCulture;
+            }
+            set {
+                resourceCulture = value;
+            }
         }
-        set {
-            resourceCulture = value;
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Consulta de datos malformada..
+        /// </summary>
+        internal static string BadQuery {
+            get {
+                return ResourceManager.GetString("BadQuery", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Consulta de datos malformada..
-    /// </summary>
-    internal static string BadQuery {
-        get {
-            return ResourceManager.GetString("BadQuery", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha intentado sobreescribir información que otro usuario ya ha editado..
+        /// </summary>
+        internal static string ConcurrencyFailure {
+            get {
+                return ResourceManager.GetString("ConcurrencyFailure", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Se ha intentado sobreescribir información que otro usuario ya ha editado..
-    /// </summary>
-    internal static string ConcurrencyFailure {
-        get {
-            return ResourceManager.GetString("ConcurrencyFailure", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El servidor de datos ha devuelto un error..
+        /// </summary>
+        internal static string DbFailure {
+            get {
+                return ResourceManager.GetString("DbFailure", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a El servidor de datos ha devuelto un error..
-    /// </summary>
-    internal static string DbFailure {
-        get {
-            return ResourceManager.GetString("DbFailure", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se ha encontrado la entidad..
+        /// </summary>
+        internal static string EntityNotFound {
+            get {
+                return ResourceManager.GetString("EntityNotFound", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a No se ha encontrado la entidad..
-    /// </summary>
-    internal static string EntityNotFound {
-        get {
-            return ResourceManager.GetString("EntityNotFound", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha denegado el acceso a este recurso..
+        /// </summary>
+        internal static string FailureForbidden {
+            get {
+                return ResourceManager.GetString("FailureForbidden", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Se ha denegado el acceso a este recurso..
-    /// </summary>
-    internal static string FailureForbidden {
-        get {
-            return ResourceManager.GetString("FailureForbidden", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha producido un error desconocido en la operación..
+        /// </summary>
+        internal static string FailureUnknown {
+            get {
+                return ResourceManager.GetString("FailureUnknown", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Se ha producido un error desconocido en la operación..
-    /// </summary>
-    internal static string FailureUnknown {
-        get {
-            return ResourceManager.GetString("FailureUnknown", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El servicio solicitado no ha sido cargado..
+        /// </summary>
+        internal static string MissingService {
+            get {
+                return ResourceManager.GetString("MissingService", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a El servicio solicitado no ha sido cargado..
-    /// </summary>
-    internal static string MissingService {
-        get {
-            return ResourceManager.GetString("MissingService", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El servicio &apos;{0}&apos; no ha sido cargado..
+        /// </summary>
+        internal static string MissingXService {
+            get {
+                return ResourceManager.GetString("MissingXService", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a El servicio &apos;{0}&apos; no ha sido cargado..
-    /// </summary>
-    internal static string MissingXService {
-        get {
-            return ResourceManager.GetString("MissingXService", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha producido un error en la red..
+        /// </summary>
+        internal static string NetworkFailure {
+            get {
+                return ResourceManager.GetString("NetworkFailure", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Se ha producido un error en la red..
-    /// </summary>
-    internal static string NetworkFailure {
-        get {
-            return ResourceManager.GetString("NetworkFailure", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La operación se ha completado satisfactoriamente..
+        /// </summary>
+        internal static string OperationCompletedSuccessfully {
+            get {
+                return ResourceManager.GetString("OperationCompletedSuccessfully", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a La operación se ha completado satisfactoriamente..
-    /// </summary>
-    internal static string OperationCompletedSuccessfully {
-        get {
-            return ResourceManager.GetString("OperationCompletedSuccessfully", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La consulta solicitada devuelve demasiados datos. Filtre o reduzca los resultados antes de ejecutar la consulta..
+        /// </summary>
+        internal static string QueryOverLimit {
+            get {
+                return ResourceManager.GetString("QueryOverLimit", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a La consulta solicitada devuelve demasiados datos. Filtre o reduzca los resultados antes de ejecutar la consulta..
-    /// </summary>
-    internal static string QueryOverLimit {
-        get {
-            return ResourceManager.GetString("QueryOverLimit", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El servicio ha encontrado un error..
+        /// </summary>
+        internal static string ServiceFailure {
+            get {
+                return ResourceManager.GetString("ServiceFailure", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a El servicio ha encontrado un error..
-    /// </summary>
-    internal static string ServiceFailure {
-        get {
-            return ResourceManager.GetString("ServiceFailure", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha detectado el uso malicioso de la API de Tritón..
+        /// </summary>
+        internal static string Tamper {
+            get {
+                return ResourceManager.GetString("Tamper", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Se ha detectado el uso malicioso de la API de Tritón..
-    /// </summary>
-    internal static string Tamper {
-        get {
-            return ResourceManager.GetString("Tamper", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha intentado utilizar un servicio sin configurarlo primero..
+        /// </summary>
+        internal static string UnconfiguredServiceError {
+            get {
+                return ResourceManager.GetString("UnconfiguredServiceError", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Se ha intentado utilizar un servicio sin configurarlo primero..
-    /// </summary>
-    internal static string UnconfiguredServiceError {
-        get {
-            return ResourceManager.GetString("UnconfiguredServiceError", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Valor sin configurar: {0}.
+        /// </summary>
+        internal static string UnconfiguredValueX {
+            get {
+                return ResourceManager.GetString("UnconfiguredValueX", resourceCulture);
+            }
         }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Valor sin configurar: {0}.
-    /// </summary>
-    internal static string UnconfiguredValueX {
-        get {
-            return ResourceManager.GetString("UnconfiguredValueX", resourceCulture);
-        }
-    }
-    
-    /// <summary>
-    ///   Busca una cadena traducida similar a Error de validación..
-    /// </summary>
-    internal static string ValidationError {
-        get {
-            return ResourceManager.GetString("ValidationError", resourceCulture);
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error de validación..
+        /// </summary>
+        internal static string ValidationError {
+            get {
+                return ResourceManager.GetString("ValidationError", resourceCulture);
+            }
         }
     }
 }

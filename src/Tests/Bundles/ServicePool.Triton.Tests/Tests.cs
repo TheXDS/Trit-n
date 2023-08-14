@@ -81,7 +81,7 @@ public class Tests
     public void UseTransactionPrologs_registers_actions()
     {
         bool actionRan = false;
-        ServiceResult? TestAction(CrudAction action, Model? entity)
+        ServiceResult? TestAction(CrudAction action, IEnumerable<Model>? entity)
         {
             actionRan = true;
             return null;
@@ -98,7 +98,7 @@ public class Tests
     public void UseTransactionEpilogs_registers_actions()
     {
         bool actionRan = false;
-        ServiceResult? TestAction(CrudAction action, Model? entity)
+        ServiceResult? TestAction(CrudAction action, IEnumerable<Model>? entity)
         {
             actionRan = true;
             return null;
@@ -171,13 +171,13 @@ public class Tests
         public bool PrologRan { get; set; }
         public bool EpilogRan { get; set; }
 
-        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, Model? entity)
+        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, IEnumerable<Model>? entity)
         {
             PrologRan = true;
             return null;
         }
 
-        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction action, Model? entity)
+        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction action, IEnumerable<Model>? entity)
         {
             EpilogRan = true;
             return null;

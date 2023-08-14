@@ -4,7 +4,7 @@
 [![Build Triton](https://github.com/TheXDS/Triton/actions/workflows/build.yml/badge.svg)](https://github.com/TheXDS/Triton/actions/workflows/build.yml)
 [![Publish Triton](https://github.com/TheXDS/Triton/actions/workflows/publish.yml/badge.svg)](https://github.com/TheXDS/Triton/actions/workflows/publish.yml)
 [![Issues](https://img.shields.io/github/issues/TheXDS/Triton)](https://github.com/TheXDS/Triton/issues)
-[![GPL-v3.0](https://img.shields.io/github/license/TheXDS/Triton)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![MIT](https://img.shields.io/github/license/TheXDS/Triton)](https://mit-license.org)
 
 ## Introducción
 Tritón es una librería auxiliar que facilita el acceso a la API de gestores
@@ -36,12 +36,12 @@ paket add TheXDS.Triton
 
 **Referencia de paquete**  
 ```xml
-<PackageReference Include="TheXDS.Triton" Version="1.0.0" />
+<PackageReference Include="TheXDS.Triton" Version="1.4.0" />
 ```
 
 **Ventana interactiva (CSI)**  
 ```
-#r "nuget: TheXDS.Triton, 1.0.0"
+#r "nuget: TheXDS.Triton, 1.4.0"
 ```
 
 #### Repositorio de GitHub
@@ -57,8 +57,7 @@ Tritón requiere de un compilador compatible con C# 10, debido a ciertas
 características especiales del lenguaje que ayudan a disminuir la
 complejidad del código.
 
-Tritón también requiere que [.Net SDK 6.0](https://dotnet.microsoft.com/) o
-posterior esté instalado en el sistema.
+Tritón también requiere que [.Net SDK 6.0](https://dotnet.microsoft.com/) esté instalado en el sistema.
 
 ### Compilando Tritón
 ```sh

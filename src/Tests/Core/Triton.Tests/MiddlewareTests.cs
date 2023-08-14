@@ -17,8 +17,9 @@ public partial class MiddlewareTests
     public void ITransactionMiddleware_has_default_implememtations(CrudAction action)
     {
         ITransactionMiddleware transaction = new DefaultMiddleware();
-        Assert.Null(transaction.PrologAction(action, new User("x", "Test"))); 
-        Assert.Null(transaction.EpilogAction(action, new User("x", "Test")));
+        Model[] entities = { new User("x", "Test") };
+        Assert.That(transaction.PrologAction(action, entities), Is.Null); 
+        Assert.That(transaction.EpilogAction(action, entities), Is.Null);
     }
 
     [Test]
@@ -27,25 +28,29 @@ public partial class MiddlewareTests
         TritonService _srv = new(new TestTransFactory());
         bool prologDidRun = false, epilogDidRun = false;
 
-        ServiceResult? TestProlog(CrudAction arg1, Model? arg2)
+        ServiceResult? TestProlog(CrudAction arg1, IEnumerable<Model>? arg2)
         {
             if (!prologDidRun)
             {
                 Assert.AreEqual(CrudAction.Create, arg1);
-                Assert.IsInstanceOf<Post>(arg2);
-                Assert.AreEqual("0", arg2!.IdAsString);
+                Assert.That(arg2, Is.Not.Null);
+                var j = arg2!.First();
+                Assert.IsInstanceOf<Post>(j);
+                Assert.AreEqual("0", j!.IdAsString);
                 prologDidRun = true;
             }
             return null;
         }
 
-        ServiceResult? TestEpilog(CrudAction arg1, Model? arg2)
+        ServiceResult? TestEpilog(CrudAction arg1, IEnumerable<Model>? arg2)
         {
             if (!epilogDidRun)
             {
                 Assert.True(prologDidRun);
                 Assert.AreEqual(CrudAction.Create, arg1);
-                Assert.IsInstanceOf<Post>(arg2);
+                Assert.That(arg2, Is.Not.Null);
+                var j = arg2!.First();
+                Assert.IsInstanceOf<Post>(j);
                 epilogDidRun = true;
             }
             return null;

@@ -87,10 +87,7 @@ public class CrudTransactionBaseTests
         bool delegateRan = false;
         var test = new TestClass();
 
-        void TestDelegate(bool arg)
-        {
-            delegateRan = arg;
-        }
+        void TestDelegate(bool arg) => delegateRan = arg;
 
         var result = test.Test_TryCall_void(CrudAction.Create, TestDelegate, true);
         Assert.IsNull(result);
@@ -137,7 +134,7 @@ public class CrudTransactionBaseTests
     {
         var test = new TestClass();
 
-        int TestDelegate(bool arg) => throw new Exception() { HResult = 0xdead };
+        static int TestDelegate(bool arg) => throw new Exception() { HResult = 0xdead };
 
         var result = test.Test_TryCall(CrudAction.Create, TestDelegate, out int returnValue, true);
 
@@ -173,10 +170,7 @@ public class CrudTransactionBaseTests
         bool delegateRan = false;
         var test = new TestClass();
 
-        void TestDelegate(bool arg)
-        {
-            delegateRan = arg;
-        }
+        void TestDelegate(bool arg) => delegateRan = arg;
 
         Assert.Throws<InvalidOperationException>(() => _ = test.Test_TryCall<int>(CrudAction.Create, TestDelegate, true));
         Assert.IsFalse(delegateRan);
@@ -188,7 +182,7 @@ public class CrudTransactionBaseTests
         bool delegateRan = false;
         var test = new TestClass();
 
-        ServiceResult? Stop(CrudAction crudAction, Model? entity) => FailureReason.Tamper;
+        ServiceResult? Stop(CrudAction crudAction, IEnumerable<Model>? entity) => FailureReason.Tamper;
 
         int TestDelegate(bool arg)
         {

@@ -36,7 +36,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
+    ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey>, new() where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
     {
         var r = Read<TModel, TKey>(key);
         entity = r.ReturnValue;
@@ -63,7 +63,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// entidad con el campo llave especificado, el valor de resultado
     /// será <see langword="null"/>.
     /// </returns>
-    ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
+    ServiceResult<TModel?> Read<TModel, TKey>(TKey key) where TModel : Model<TKey>, new() where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
     {
         return ReadAsync<TModel, TKey>(key).ConfigureAwait(false).GetAwaiter().GetResult();
     }
@@ -88,7 +88,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// <exception cref="ArgumentNullException">
     /// Se produce si <paramref name="key"/> es <see langword="null"/>.
     /// </exception>
-    ServiceResult<TModel?> Read<TModel>(object key) where TModel : Model
+    ServiceResult<TModel?> Read<TModel>(object key) where TModel : Model, new()
     {
         return DynamicRead<TModel, ServiceResult<TModel?>>(key, p => p);
     }
@@ -120,7 +120,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey> where TKey : notnull, IComparable<TKey>, IEquatable<TKey>;
+    Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey>, new() where TKey : notnull, IComparable<TKey>, IEquatable<TKey>;
 
     /// <summary>
     /// Obtiene una entidad cuyo campo llave sea igual al valor
@@ -142,7 +142,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// <exception cref="ArgumentNullException">
     /// Se produce si <paramref name="key"/> es <see langword="null"/>.
     /// </exception>
-    Task<ServiceResult<TModel?>> ReadAsync<TModel>(object key) where TModel : Model
+    Task<ServiceResult<TModel?>> ReadAsync<TModel>(object key) where TModel : Model, new()
     {
         return DynamicRead<TModel, Task<ServiceResult<TModel?>>>(key, p => Task.FromResult(p));
     }

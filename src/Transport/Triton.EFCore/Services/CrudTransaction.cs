@@ -54,7 +54,7 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey> where TKey : IComparable<TKey>, IEquatable<TKey>
+    public ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey>, new() where TKey : IComparable<TKey>, IEquatable<TKey>
     {
         return _readTransaction.Read(key, out entity);
     }
@@ -80,7 +80,7 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// será <see langword="null"/>.
     /// </returns>
     public ServiceResult<TModel?> Read<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
+        where TModel : Model<TKey>, new()
         where TKey : IComparable<TKey>, IEquatable<TKey>
     {
         return _readTransaction.Read<TModel,TKey>(key);
@@ -99,7 +99,7 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public ServiceResult Create<TModel>(TModel newEntity) where TModel : Model
+    public ServiceResult Create<TModel>(params TModel[] newEntity) where TModel : Model
     {
         return _writeTransaction.Create(newEntity);
     }
@@ -117,7 +117,7 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public ServiceResult Delete<TModel>(TModel entity) where TModel : Model
+    public ServiceResult Delete<TModel>(params TModel[] entity) where TModel : Model
     {
         return _writeTransaction.Delete(entity);
     }
@@ -139,8 +139,8 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public ServiceResult Delete<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
+    public ServiceResult Delete<TModel, TKey>(params TKey[] key)
+        where TModel : Model<TKey>, new()
         where TKey : IComparable<TKey>, IEquatable<TKey>
     {
         return _writeTransaction.Delete<TModel,TKey>(key);
@@ -160,7 +160,7 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// El resultado reportado de la operación ejecutada por el
     /// servicio subyacente.
     /// </returns>
-    public ServiceResult Update<TModel>(TModel entity) where TModel : Model
+    public ServiceResult Update<TModel>(params TModel[] entity) where TModel : Model
     {
         return _writeTransaction.Update(entity);
     }
@@ -208,7 +208,7 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// servicio subyacente.
     /// </returns>
     public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key)
-        where TModel : Model<TKey>
+        where TModel : Model<TKey>, new()
         where TKey : IComparable<TKey>, IEquatable<TKey>
     {
         return _readTransaction.ReadAsync<TModel, TKey>(key);
@@ -247,5 +247,23 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     {
         await _writeTransaction.CommitAsync();
         await base.OnDisposeAsync();
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult CreateOrUpdate<TModel>(params TModel[] entities) where TModel : Model
+    {
+        return _writeTransaction.CreateOrUpdate(entities);
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Delete<TModel>(params string[] stringKeys) where TModel : Model, new()
+    {
+        return _writeTransaction.Delete<TModel>(stringKeys);
+    }
+
+    /// <inheritdoc/>
+    public ServiceResult Discard()
+    {
+        return _writeTransaction.Discard();
     }
 }

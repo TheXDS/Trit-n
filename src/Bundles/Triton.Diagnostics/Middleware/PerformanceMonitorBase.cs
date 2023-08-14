@@ -55,10 +55,7 @@ public abstract class PerformanceMonitorBase : NotifyPropertyChanged, ITransacti
     public void Reset()
     {
         OnReset();
-        Notify(nameof(EventCount));
-        Notify(nameof(AverageMs));
-        Notify(nameof(MinMs));
-        Notify(nameof(MaxMs));
+        NotifyState();
     }
 
     /// <summary>
@@ -74,22 +71,27 @@ public abstract class PerformanceMonitorBase : NotifyPropertyChanged, ITransacti
     /// </param>
     protected abstract void RegisterEvent(double milliseconds);
 
-    ServiceResult? ITransactionMiddleware.PrologAction(CrudAction arg1, Model? _)
+    ServiceResult? ITransactionMiddleware.PrologAction(CrudAction arg1, IEnumerable<Model>? _)
     {
-        if (_allowedActions.Contains (arg1) && !_stopwatch.IsRunning) _stopwatch.Restart();
+        if (_allowedActions.Contains(arg1) && !_stopwatch.IsRunning) _stopwatch.Restart();
         return null;
     }
 
-    ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction arg1, Model? _)
+    ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction arg1, IEnumerable<Model>? _)
     {
         if (!_allowedActions.Contains(arg1)) return null;
         _stopwatch.Stop();
         RegisterEvent(_stopwatch.Elapsed.TotalMilliseconds);
         Elapsed?.Invoke(this, AverageMs);
+        NotifyState();
+        return null;
+    }
+
+    private void NotifyState()
+    {
         Notify(nameof(EventCount));
         Notify(nameof(AverageMs));
         Notify(nameof(MinMs));
         Notify(nameof(MaxMs));
-        return null;
     }
 }

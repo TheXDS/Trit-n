@@ -82,7 +82,7 @@ public class TritonService : ITritonService
     /// Una transacción que permite leer información de la base de 
     /// datos.
     /// </returns>
-    public ICrudReadTransaction GetReadTransaction() => Factory.GetReadTransaction(Configuration.GetRunner());
+    public ICrudReadTransaction GetReadTransaction() => Factory.GetReadTransaction(Configuration);
 
     /// <summary>
     /// Obtiene una transacción que permite escribir información en la
@@ -92,7 +92,7 @@ public class TritonService : ITritonService
     /// Una transacción que permite escribir información en la base de
     /// datos.
     /// </returns>
-    public ICrudWriteTransaction GetWriteTransaction() => Factory.GetWriteTransaction(Configuration.GetRunner());
+    public ICrudWriteTransaction GetWriteTransaction() => Factory.GetWriteTransaction(Configuration);
 
     /// <summary>
     /// Obtiene una transacción que permite leer y escribir información
@@ -102,7 +102,7 @@ public class TritonService : ITritonService
     /// Una transacción que permite leer y escribir información en la
     /// base de datos.
     /// </returns>
-    public ICrudReadWriteTransaction GetTransaction() => Factory.GetTransaction(Configuration.GetRunner());
+    public ICrudReadWriteTransaction GetTransaction() => Factory.GetTransaction(Configuration);
 
     /// <summary>
     /// Ejecuta una operación en el contexto de una transacción de lectura.
