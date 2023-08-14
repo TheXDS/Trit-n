@@ -315,8 +315,6 @@ public class TestCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     /// <inheritdoc/>
     public async Task<ServiceResult<TModel[]?>> SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate) where TModel : Model
     {
-
-
         return (await _store.OfType<TModel>().AsQueryable().Where(predicate).ToListAsync()).ToArray();
     }
 
