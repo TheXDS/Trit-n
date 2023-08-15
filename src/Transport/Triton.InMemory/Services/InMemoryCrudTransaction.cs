@@ -145,7 +145,7 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// <returns></returns>
     public Task<ServiceResult> CommitAsync()
     {
-        return Task.FromResult(Execute(CrudAction.Commit, () => {
+        return Task.Run(() => Execute(CrudAction.Commit, () => {
             foreach (var t in _temp.GroupBy(p => p.GetType()))
             {
                 var newItemIds = _temp.OfType(t.Key).Select(p => p.IdAsString).ToArray();
@@ -267,7 +267,7 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
         where TModel : Model<TKey>, new()
         where TKey : IComparable<TKey>, IEquatable<TKey>
     {
-        return Task.FromResult(Execute(CrudAction.Read, () =>
+        return Task.Run(() => Execute(CrudAction.Read, () =>
             FullSet<TModel>().FirstOrDefault(p => p.Id.Equals(key)) is { } e
             ? (new ServiceResult<TModel?>(e), new[] { e })
             : (FailureReason.NotFound, null), new Model[] { new TModel { Id = key } }));
