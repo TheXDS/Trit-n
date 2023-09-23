@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Middleware;
@@ -287,12 +286,9 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// </returns>
     public ServiceResult Update<TModel>(params TModel[] entities) where TModel : Model
     {
-        var oldEntities = entities.Select(p => FullSet<TModel>().First(q => p.IdAsString == q.IdAsString)).ToArray();
+        var oldEntities = entities.Select(p => FullSet<TModel>().Single(q => p.IdAsString == q.IdAsString)).ToArray();
         return Execute(CrudAction.Update, () => {
-            foreach (var (newData, oldData) in entities.Zip(oldEntities))
-            {
-                newData.ShallowCopyTo(oldData);
-            }
+            _temp.AddRange(entities);
             return (ServiceResult.Ok, entities);
         }, oldEntities);
     }
@@ -302,12 +298,7 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     {
         return Execute(CrudAction.Create | CrudAction.Update, () =>
         {
-            var oldEntities = entities.Select(p => FullSet<TModel>().First(q => p.IdAsString == q.IdAsString)).ToArray();
-            foreach (var (newData, oldData) in entities.Zip(oldEntities))
-            {
-                newData.ShallowCopyTo(oldData);
-            }
-            _temp.AddRange(entities.Except(FullSet<TModel>()));
+            _temp.AddRange(entities);
             return (ServiceResult.Ok, entities);
         }, entities);
     }
