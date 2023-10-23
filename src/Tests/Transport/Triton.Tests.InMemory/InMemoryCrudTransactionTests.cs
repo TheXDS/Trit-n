@@ -4,7 +4,7 @@ using NUnit.Framework;
 using TheXDS.Triton.InMemory.Services;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;
-
+using TheXDS.Triton.Models.Base;
 namespace TheXDS.Triton.Tests.InMemory;
 
 public class InMemoryCrudTransactionTests
@@ -12,7 +12,8 @@ public class InMemoryCrudTransactionTests
     [Test]
     public async Task Create_creates_new_entities()
     {
-        using var t = new InMemoryCrudTransaction(new TransactionConfiguration());
+        var c = new List<Model>();
+        using var t = new InMemoryCrudTransaction(new TransactionConfiguration(), c);
         var u = new User("CreateTest", "Test user");
         Assert.That(t.Create(u).Success, Is.True);
         Assert.That((await t.CommitAsync()).Success, Is.True);
@@ -24,7 +25,8 @@ public class InMemoryCrudTransactionTests
     [Test]
     public async Task CreateOrUpdate_creates_new_entities()
     {
-        using var t = new InMemoryCrudTransaction(new TransactionConfiguration());
+        var c = new List<Model>();
+        using var t = new InMemoryCrudTransaction(new TransactionConfiguration(), c);
         var u = new User("CreateOrUpdateNewTest", "Test user");
         Assert.That(t.CreateOrUpdate(u).Success, Is.True);
         Assert.That((await t.CommitAsync()).Success, Is.True);
@@ -36,7 +38,8 @@ public class InMemoryCrudTransactionTests
     [Test]
     public async Task CreateOrUpdate_updates_entities()
     {
-        using var t = new InMemoryCrudTransaction(new TransactionConfiguration());
+        var c = new List<Model>();
+        using var t = new InMemoryCrudTransaction(new TransactionConfiguration(), c);
         var u = new User("CreateOrUpdateExistingTest", "AAA");
         Assert.That(t.Create(u).Success, Is.True);
         Assert.That((await t.CommitAsync()).Success, Is.True);
@@ -53,7 +56,8 @@ public class InMemoryCrudTransactionTests
     [Test]
     public async Task Update_updates_entities()
     {
-        using var t = new InMemoryCrudTransaction(new TransactionConfiguration());
+        var c = new List<Model>();
+        using var t = new InMemoryCrudTransaction(new TransactionConfiguration(), c);
         var u = new User("UpdateExistingTest", "AAA");
         Assert.That(t.Create(u).Success, Is.True);
         Assert.That((await t.CommitAsync()).Success, Is.True);

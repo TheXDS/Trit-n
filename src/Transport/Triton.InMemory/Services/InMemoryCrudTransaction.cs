@@ -17,12 +17,12 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
 {
     private class PreconditionsCheckDefaultMiddleware : ITransactionMiddleware
     {
-        private readonly List<Model> _storeRef;
-        private readonly List<Model> _tempRef;
+        private readonly ICollection<Model> _storeRef;
+        private readonly ICollection<Model> _tempRef;
 
         private readonly Dictionary<CrudAction, Func<IEnumerable<Model>?, ServiceResult?>> _prologPreconditions = new();
 
-        public PreconditionsCheckDefaultMiddleware(List<Model> storeRef, List<Model> tempRef)
+        public PreconditionsCheckDefaultMiddleware(ICollection<Model> storeRef, ICollection<Model> tempRef)
         {
             _storeRef = storeRef;
             _tempRef = tempRef;
@@ -65,8 +65,8 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     }
 
     private static readonly object _syncLock = new();
-    private static readonly List<Model> _store = new();
-    private readonly List<Model> _temp = new();
+    private readonly ICollection<Model> _temp = new List<Model>();
+    private readonly ICollection<Model> _store;
 
     private ServiceResult Execute(CrudAction action, Action operation, IEnumerable<Model>? middlewareData = null)
     {
@@ -97,8 +97,12 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// <param name="configuration">
     /// Configuración de transacciones a utilizar.
     /// </param>
-    public InMemoryCrudTransaction(IMiddlewareConfigurator configuration)
+    /// <param name="store">
+    /// Collección de almacenamiento de datos.
+    /// </param>
+    public InMemoryCrudTransaction(IMiddlewareConfigurator configuration, ICollection<Model> store)
     {
+        _store = store;
         configuration.Attach(new PreconditionsCheckDefaultMiddleware(_store, _temp));
         Configuration = configuration.GetRunner();
     }
@@ -109,12 +113,10 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// </summary>
     public IMiddlewareRunner Configuration { get; }
 
-    /// <summary>
-    /// Limpia la base de datos en memoria.
-    /// </summary>
-    public static void Wipe()
+    /// <inheritdoc/>
+    public ServiceResult<Model?> Read(Type model, object key)
     {
-        lock (_syncLock) _store.Clear();
+        return Execute(CrudAction.Query, () => new ServiceResult<Model?>(FullSet(model).FirstOrDefault(p => p.IdAsString == key.ToString())));
     }
 
     /// <summary>
@@ -339,5 +341,10 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     private IEnumerable<TModel> FullSet<TModel>()
     {
         return _store.Concat(_temp).OfType<TModel>();
+    }
+
+    private IEnumerable<Model> FullSet(Type model)
+    {
+        return _store.Concat(_temp).OfType(model);
     }
 }

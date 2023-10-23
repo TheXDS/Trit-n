@@ -1,5 +1,4 @@
-﻿using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
+﻿using TheXDS.Triton.Models.Base;
 
 namespace TheXDS.Triton.InMemory.Services;
 
@@ -7,21 +6,23 @@ namespace TheXDS.Triton.InMemory.Services;
 /// Fábrica de transacciones que genera transacciones sin persistencia (en
 /// memoria).
 /// </summary>
-public class InMemoryTransFactory : ITransactionFactory
+public class InMemoryTransFactory : CollectionTransFactory
 {
+    private static readonly List<Model> _store = new();
+
     /// <summary>
-    /// Fabrica una transaccion conectada a un almacén volátil sin
-    /// persistencia en la memoria de la aplicación.
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="InMemoryTransFactory"/>.
     /// </summary>
-    /// <param name="configuration">
-    /// Configuración de transacción a utilizar.
-    /// </param>
-    /// <returns>
-    /// Una transacción conectada a un almacén volátil sin persistencia en
-    /// la memoria de la aplicación.
-    /// </returns>
-    public ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration)
+    public InMemoryTransFactory() : base(_store)
     {
-        return new InMemoryCrudTransaction(configuration);
+    }
+
+    /// <summary>
+    /// Limpia la base de datos en memoria.
+    /// </summary>
+    public static void Wipe()
+    {
+        _store.Clear();
     }
 }
