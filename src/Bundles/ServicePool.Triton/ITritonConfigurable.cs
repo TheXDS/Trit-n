@@ -228,11 +228,6 @@ public interface ITritonConfigurable
         return this;
     }
 
-
-
-
-
-
     /// <summary>
     /// Descubre automáticamente todos los servicios y contextos de datos a
     /// exponer por medio de <see cref="ServicePool"/>.
@@ -248,20 +243,6 @@ public interface ITritonConfigurable
         }
         return this;
     }
-
-    ///// <summary>
-    ///// Agrega un servicio a la colección de servicios hosteados dentro de
-    ///// un <see cref="ServicePool"/>.
-    ///// </summary>
-    ///// <typeparam name="T">Tipo de servicio a registrar.</typeparam>
-    ///// <returns>
-    ///// La misma instancia del objeto utilizado para configurar Tritón.
-    ///// </returns>
-    //ITritonConfigurable UseService<T>() where T : TritonService
-    //{
-    //    Pool.Register<T>();
-    //    return this;
-    //}
 
     /// <summary>
     /// Ejecuta un método de configuración de middlewares predeterminados a
