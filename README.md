@@ -84,9 +84,12 @@ dotnet test .\src\Triton.sln --collect:"XPlat Code Coverage" --results-directory
 Los resultados de la cobertura se almacenarán en `./Build/Coverage`
 
 ## Contribuir
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/xdsxpsivx)
+
 Si Tritón te ha sido de utilidad, o te interesa donar para fomentar el
 desarrollo del proyecto, siéntete libre de hacer una donación por medio de
-[PayPal](https://paypal.me/thexds), o ponte en contacto directamente conmigo.
+[PayPal](https://paypal.me/thexds), [BuyMeACoffee](https://www.buymeacoffee.com/xdsxpsivx)
+o ponte en contacto directamente conmigo.
 
 Lamentablemente, no puedo ofrecer otros medios de donación por el momento
-debido a que mi país (Honduras) no es soportado por ninguna plataforma.
+debido a que mi país (Honduras) no es soportado por casi ninguna plataforma.
