@@ -1,8 +1,9 @@
 ﻿#pragma warning disable CS1591
-namespace TheXDS.Triton.Tests.Models;
-using TheXDS.Triton.Models.Base;
-using System;
+
 using NUnit.Framework;
+using TheXDS.Triton.Models.Base;
+
+namespace TheXDS.Triton.Tests.Models;
 
 public class TimestampModelTests
 {
@@ -16,13 +17,13 @@ public class TimestampModelTests
         {
         }
     }
-    
+
     [Test]
     public void Ctor_Test()
     {
-        Assert.AreEqual(default(DateTime), new TestClass().Timestamp);
+        Assert.That(new TestClass().Timestamp, Is.EqualTo(default(DateTime)));
 
         var n = DateTime.Now;
-        Assert.AreEqual(n, new TestClass(n).Timestamp);
+        Assert.That(new TestClass(n).Timestamp, Is.EqualTo(n));
     }
 }

@@ -48,8 +48,8 @@ public class ReadOnlySimulatorTests : MiddlewareTestsBase
             return null;
         }
         var t = new TransactionConfiguration().UseSimulation(false).AddEpilog(ChkEpilog);
-        Assert.IsTrue(RunSimulatorPass(t, CrudAction.Read, new[] { new User("x", "test") }).Item2);
-        Assert.True(ranEpilog);
+        Assert.That(RunSimulatorPass(t, CrudAction.Read, new[] { new User("x", "test") }).Item2);
+        Assert.That(ranEpilog);
     }
 
     [TestCase(CrudAction.Create, false)]
@@ -66,7 +66,7 @@ public class ReadOnlySimulatorTests : MiddlewareTestsBase
             return null;
         }
         var t = new TransactionConfiguration().UseSimulation().AddEpilog(ChkEpilog);
-        Assert.AreEqual(ranTrans, RunSimulatorPass(t, action, new[] { new User("x", "test") }).Item2);
-        Assert.True(ranEpilog);
+        Assert.That(ranTrans, Is.EqualTo(RunSimulatorPass(t, action, new[] { new User("x", "test") }).Item2));
+        Assert.That(ranEpilog);
     }
 }

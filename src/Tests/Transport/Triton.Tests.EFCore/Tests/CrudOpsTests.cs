@@ -1,11 +1,9 @@
-﻿using TheXDS.Triton.Tests.Models;
+﻿#pragma warning disable CS1591
 
-#pragma warning disable CS1591
+using NUnit.Framework;
+using TheXDS.Triton.Tests.Models;
 
 namespace TheXDS.Triton.Tests.EFCore.Tests;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
 
 public partial class CrudOpsTests : TritonEfTestClass
 {
@@ -22,9 +20,9 @@ public partial class CrudOpsTests : TritonEfTestClass
          * obtener al primer usuario y a su correspondiente post.
          */
 
-        Assert.AreEqual(1, q.Count);
-        Assert.AreEqual("user1", q[0].Key.Id);
-        Assert.AreEqual(1, q[0].Count());
+        Assert.That(q.Count, Is.EqualTo(1));
+        Assert.That(q[0].Key.Id, Is.EqualTo("user1"));
+        Assert.That(q[0].Count(), Is.EqualTo(1));
     }
 
     [Test]
@@ -33,12 +31,12 @@ public partial class CrudOpsTests : TritonEfTestClass
         using var t = _srv.GetReadTransaction();
 
         Post? post = t.Read<Post, long>(1L);
-        Assert.IsInstanceOf<Post>(post);
-        Assert.AreEqual("Test", post!.Title);
+        Assert.That(post, Is.InstanceOf<Post>());
+        Assert.That(post!.Title, Is.EqualTo("Test"));
 
         Comment? comment = t.Read<Comment>(1L);
-        Assert.IsInstanceOf<Comment>(comment);
-        Assert.AreEqual("It works!", comment!.Content);
+        Assert.That(comment, Is.InstanceOf<Comment>());
+        Assert.That(comment!.Content, Is.EqualTo("It works!"));
     }
 
     [Test]
@@ -47,11 +45,11 @@ public partial class CrudOpsTests : TritonEfTestClass
         await using var t = _srv.GetReadTransaction();
 
         Post? post = await t.ReadAsync<Post, long>(1L);
-        Assert.IsInstanceOf<Post>(post);
-        Assert.AreEqual("Test", post!.Title);
+        Assert.That(post, Is.InstanceOf<Post>());
+        Assert.That(post!.Title, Is.EqualTo("Test"));
 
         Comment? comment = await t.ReadAsync<Comment>(1L);
-        Assert.IsInstanceOf<Comment>(comment);
-        Assert.AreEqual("It works!", comment!.Content);
+        Assert.That(comment, Is.InstanceOf<Comment>());
+        Assert.That(comment!.Content, Is.EqualTo("It works!"));
     }
 }

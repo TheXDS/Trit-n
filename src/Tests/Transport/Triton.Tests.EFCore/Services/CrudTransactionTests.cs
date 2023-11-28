@@ -16,8 +16,8 @@ public class CrudTransactionTests
     {
         var t = GetTestTransaction();
 
-        Assert.IsNotNull(t.Context);
-        Assert.IsInstanceOf<BlogContext>(t.Context);
+        Assert.That(t.Context, Is.Not.Null);
+        Assert.That(t.Context, Is.InstanceOf<BlogContext>());
     }
 
     [Test]
@@ -26,14 +26,14 @@ public class CrudTransactionTests
         await using (var t = GetTestTransaction())
         {
             var r = t.Create(new User("user0123", "User 0-1-2-3"));
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         await using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user0123", out var u);
-            Assert.IsTrue(r.Success);
-            Assert.IsNotNull(u);
+            Assert.That(r.Success, Is.True);
+            Assert.That(u, Is.Not.Null);
         }
     }
 
@@ -42,8 +42,8 @@ public class CrudTransactionTests
     {
         using var t = GetTestTransaction();
         var r = t.Read<User, string>("user1");
-        Assert.IsTrue(r.Success);
-        Assert.IsNotNull(r.ReturnValue);
+        Assert.That(r.Success, Is.True);
+        Assert.That(r.ReturnValue, Is.Not.Null);
     }
 
     [Test]
@@ -51,8 +51,8 @@ public class CrudTransactionTests
     {
         await using var t = GetTestTransaction();
         var r = t.Read<User, string>("user1");
-        Assert.IsTrue(r.Success);
-        Assert.IsNotNull(r.ReturnValue);
+        Assert.That(r.Success, Is.True);
+        Assert.That(r.ReturnValue, Is.Not.Null);
     }
 
     [Test]
@@ -60,8 +60,8 @@ public class CrudTransactionTests
     {
         using var t = GetTestTransaction();
         var r = t.Read<User, string>("user1", out var u);
-        Assert.IsTrue(r.Success);
-        Assert.IsNotNull(u);
+        Assert.That(r.Success, Is.True);
+        Assert.That(u, Is.Not.Null);
     }
 
     [Test]
@@ -69,8 +69,8 @@ public class CrudTransactionTests
     {
         await using var t = GetTestTransaction();
         var r = t.Read<User, string>("user1", out var u);
-        Assert.IsTrue(r.Success);
-        Assert.IsNotNull(u);
+        Assert.That(r.Success, Is.True);
+        Assert.That(u, Is.Not.Null);
     }
 
     [Test]
@@ -79,14 +79,14 @@ public class CrudTransactionTests
         using (var t = GetTestTransaction())
         {
             var r = t.Create(new User("user123", "User 1-2-3"));
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user123", out var u);
-            Assert.IsTrue(r.Success);
-            Assert.IsNotNull(u);
+            Assert.That(r.Success, Is.True);
+            Assert.That(u, Is.Not.Null);
         }
     }
 
@@ -96,14 +96,14 @@ public class CrudTransactionTests
         await using (var t = GetTestTransaction())
         {
             var r = t.Create(new User("user123", "User 1-2-3"));
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         await using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user123", out var u);
-            Assert.IsTrue(r.Success);
-            Assert.IsNotNull(u);
+            Assert.That(r.Success, Is.True);
+            Assert.That(u, Is.Not.Null);
         }
     }
 
@@ -118,14 +118,14 @@ public class CrudTransactionTests
         using (var t = GetTestTransaction())
         {
             var r = t.Delete<User, string>("user456");
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user456", out var u);
-            Assert.AreEqual(FailureReason.NotFound, r.Reason);
-            Assert.IsNull(u);
+            Assert.That(r.Reason, Is.EqualTo(FailureReason.NotFound));
+            Assert.That(u, Is.Null);
         }
     }
 
@@ -141,15 +141,15 @@ public class CrudTransactionTests
         await using (var t = GetTestTransaction())
         {
             var r = t.Delete<User, string>("user456");
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
             await t.CommitAsync();
         }
 
         await using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user456", out var u);
-            Assert.AreEqual(FailureReason.NotFound, r.Reason);
-            Assert.IsNull(u);
+            Assert.That(r.Reason, Is.EqualTo(FailureReason.NotFound));
+            Assert.That(u, Is.Null);
         }
     }
 
@@ -165,14 +165,14 @@ public class CrudTransactionTests
         {
             var u = t.Read<User, string>("user456").ReturnValue!;
             var r = t.Delete(u);
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user456", out var u);
-            Assert.AreEqual(FailureReason.NotFound, r.Reason);
-            Assert.IsNull(u);
+            Assert.That(r.Reason, Is.EqualTo(FailureReason.NotFound));
+            Assert.That(u, Is.Null);
         }
     }
 
@@ -189,15 +189,15 @@ public class CrudTransactionTests
         {
             var u = t.Read<User, string>("user456").ReturnValue!;
             var r = t.Delete(u);
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
             await t.CommitAsync();
         }
 
         await using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user456", out var u);
-            Assert.AreEqual(FailureReason.NotFound, r.Reason);
-            Assert.IsNull(u);
+            Assert.That(r.Reason, Is.EqualTo(FailureReason.NotFound));
+            Assert.That(u, Is.Null);
         }
     }
 
@@ -207,7 +207,7 @@ public class CrudTransactionTests
         using (var t = GetTestTransaction())
         {
             var r = t.Create(new User("user123", "User 1-2"));
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         using (var t = GetTestTransaction())
@@ -215,15 +215,15 @@ public class CrudTransactionTests
             t.Read<User, string>("user123", out var u);
             u!.PublicName = "User 1-2-3";
             var r = t.Update(u);
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user123", out var u);
-            Assert.IsTrue(r.Success);
-            Assert.IsNotNull(u);
-            Assert.AreEqual("User 1-2-3", u!.PublicName);
+            Assert.That(r.Success, Is.True);
+            Assert.That(u, Is.Not.Null);
+            Assert.That(u!.PublicName, Is.EqualTo("User 1-2-3"));
         }
     }
 
@@ -233,24 +233,24 @@ public class CrudTransactionTests
         await using (var t = GetTestTransaction())
         {
             var r = t.Create(new User("user789", "User 1-2"));
-            Assert.IsTrue(r.Success);
-            Assert.IsTrue((await t.CommitAsync()).Success);
+            Assert.That(r.Success, Is.True);
+            Assert.That((await t.CommitAsync()).Success, Is.True);
         }
 
         await using (var t = GetTestTransaction())
         {
             var u = (await t.ReadAsync<User, string>("user789")).ReturnValue;
             u!.PublicName = "User 1-2-3";
-            Assert.IsTrue(t.Update(u).Success);
-            Assert.IsTrue((await t.CommitAsync()).Success);
+            Assert.That(t.Update(u).Success, Is.True);
+            Assert.That((await t.CommitAsync()).Success, Is.True);
         }
 
         await using (var t = GetTestTransaction())
         {
             var r = t.Read<User, string>("user789", out var u);
-            Assert.IsTrue(r.Success);
-            Assert.IsNotNull(u);
-            Assert.AreEqual("User 1-2-3", u!.PublicName);
+            Assert.That(r.Success, Is.True);
+            Assert.That(u, Is.Not.Null);
+            Assert.That(u!.PublicName, Is.EqualTo("User 1-2-3"));
         }
     }
 
@@ -260,14 +260,14 @@ public class CrudTransactionTests
         await using (var t = GetTestTransaction())
         {
             var r = t.Create(new User("user987", "User 9-8-7"));
-            Assert.IsTrue(r.Success);
+            Assert.That(r.Success, Is.True);
         }
 
         await using (var t = GetTestTransaction())
         {
             var r = await t.ReadAsync<User, string>("user987");
-            Assert.IsTrue(r.Success);
-            Assert.IsNotNull(r.ReturnValue);
+            Assert.That(r.Success, Is.True);
+            Assert.That(r.ReturnValue, Is.Not.Null);
         }
     }
 
@@ -276,7 +276,7 @@ public class CrudTransactionTests
     {
         await using var t = GetTestTransaction();
         var r = (await t.SearchAsync<User>(p => p.PublicName != null)).ReturnValue!;
-        Assert.IsNotNull(r);
-        Assert.NotZero(r.Length);
+        Assert.That(r, Is.Not.Null);
+        Assert.That(r.Length, Is.Not.Zero);
     }
 }

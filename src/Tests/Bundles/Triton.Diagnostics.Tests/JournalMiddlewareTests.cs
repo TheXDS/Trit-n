@@ -36,9 +36,9 @@ public class JournalMiddlewareTests : MiddlewareTestsBase
         var r = new TransactionConfiguration().UseJournal(j);
         var u = new User("1", "Test");
         await Run(r, CrudAction.Read, new[] { u });
-        Assert.AreEqual(1, j.Entries.Count);
-        Assert.AreSame(u, j.Entries[0].Entity);
-        Assert.AreEqual(CrudAction.Read, j.Entries[0].Action);
+        Assert.That(1, Is.EqualTo(j.Entries.Count));
+        Assert.That(u, Is.SameAs(j.Entries[0].Entity));
+        Assert.That(CrudAction.Read, Is.EqualTo(j.Entries[0].Action));
     }
 
     [Test]
@@ -47,7 +47,7 @@ public class JournalMiddlewareTests : MiddlewareTestsBase
         var r = new TransactionConfiguration().UseJournal<BrokenJournal>();
         var u = new User("1", "Test");
         var result = await Run(r, CrudAction.Read, new[] { u });
-        Assert.NotNull(result);
-        Assert.IsTrue(result!.Success);
+        Assert.That(result,Is.Not.Null);
+        Assert.That(result!.Success);
     }
 }

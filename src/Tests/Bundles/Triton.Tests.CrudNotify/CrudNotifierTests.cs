@@ -34,10 +34,10 @@ public class CrudNotifierTests
         {
             User u = new("cntest", "CrudNotify user");
             t.Create(u);
-            Assert.AreEqual(CrudAction.Create, Action);
-            Assert.AreSame(u, Entities!.ToArray()[0]);
+            Assert.That(CrudAction.Create, Is.EqualTo(Action));
+            Assert.That(u, Is.SameAs(Entities!.ToArray()[0]));
         }
-        Assert.AreEqual(CrudAction.Commit, Action);
-        Assert.IsNull(Entities);
+        Assert.That(CrudAction.Commit, Is.EqualTo(Action));
+        Assert.That(Entities, Is.Null);
     }
 }

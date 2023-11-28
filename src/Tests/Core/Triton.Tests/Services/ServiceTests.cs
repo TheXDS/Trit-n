@@ -11,9 +11,9 @@ public class ServiceTests
     public void Service_discovers_ITransactionFactory_Test()
     {
         var s = new TritonService();
-        Assert.IsNotNull(s.Factory);
+        Assert.That(s.Factory, Is.Not.Null);
 
         s = new(new TransactionConfiguration());
-        Assert.IsNotNull(s.Factory);
+        Assert.That(s.Factory, Is.Not.Null);
     }
 }

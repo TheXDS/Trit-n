@@ -24,9 +24,9 @@ public class AuthenticationBrokerTests
         bool expectedElevatedValue,
         bool expectedCanElevateValue)
     {
-        Assert.AreSame(expectedCredential, broker.Credential);
-        Assert.AreEqual(expectedElevatedValue, broker.Elevated);
-        Assert.AreEqual(expectedCanElevateValue, broker.CanElevate());
+        Assert.That(expectedCredential, Is.SameAs(broker.Credential));
+        Assert.That(expectedElevatedValue, Is.EqualTo(broker.Elevated));
+        Assert.That(expectedCanElevateValue, Is.EqualTo(broker.CanElevate()));
     }
 
     [Test]
@@ -55,13 +55,13 @@ public class AuthenticationBrokerTests
         var elevatable = (await _svc.GetCredential("elevatable")).ReturnValue!;
         broker.Authenticate(elevatable);
         CheckState(broker, elevatable, false, true);
-        Assert.AreSame(elevatable, broker.GetActor());
+        Assert.That(elevatable, Is.SameAs(broker.GetActor()));
 
         var elevationResult = await broker.Elevate("root", "root".ToSecureString());
-        Assert.IsTrue(elevationResult.Success);
+        Assert.That(elevationResult.Success, Is.True);
         CheckState(broker, elevatable, true, true);
-        Assert.AreNotSame(elevatable, broker.GetActor());
-        Assert.AreSame(elevationResult.ReturnValue!.Credential, broker.GetActor());
+        Assert.That(elevatable, Is.Not.SameAs(broker.GetActor()));
+        Assert.That(elevationResult.ReturnValue!.Credential, Is.SameAs(broker.GetActor()));
     }
 
     [Test]
@@ -72,13 +72,13 @@ public class AuthenticationBrokerTests
         var elevatable = (await _svc.GetCredential("disabled")).ReturnValue!;
         broker.Authenticate(elevatable);
         CheckState(broker, elevatable, false, false);
-        Assert.AreSame(elevatable, broker.GetActor());
+        Assert.That(elevatable, Is.SameAs(broker.GetActor()));
 
         var elevationResult = await broker.Elevate("root", "root".ToSecureString());
-        Assert.IsFalse(elevationResult.Success);
+        Assert.That(elevationResult.Success, Is.False);
         CheckState(broker, elevatable, false, false);
-        Assert.AreSame(elevatable, broker.GetActor());
-        Assert.AreEqual(FailureReason.Forbidden, elevationResult.Reason);
+        Assert.That(elevatable, Is.SameAs(broker.GetActor()));
+        Assert.That(elevationResult.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
 
     [Test]

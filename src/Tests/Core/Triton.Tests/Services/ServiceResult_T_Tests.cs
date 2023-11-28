@@ -12,14 +12,14 @@ public class ServiceResult_T_Tests
     public void ServiceResult_with_string_Ctor()
     {
         var r = new ServiceResult<User>("Test");
-        Assert.AreEqual("Test", r.Message);
+        Assert.That("Test", Is.EqualTo(r.Message));
     }
     [Test]
     public void ServiceResult_with_string_and_T_Ctor()
     {
         var u = new User("0", "Zero");
         var r = new ServiceResult<User>(u, "Test");
-        Assert.AreEqual("Test", r.Message);
+        Assert.That("Test", Is.EqualTo(r.Message));
         Assert.That(r.ReturnValue, Is.SameAs(u));
     }
 
@@ -39,7 +39,7 @@ public class ServiceResult_T_Tests
     {
         var r = new ServiceResult<User>(FailureReason.ConcurrencyFailure);
         Assert.That(r.Success, Is.False);
-        Assert.AreEqual(FailureReason.ConcurrencyFailure, r.Reason);
+        Assert.That(FailureReason.ConcurrencyFailure, Is.EqualTo(r.Reason));
     }
 
     [Test]
@@ -47,17 +47,17 @@ public class ServiceResult_T_Tests
     {
         var ex = new Exception("Error XYZ");
         var result = (ServiceResult<User>)ex;
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual(ex.Message, result.Message);
-        Assert.IsNotNull(result.Reason);
-        Assert.AreEqual(ex.HResult, (int)result.Reason!);
+        Assert.That(result.Success, Is.False);
+        Assert.That(ex.Message, Is.EqualTo(result.Message));
+        Assert.That(result.Reason, Is.Not.Null);
+        Assert.That(ex.HResult, Is.EqualTo((int)result.Reason!));
     }
 
     [Test]
     public void QueryServiceResult_from_exception_implicit_conversion()
     {
         var result = (QueryServiceResult<User>)"Message";
-        Assert.AreEqual("Message", result.Message);
-        Assert.IsNotNull(result.Reason);
+        Assert.That("Message", Is.EqualTo(result.Message));
+        Assert.That(result.Reason, Is.Not.Null);
     }
 }

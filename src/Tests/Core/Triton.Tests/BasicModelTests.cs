@@ -29,24 +29,24 @@ public class BasicModelTests
     public void ConcurrentModel_T_includes_RowVersion()
     {
         var t = typeof(ConcurrentTestModel);
-        Assert.NotNull(t.GetProperties().SingleOrDefault(p => p.IsReadWrite() && p.PropertyType == typeof(byte[]) && p.HasAttribute<TimestampAttribute>()));
+        Assert.That(t.GetProperties().SingleOrDefault(p => p.IsReadWrite() && p.PropertyType == typeof(byte[]) && p.HasAttribute<TimestampAttribute>()), Is.Not.Null);
         var x = new ConcurrentTestModel();
-        Assert.AreEqual(default(bool[]), x.RowVersion);
+        Assert.That(x.RowVersion, Is.EqualTo(default(bool[])));
         var a = RandomNumberGenerator.GetBytes(16);
         x.RowVersion = a;
-        Assert.AreEqual(a, x.RowVersion);
+        Assert.That(x.RowVersion, Is.EqualTo(a));
     }
 
     [Test]
     public void IdAsString_is_not_null()
     {
         var t = new TestModel();
-        Assert.Null(t.Id);
-        Assert.NotNull(t.IdAsString);
+        Assert.That(t.Id, Is.Null);
+        Assert.That(t.IdAsString, Is.Not.Null);
 
         var u = new ConcurrentTestModel();
-        Assert.Zero(u.Id);
-        Assert.AreEqual("0", u.IdAsString);
+        Assert.That(u.Id, Is.Zero);
+        Assert.That(u.IdAsString, Is.EqualTo("0"));
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class BasicModelTests
     public void Model_ctor_initializes_id()
     {
         var t = new TestModel("xabc1234");
-        Assert.AreEqual("xabc1234", t.Id);
-        Assert.AreEqual("xabc1234", t.IdAsString);
+        Assert.That(t.Id, Is.EqualTo("xabc1234"));
+        Assert.That(t.IdAsString, Is.EqualTo("xabc1234"));
     }
 }

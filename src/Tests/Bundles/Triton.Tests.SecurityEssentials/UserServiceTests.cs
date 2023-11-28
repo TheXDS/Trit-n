@@ -27,10 +27,10 @@ public class UserServiceTests
         var t = DateTime.UtcNow;
         var epsilon = TimeSpan.FromSeconds(30);
         var r = await _svc.Authenticate("test", "test".ToSecureString());
-        Assert.IsTrue(r.Success);
-        Assert.IsInstanceOf<Session>(r.ReturnValue);
-        Assert.AreEqual("test", r.ReturnValue!.Credential.Username);
-        Assert.IsTrue(r.ReturnValue!.Timestamp.IsBetween(t - epsilon, t + epsilon));
+        Assert.That(r.Success, Is.True);
+        Assert.That(r.ReturnValue, Is.AssignableFrom<Session>());
+        Assert.That(r.ReturnValue!.Credential.Username, Is.EqualTo("test"));
+        Assert.That(r.ReturnValue!.Timestamp.IsBetween(t - epsilon, t + epsilon), Is.True);
     }
     
     [Test]
@@ -38,34 +38,34 @@ public class UserServiceTests
     {
         var r = await _svc.Authenticate("test", "test".ToSecureString());
         await using var t = _svc.GetReadTransaction();
-        Assert.NotNull(await t.ReadAsync<Session, Guid>(r.ReturnValue!.Id));
+        Assert.That(await t.ReadAsync<Session, Guid>(r.ReturnValue!.Id), Is.Not.Null);
     }
 
     [Test]
     public async Task Authenticate_with_invalid_user_Test()
     {
         var r = await _svc.Authenticate("nonExistentUser", "test".ToSecureString());
-        Assert.IsFalse(r.Success);
-        Assert.IsNull(r.ReturnValue);
-        Assert.AreEqual(FailureReason.Forbidden, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
         
     [Test]
     public async Task Authenticate_with_disabled_user_Test()
     {
         var r = await _svc.Authenticate("disabled", "test".ToSecureString());
-        Assert.IsFalse(r.Success);
-        Assert.IsNull(r.ReturnValue);
-        Assert.AreEqual(FailureReason.Forbidden, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
 
     [Test]
     public async Task Authenticate_with_invalid_password_Test()
     {
         var r = await _svc.Authenticate("test", "wrong".ToSecureString());
-        Assert.IsFalse(r.Success);
-        Assert.IsNull(r.ReturnValue);
-        Assert.AreEqual(FailureReason.Forbidden, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
 
     [TestCase("testViewContext", PermissionFlags.Delete, true)]
@@ -78,50 +78,50 @@ public class UserServiceTests
     [TestCase("nonRegisteredContext", PermissionFlags.Elevate, null)]
     public async Task CheckAccess_permissions_Test(string context, PermissionFlags flags, bool? result)
     {
-        Assert.AreEqual(result, (await _svc.CheckAccess("test", context, flags)).ReturnValue);
+        Assert.That((await _svc.CheckAccess("test", context, flags)).ReturnValue, Is.EqualTo(result));
     }
 
     [Test]
     public async Task CheckAccess_returns_null_on_svc_error_Test()
     {
         var r = await _badSvc.CheckAccess("test", "testViewContext", PermissionFlags.View);
-        Assert.IsFalse(r.Success);
-        Assert.IsNull(r.ReturnValue);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.ReturnValue, Is.Null);
     }
 
     [Test]
     public async Task Authenticate_returns_null_on_svc_error_Test()
     {
         var r = await _badSvc.Authenticate("test", "test".ToSecureString());
-        Assert.IsFalse(r.Success);
-        Assert.IsNull(r.ReturnValue);
-        Assert.AreEqual(FailureReason.ServiceFailure, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.ServiceFailure));
     }
 
     [Test]
     public async Task AddNewLoginCredential_Test()
     {
-        Assert.IsTrue((await _svc.AddNewLoginCredential("newUser", "newPassword".ToSecureString())).Success);
+        Assert.That((await _svc.AddNewLoginCredential("newUser", "newPassword".ToSecureString())).Success, Is.True);
         var u = await _svc.GetCredential("newUser");
-        Assert.IsTrue(u.Success);
-        Assert.NotNull(u.ReturnValue);
-        Assert.IsTrue(u.ReturnValue!.PasswordHash.Any());
-        Assert.IsTrue((await _svc.VerifyPassword("newUser", "newPassword".ToSecureString())).ReturnValue?.Valid);
+        Assert.That(u.Success, Is.True);
+        Assert.That(u.ReturnValue, Is.Not.Null);
+        Assert.That(u.ReturnValue!.PasswordHash.Any(), Is.True);
+        Assert.That((await _svc.VerifyPassword("newUser", "newPassword".ToSecureString())).ReturnValue?.Valid, Is.True);
     }
 
     [Test]
     public async Task AddNewLoginCredential_on_Service_error_Test()
     {
         var r = await _badSvc.AddNewLoginCredential("newUser", "newPassword".ToSecureString());
-        Assert.IsFalse(r.Success);
-        Assert.AreEqual(FailureReason.ServiceFailure, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.ServiceFailure));
     }
 
     [Test]
     public async Task AddNewLoginCredential_on_dup_entity_Test()
     {
         var r = await _svc.AddNewLoginCredential("test", "newPassword".ToSecureString());
-        Assert.IsFalse(r.Success);
-        Assert.AreEqual(FailureReason.EntityDuplication, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.EntityDuplication));
     }
 }

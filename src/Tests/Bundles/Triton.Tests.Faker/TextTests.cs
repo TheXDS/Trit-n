@@ -10,8 +10,8 @@ public class TextTests
     [Test]
     public void Lorem_Test()
     {
-        Assert.IsNotEmpty(Text.Lorem(1));
-        Assert.Greater(Text.Lorem(200).Length, Text.Lorem(100).Length);
+        Assert.That(Text.Lorem(1), Is.Not.Empty);
+        Assert.That(Text.Lorem(200).Length, Is.GreaterThan(Text.Lorem(100).Length));
     }
 
     [Test]

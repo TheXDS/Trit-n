@@ -33,16 +33,16 @@ public class ModelsTests
             Granted = PermissionFlags.Special,
             Revoked = PermissionFlags.ReadWrite
         };
-        Assert.AreEqual(testId, x.Id);
-        Assert.AreEqual("test1", x.Username);
-        Assert.AreEqual(new byte[] { 1, 2, 4, 8 }, x.PasswordHash);
-        Assert.IsFalse(x.Enabled);
-        Assert.AreSame(sessionTest, x.Sessions);
-        Assert.AreSame(mfaTest, x.RegisteredMfa);
-        Assert.AreSame(descriptorsTest, x.Descriptors);
-        Assert.AreSame(membershipTest, x.Membership);
-        Assert.AreEqual(PermissionFlags.Special, x.Granted);
-        Assert.AreEqual(PermissionFlags.ReadWrite, x.Revoked);
+        Assert.That(x.Id, Is.EqualTo(testId));
+        Assert.That(x.Username, Is.EqualTo("test1"));
+        Assert.That(x.PasswordHash, Is.EquivalentTo(new byte[] { 1, 2, 4, 8 }));
+        Assert.That(x.Enabled, Is.False);
+        Assert.That(x.Sessions, Is.SameAs(sessionTest));
+        Assert.That(x.RegisteredMfa, Is.SameAs(mfaTest));
+        Assert.That(x.Descriptors, Is.SameAs(descriptorsTest));
+        Assert.That(x.Membership, Is.SameAs(membershipTest));
+        Assert.That(x.Granted, Is.EqualTo(PermissionFlags.Special));
+        Assert.That(x.Revoked, Is.EqualTo(PermissionFlags.ReadWrite));
     }
 
     [Test]
@@ -60,12 +60,12 @@ public class ModelsTests
             Membership = membershipTest,
             Descriptors = descriptorsTest,
         };
-        Assert.AreEqual(testId, x.Id);
-        Assert.AreEqual("Test group", x.DisplayName);
-        Assert.AreEqual(PermissionFlags.Special, x.Granted);
-        Assert.AreEqual(PermissionFlags.ReadWrite, x.Revoked);
-        Assert.AreSame(descriptorsTest, x.Descriptors);
-        Assert.AreSame(membershipTest, x.Membership);
+        Assert.That(x.Id, Is.EqualTo(testId));
+        Assert.That(x.DisplayName, Is.EqualTo("Test group"));
+        Assert.That(x.Granted, Is.EqualTo(PermissionFlags.Special));
+        Assert.That(x.Revoked, Is.EqualTo(PermissionFlags.ReadWrite));
+        Assert.That(x.Descriptors, Is.SameAs(descriptorsTest));
+        Assert.That(x.Membership, Is.SameAs(membershipTest));
     }
 
     [Test]
@@ -80,10 +80,10 @@ public class ModelsTests
             Token = "abcd1234",
             TtlHours = 48
         };
-        Assert.AreEqual(testId, x.Id);
-        Assert.AreSame(l, x.Credential);
-        Assert.AreEqual("abcd1234", x.Token);
-        Assert.AreEqual(48, x.TtlHours);
+        Assert.That(x.Id, Is.EqualTo(testId));
+        Assert.That(x.Credential, Is.SameAs(l));
+        Assert.That(x.Token, Is.EqualTo("abcd1234"));
+        Assert.That(x.TtlHours, Is.EqualTo(48));
     }
 
     [Test]
@@ -98,9 +98,9 @@ public class ModelsTests
             SecurityObject = l,
             Group = g
         };
-        Assert.AreEqual(testId, x.Id);
-        Assert.AreSame(l, x.SecurityObject);
-        Assert.AreSame(g, x.Group);
+        Assert.That(x.Id, Is.EqualTo(testId));
+        Assert.That(x.SecurityObject, Is.SameAs(l));
+        Assert.That(x.Group, Is.SameAs(g));
     }
 
     [Test]
@@ -113,9 +113,9 @@ public class ModelsTests
             Granted = PermissionFlags.Create,
             Revoked = PermissionFlags.Delete
         };
-        Assert.AreEqual(testId, x.Id);
-        Assert.AreEqual(PermissionFlags.Create, x.Granted);
-        Assert.AreEqual(PermissionFlags.Delete, x.Revoked);
+        Assert.That(x.Id, Is.EqualTo(testId));
+        Assert.That(x.Granted, Is.EqualTo(PermissionFlags.Create));
+        Assert.That(x.Revoked, Is.EqualTo(PermissionFlags.Delete));
     }
 
     [Test]
@@ -132,9 +132,9 @@ public class ModelsTests
             MfaProcessor = proc,
             Data = data
         };
-        Assert.AreEqual(testId, x.Id);
-        Assert.AreSame(l, x.Credential);
-        Assert.AreEqual(proc, x.MfaProcessor);
-        Assert.AreEqual(data, x.Data);
+        Assert.That(x.Id, Is.EqualTo(testId));
+        Assert.That(x.Credential, Is.SameAs(l));
+        Assert.That(x.MfaProcessor, Is.EqualTo(proc));
+        Assert.That(x.Data, Is.EqualTo(data));
     }
 }

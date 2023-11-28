@@ -1,13 +1,12 @@
-using TheXDS.Triton.Tests.Models;
-
 #pragma warning disable CS1591
 #pragma warning disable CA1822
 
-namespace TheXDS.Triton.Tests.EFContextBuilder;
-using System;
+using TheXDS.Triton.Tests.Models;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TheXDS.Triton.EfContextBuilder;
+
+namespace TheXDS.Triton.Tests.EFContextBuilder;
 
 [TestFixture]
 public class InstanceTests
@@ -42,9 +41,9 @@ public class InstanceTests
 
     private static void TestContext(DbContext context)
     {
-        Assert.IsInstanceOf<DbContext>(context);
-        Assert.IsInstanceOf<DbSet<User>>(context.Set<User>());
-        Assert.IsInstanceOf<DbSet<Comment>>(context.Set<Comment>());
-        Assert.IsInstanceOf<DbSet<Post>>(context.Set<Post>());
+        Assert.That(context, Is.InstanceOf<DbContext>());
+        Assert.That(context.Set<User>(), Is.AssignableTo<DbSet<User>>());
+        Assert.That(context.Set<Comment>(), Is.AssignableTo<DbSet<Comment>>());
+        Assert.That(context.Set<Post>(), Is.AssignableTo<DbSet<Post>>());
     }
 }

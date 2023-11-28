@@ -102,7 +102,7 @@ public class QueryServiceResultTests
     {
         var r = new QueryServiceResult<User>(FailureReason.ConcurrencyFailure);
         Assert.That(r.Success, Is.False);
-        Assert.AreEqual(FailureReason.ConcurrencyFailure, r.Reason);
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.ConcurrencyFailure));
     }
 
     [Test]
@@ -111,7 +111,7 @@ public class QueryServiceResultTests
         string message = $"Test {Guid.NewGuid()}";
         var r = new QueryServiceResult<User>(message);
         Assert.That(r.Success, Is.False);
-        Assert.AreEqual(message, r.Message);
+        Assert.That(r.Message, Is.EqualTo(message));
     }
 
     [Test]
@@ -119,8 +119,8 @@ public class QueryServiceResultTests
     {
         var r = new QueryServiceResult<User>(FailureReason.ConcurrencyFailure, "Test");
         Assert.That(r.Success, Is.False);
-        Assert.AreEqual("Test", r.Message);
-        Assert.AreEqual(FailureReason.ConcurrencyFailure, r.Reason);
+        Assert.That(r.Message, Is.EqualTo("Test"));
+        Assert.That(r.Reason, Is.EqualTo(FailureReason.ConcurrencyFailure));
     }
 
     [Test]
@@ -128,10 +128,10 @@ public class QueryServiceResultTests
     {
         var ex = new Exception("Error XYZ");
         var result = (QueryServiceResult<User>)ex;
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual(ex.Message, result.Message);
-        Assert.IsNotNull(result.Reason);
-        Assert.AreEqual(ex.HResult, (int)result.Reason!);
+        Assert.That(result.Success, Is.False);
+        Assert.That(result.Message, Is.EqualTo(ex.Message));
+        Assert.That(result.Reason, Is.Not.Null);
+        Assert.That((int)result.Reason!, Is.EqualTo(ex.HResult));
     }
 
     [Test]
@@ -139,17 +139,17 @@ public class QueryServiceResultTests
     {
         var msg = "Error X";
         var result = (QueryServiceResult<User>)msg;
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual(msg, result.Message);
+        Assert.That(result.Success, Is.False);
+        Assert.That(result.Message, Is.EqualTo(msg));
     }
 
     [Test]
     public void QueryServiceResult_to_bool_implicit_conversion()
     {
         var result = GetEmpty();
-        Assert.IsFalse((bool)result);
+        Assert.That((bool)result, Is.False);
 
         result = GetSingle();
-        Assert.IsTrue((bool)result);
+        Assert.That((bool)result);
     }
 }

@@ -14,12 +14,12 @@ public class CompanyTests
         foreach (var _ in Enumerable.Range(0, 1000))
         {
             Company c = new();
-            Assert.IsNotNull(c);
-            Assert.IsNotEmpty(c.Name);
-            Assert.IsNotNull(c.Address);
-            Assert.IsNotEmpty(c.DomainName);
-            Assert.IsNotEmpty(c.Website);
-            Assert.IsTrue(Uri.IsWellFormedUriString(c.Website, UriKind.Absolute));
+            Assert.That(c, Is.Not.Null);
+            Assert.That(c.Name, Is.Not.Empty);
+            Assert.That(c.Address, Is.Not.Null);
+            Assert.That(c.DomainName, Is.Not.Empty);
+            Assert.That(c.Website, Is.Not.Empty);
+            Assert.That(Uri.IsWellFormedUriString(c.Website, UriKind.Absolute), Is.True);
         }
     }
 
@@ -32,9 +32,9 @@ public class CompanyTests
             foreach (var __ in Enumerable.Range(0, 100))
             {
                 var e = c.RndEmployee();
-                Assert.IsInstanceOf<Employee>(e);
-                Assert.IsTrue(Regex.IsMatch(e.Email, ".+@.+[.].{2,}"));
-                Assert.IsTrue(e.Email.EndsWith($"@{c.DomainName}"));
+                Assert.That(e, Is.InstanceOf<Employee>());
+                Assert.That(Regex.IsMatch(e.Email, ".+@.+[.].{2,}"), Is.True);
+                Assert.That(e.Email.EndsWith($"@{c.DomainName}"), Is.True);
             }
         }
     }
@@ -48,9 +48,9 @@ public class CompanyTests
             foreach (var __ in Enumerable.Range(0, 100))
             {
                 var e = c.RndChief();
-                Assert.IsInstanceOf<Employee>(e);
-                Assert.IsTrue(Regex.IsMatch(e.Email, ".+@.+[.].{2,}"));
-                Assert.IsTrue(e.Email.EndsWith($"@{c.DomainName}"));
+                Assert.That(e, Is.InstanceOf<Employee>());
+                Assert.That(Regex.IsMatch(e.Email, ".+@.+[.].{2,}"), Is.True);
+                Assert.That(e.Email.EndsWith($"@{c.DomainName}"), Is.True);
             }
         }
     }

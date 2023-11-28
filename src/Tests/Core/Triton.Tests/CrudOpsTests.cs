@@ -34,15 +34,15 @@ public class CrudOpsTests
     {
         using (var t = _srv.GetReadTransaction())
         {
-            Assert.IsInstanceOf<ICrudReadTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudReadTransaction>());
         }
         using (var t = _srv.GetWriteTransaction())
         {
-            Assert.IsInstanceOf<ICrudWriteTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudWriteTransaction>());
         }
         using (var t = _srv.GetTransaction())
         {
-            Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudReadWriteTransaction>());
         }
     }
 
@@ -52,15 +52,15 @@ public class CrudOpsTests
         ITritonService svc = new DefaultImplServiceWrap(_srv);
         using (var t = svc.GetReadTransaction())
         {
-            Assert.IsInstanceOf<ICrudReadTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudReadTransaction>());
         }
         using (var t = svc.GetWriteTransaction())
         {
-            Assert.IsInstanceOf<ICrudWriteTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudWriteTransaction>());
         }
         using (var t = svc.GetTransaction())
         {
-            Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudReadWriteTransaction>());
         }
     }
 
@@ -69,15 +69,15 @@ public class CrudOpsTests
     {
         await using (var t = _srv.GetReadTransaction())
         {
-            Assert.IsInstanceOf<ICrudReadTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudReadTransaction>());
         }
         await using (var t = _srv.GetWriteTransaction())
         {
-            Assert.IsInstanceOf<ICrudWriteTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudWriteTransaction>());
         }
         await using (var t = _srv.GetTransaction())
         {
-            Assert.IsInstanceOf<ICrudReadWriteTransaction>(t);
+            Assert.That(t, Is.InstanceOf<ICrudReadWriteTransaction>());
         }
     }
 
@@ -88,21 +88,21 @@ public class CrudOpsTests
 
         using (t = _srv.GetReadTransaction())
         {
-            Assert.False(t.IsDisposed);
+            Assert.That(t.IsDisposed, Is.False);
         }
-        Assert.True(t.IsDisposed);
+        Assert.That(t.IsDisposed);
 
         using (t = _srv.GetWriteTransaction())
         {
-            Assert.False(t.IsDisposed);
+            Assert.That(t.IsDisposed, Is.False);
         }
-        Assert.True(t.IsDisposed);
+        Assert.That(t.IsDisposed);
 
         using (t = _srv.GetTransaction())
         {
-            Assert.False(t.IsDisposed);
+            Assert.That(t.IsDisposed, Is.False);
         }
-        Assert.True(t.IsDisposed);
+        Assert.That(t.IsDisposed);
     }
 
     [Test]
@@ -112,8 +112,8 @@ public class CrudOpsTests
         {
             var createResult = t.Create(new User("user4", "User 4"));
 
-            Assert.IsTrue(createResult.Success);
-            Assert.IsNull(createResult.Reason);
+            Assert.That(createResult.Success);
+            Assert.That(createResult.Reason, Is.Null);
         }
 
         // Realizar prueba post-disposal para comprobar correctamente el guardado.
@@ -122,10 +122,10 @@ public class CrudOpsTests
         {
             var readResult = t.Read<User, string>("user4", out var u);
 
-            Assert.IsTrue(readResult.Success);
-            Assert.IsNull(readResult.Reason);
-            Assert.IsInstanceOf<User>(u);
-            Assert.AreEqual("User 4", u!.PublicName);
+            Assert.That(readResult.Success);
+            Assert.That(readResult.Reason, Is.Null);
+            Assert.That(u, Is.InstanceOf<User>());
+            Assert.That(u!.PublicName, Is.EqualTo("User 4"));
         }
     }
 
@@ -133,11 +133,11 @@ public class CrudOpsTests
     public void CreateMany_test()
     {
         using var t = _srv.GetWriteTransaction();
-        Assert.AreEqual(ServiceResult.Ok, t.Create(new Model[] {
+        Assert.That(t.Create(new Model[] {
             new User("user7", "User #7"),
             new User("user8", "User #8"),
             new User("user9", "User #9"),
-        }));
+        }), Is.EqualTo(ServiceResult.Ok));
     }
 
     [Test]
@@ -153,14 +153,14 @@ public class CrudOpsTests
 
         using (var t = _srv.GetWriteTransaction())
         {
-            Assert.True(t.Update(r).Success);
+            Assert.That(t.Update(r).Success);
         }
 
         using (var t = _srv.GetReadTransaction())
         {
             r = t.Read<User, string>("user1").ReturnValue!;
         }
-        Assert.AreEqual("Test #1", r.PublicName);
+        Assert.That(r.PublicName, Is.EqualTo("Test #1"));
     }
 
     [Test]
@@ -168,11 +168,11 @@ public class CrudOpsTests
     {
         using (var t = _srv.GetWriteTransaction())
         {
-            Assert.IsTrue(t.Delete<User, string>("user3").Success);
+            Assert.That(t.Delete<User, string>("user3").Success);
         }
         using (var t = _srv.GetReadTransaction())
         {
-            Assert.IsNull(t.Read<User, string>("user3").ReturnValue);
+            Assert.That(t.Read<User, string>("user3").ReturnValue, Is.Null);
         }
     }
 
@@ -181,8 +181,8 @@ public class CrudOpsTests
     {
         await using var t = _srv.GetReadTransaction();
         User r = (await t.ReadAsync<User, string>("user1")).ReturnValue!;
-        Assert.IsNotNull(r);
-        Assert.IsAssignableFrom<User>(r);
+        Assert.That(r, Is.Not.Null);
+        Assert.That(r, Is.InstanceOf<User>());
     }
 
     [Test]
@@ -190,7 +190,7 @@ public class CrudOpsTests
     {
         await using var t = _srv.GetReadTransaction();
         var r = (await t.SearchAsync<User>(p => p.PublicName != null)).ReturnValue!;
-        Assert.IsNotNull(r);
-        Assert.NotZero(r.Length);
+        Assert.That(r, Is.Not.Null);
+        Assert.That(r.Length, Is.Not.Zero);
     }
 }

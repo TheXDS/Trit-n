@@ -29,8 +29,8 @@ public class TransactionConfigurationTests
         c.AddFirstProlog(FirstAction);
         c.RunProlog(CrudAction.Commit, null);
         
-        Assert.True(ranFirst);
-        Assert.False(ranLast);
+        Assert.That(ranFirst);
+        Assert.That(ranLast, Is.False);
     }
     
     [Test]
@@ -53,8 +53,8 @@ public class TransactionConfigurationTests
         c.AddFirstEpilog(FirstAction);
         c.RunEpilog(CrudAction.Commit, null);
         
-        Assert.True(ranFirst);
-        Assert.False(ranLast);
+        Assert.That(ranFirst);
+        Assert.That(ranLast, Is.False);
     }
 
     private class Flaggy1TestMiddleware : ITransactionMiddleware
@@ -95,14 +95,14 @@ public class TransactionConfigurationTests
         _test_AttachAt_flag1 = false;
         _test_AttachAt_flag2 = false;
         c.RunProlog(CrudAction.Commit, null);
-        Assert.True(_test_AttachAt_flag2);
-        Assert.False(_test_AttachAt_flag1);
+        Assert.That(_test_AttachAt_flag2);
+        Assert.That(_test_AttachAt_flag1, Is.False);
         
         _test_AttachAt_flag1 = false;
         _test_AttachAt_flag2 = false;
         c.RunEpilog(CrudAction.Commit, null);
-        Assert.True(_test_AttachAt_flag1);
-        Assert.False(_test_AttachAt_flag2);
+        Assert.That(_test_AttachAt_flag1);
+        Assert.That(_test_AttachAt_flag2, Is.False);
     }
 
     private static bool _test_AttachAt_flag1 = false;

@@ -52,7 +52,7 @@ public class CrudTransactionBaseTests
     public void ResultFromException_with_common_failures_test(Type exType, FailureReason reason)
     {
         var result = TestClass.Test_ResultFromException(exType.New<Exception>());
-        Assert.AreEqual(reason, result.Reason);
+        Assert.That(result.Reason, Is.EqualTo(reason));
     }
 
     [TestCase(typeof(ArgumentOutOfRangeException))]
@@ -62,8 +62,8 @@ public class CrudTransactionBaseTests
     {
         var ex = exType.New<Exception>();
         var result = TestClass.Test_ResultFromException(ex);
-        Assert.NotNull(result.Reason);
-        Assert.AreEqual(ex.HResult, (int)result.Reason!);
+        Assert.That(result.Reason, Is.Not.Null);
+        Assert.That((int)result.Reason!, Is.EqualTo(ex.HResult));
     }
 
     [TestCase(EntityState.Added, CrudAction.Create)]
@@ -71,14 +71,14 @@ public class CrudTransactionBaseTests
     [TestCase(EntityState.Deleted, CrudAction.Delete)]
     public void Map_with_known_states_test(EntityState state, CrudAction expected)
     {
-        Assert.AreEqual(expected, TestClass.Test_Map(state));
+        Assert.That(TestClass.Test_Map(state), Is.EqualTo(expected));
     }
 
     [Test]
     public void Map_with_unknown_states_test()
     {
-        Assert.AreEqual(CrudAction.Read, TestClass.Test_Map(EntityState.Detached));
-        Assert.AreEqual(CrudAction.Read, TestClass.Test_Map(EntityState.Unchanged));
+        Assert.That(TestClass.Test_Map(EntityState.Detached), Is.EqualTo(CrudAction.Read));
+        Assert.That(TestClass.Test_Map(EntityState.Unchanged), Is.EqualTo(CrudAction.Read));
     }
 
     [Test]
@@ -90,8 +90,8 @@ public class CrudTransactionBaseTests
         void TestDelegate(bool arg) => delegateRan = arg;
 
         var result = test.Test_TryCall_void(CrudAction.Create, TestDelegate, true);
-        Assert.IsNull(result);
-        Assert.IsTrue(delegateRan);
+        Assert.That(result, Is.Null);
+        Assert.That(delegateRan, Is.Not.Null);
     }
 
     [Test]
@@ -108,9 +108,9 @@ public class CrudTransactionBaseTests
 
         var result = test.Test_TryCall(CrudAction.Create, TestDelegate, out int returnValue, true);
 
-        Assert.IsNull(result);
-        Assert.IsTrue(delegateRan);
-        Assert.AreEqual(1, returnValue);
+        Assert.That(result, Is.Null);
+        Assert.That(delegateRan, Is.True);
+        Assert.That(returnValue, Is.EqualTo(1));
     }
 
     [Test]
@@ -126,7 +126,7 @@ public class CrudTransactionBaseTests
         }
 
         Assert.Throws<InvalidCastException>(() => _ = test.Test_TryCall(CrudAction.Create, TestDelegate, out string returnValue, true));
-        Assert.IsFalse(delegateRan);
+        Assert.That(delegateRan, Is.False);
     }
 
     [Test]
@@ -138,10 +138,10 @@ public class CrudTransactionBaseTests
 
         var result = test.Test_TryCall(CrudAction.Create, TestDelegate, out int returnValue, true);
 
-        Assert.IsNotNull(result);
-        Assert.IsFalse(result!.Success);
-        Assert.AreEqual(default(int), returnValue);
-        Assert.AreEqual(0xdead, (int)result.Reason!);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Success, Is.False);
+        Assert.That(returnValue, Is.EqualTo(default(int)));
+        Assert.That((int)result.Reason!, Is.EqualTo(0xdead));
     }
 
     [Test]
@@ -158,10 +158,10 @@ public class CrudTransactionBaseTests
 
         var result = test.Test_TryCall<int>(CrudAction.Create, TestDelegate, true);
 
-        Assert.IsNotNull(result);
-        Assert.IsTrue(result!.Success);
-        Assert.IsTrue(delegateRan);
-        Assert.AreEqual(1, result.ReturnValue);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Success, Is.True);
+        Assert.That(delegateRan, Is.True);
+        Assert.That(result.ReturnValue, Is.EqualTo(1));
     }
 
     [Test]
@@ -173,7 +173,7 @@ public class CrudTransactionBaseTests
         void TestDelegate(bool arg) => delegateRan = arg;
 
         Assert.Throws<InvalidOperationException>(() => _ = test.Test_TryCall<int>(CrudAction.Create, TestDelegate, true));
-        Assert.IsFalse(delegateRan);
+        Assert.That(delegateRan, Is.False);
     }
 
     [Test]
@@ -193,10 +193,10 @@ public class CrudTransactionBaseTests
         test.Configurator.AddProlog(Stop);
         var result = test.Test_TryCall<int>(CrudAction.Create, TestDelegate, true);
 
-        Assert.IsNotNull(result);
-        Assert.False(result!.Success);
-        Assert.IsFalse(delegateRan);
-        Assert.AreEqual(default(int), result.ReturnValue);
-        Assert.AreEqual(FailureReason.Tamper, result.Reason);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Success, Is.False);
+        Assert.That(delegateRan, Is.False);
+        Assert.That(result.ReturnValue, Is.EqualTo(default(int)));
+        Assert.That(result.Reason, Is.EqualTo(FailureReason.Tamper));
     }
 }

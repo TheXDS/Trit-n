@@ -131,7 +131,7 @@ public abstract class TransactionMiddlewareExecutionTests<T> where T : ITransact
             if (!PrologRan)
             {
                 Assert.That(EpilogRan, Is.False);
-                Assert.AreEqual(ExpectedAction, action);
+                Assert.That(action, Is.EqualTo(ExpectedAction));
                 if (ExpectedPrologModelType is null)
                 {
                     Assert.That(entities, Is.Null);
@@ -152,7 +152,7 @@ public abstract class TransactionMiddlewareExecutionTests<T> where T : ITransact
             if (!EpilogRan)
             {
                 Assert.That(PrologRan, Is.True);
-                Assert.AreEqual(ExpectedAction, action);
+                Assert.That(action, Is.EqualTo(ExpectedAction));
                 if (ExpectedEpilogModelType is null)
                 {
                     Assert.That(entities, Is.Null);

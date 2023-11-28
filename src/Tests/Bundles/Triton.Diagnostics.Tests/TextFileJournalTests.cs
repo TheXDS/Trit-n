@@ -63,7 +63,7 @@ public class TextFileJournalTests
         TextFileJournal j = new() { Path = p };
         j.Log(action, withEntity ? new[] { new User("test", "Test user") } : null, s);
         FileInfo f = new(p);
-        Assert.NotZero(f.Length);
+        Assert.That(f.Length, Is.Not.Zero);
         f.Delete();
     }
 
@@ -73,9 +73,9 @@ public class TextFileJournalTests
         string invalidPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(invalidPath);
         TextFileJournal j = new() { Path = invalidPath };
-        Assert.AreEqual(invalidPath, j.Path);
+        Assert.That(invalidPath, Is.EqualTo(j.Path));
         Assert.Throws<UnauthorizedAccessException>(()=>j.Log(CrudAction.Commit, null, new()));
-        Assert.IsNull(j.Path);
+        Assert.That(j.Path, Is.Null);
         j.Log(CrudAction.Commit, null, new());
         Directory.Delete(invalidPath);
     }

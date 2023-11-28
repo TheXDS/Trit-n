@@ -1,10 +1,10 @@
 ﻿#pragma warning disable CS1591
 
-namespace TheXDS.Triton.Tests.EFCore.Tests;
-using System.Collections.Generic;
 using NUnit.Framework;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;
+
+namespace TheXDS.Triton.Tests.EFCore.Tests;
 
 public partial class CrudOpsTests
 {
@@ -20,9 +20,9 @@ public partial class CrudOpsTests
     {
         using var t = _srv.GetTransaction();
         var post = t.Read<Post>(id);
-        Assert.IsFalse(post.Success);
-        Assert.IsNull(post.ReturnValue);
-        Assert.True(post.Reason.HasValue);
+        Assert.That(post.Success, Is.False);
+        Assert.That(post.ReturnValue, Is.Null);
+        Assert.That(post.Reason.HasValue, Is.True);
         return post.Reason!.Value;
     }
 }

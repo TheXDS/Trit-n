@@ -12,10 +12,10 @@ public class ServiceResultTests
     {
         var ex = new Exception("Error XYZ");
         var result = new ServiceResult(ex);
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual(ex.Message, result.Message);
-        Assert.IsNotNull(result.Reason);
-        Assert.AreEqual(ex.HResult, (int)result.Reason!);
+        Assert.That(result.Success, Is.False);
+        Assert.That(ex.Message, Is.EqualTo(result.Message));
+        Assert.That(result.Reason, Is.Not.Null);
+        Assert.That(ex.HResult, Is.EqualTo((int)result.Reason!));
     }
 
     [Test]
@@ -23,10 +23,10 @@ public class ServiceResultTests
     {
         var ex = new Exception("Error XYZ");
         var result = (ServiceResult)ex;
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual(ex.Message, result.Message);
-        Assert.IsNotNull(result.Reason);
-        Assert.AreEqual(ex.HResult, (int)result.Reason!);
+        Assert.That(result.Success, Is.False);
+        Assert.That(ex.Message, Is.EqualTo(result.Message));
+        Assert.That(result.Reason, Is.Not.Null);
+        Assert.That(ex.HResult, Is.EqualTo((int)result.Reason!));
     }
 
     [Test]
@@ -34,28 +34,28 @@ public class ServiceResultTests
     {
         var msg = "Error X";
         var result = (ServiceResult)msg;
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual(msg, result.Message);
+        Assert.That(result.Success, Is.False);
+        Assert.That(msg, Is.EqualTo(result.Message));
     }
 
     [Test]
     public void ServiceResult_from_bool_implicit_conversion_test()
     {
         var result = (ServiceResult)false;
-        Assert.IsFalse((bool)result);
+        Assert.That((bool)result, Is.False);
 
         result = (ServiceResult)true;
-        Assert.IsTrue((bool)result);
+        Assert.That((bool)result);
     }
 
     [Test]
     public void ServiceResult_to_bool_implicit_conversion_test()
     {
         var result = (ServiceResult)false;
-        Assert.IsFalse(result.Success);
+        Assert.That(result.Success, Is.False);
 
         result = (ServiceResult)true;
-        Assert.IsTrue(result.Success);
+        Assert.That(result.Success);
     }
 
     [Test]
@@ -63,7 +63,7 @@ public class ServiceResultTests
     {
         var msg = "Error X";
         var result = (ServiceResult)msg;
-        Assert.AreEqual(msg, (string)result);
+        Assert.That(msg, Is.EqualTo((string)result));
     }
 
     [Test]
@@ -71,55 +71,55 @@ public class ServiceResultTests
     {
         var msg = "Error X";
         var result = (ServiceResult)msg;
-        Assert.AreEqual(msg, result.ToString());
+        Assert.That(msg, Is.EqualTo(result.ToString()));
     }
 
     [Test]
     public void Equals_with_ServiceResult_test()
     {
-        Assert.IsFalse(ServiceResult.Ok.Equals((ServiceResult)FailureReason.Unknown));
-        Assert.IsTrue(((ServiceResult)FailureReason.ServiceFailure).Equals((ServiceResult)FailureReason.ServiceFailure));
+        Assert.That(ServiceResult.Ok.Equals((ServiceResult)FailureReason.Unknown), Is.False);
+        Assert.That(((ServiceResult)FailureReason.ServiceFailure).Equals((ServiceResult)FailureReason.ServiceFailure));
     }
 
     [Test]
     public void Equals_with_Exception_test()
     {
-        Assert.IsFalse(((ServiceResult)new InvalidOperationException()).Equals(new StackOverflowException()));
-        Assert.IsTrue(((ServiceResult)new NullReferenceException()).Equals(new NullReferenceException()));
+        Assert.That(((ServiceResult)new InvalidOperationException()).Equals(new StackOverflowException()), Is.False);
+        Assert.That(((ServiceResult)new NullReferenceException()).Equals(new NullReferenceException()));
     }
 
     [Test]
     public void Equals_with_object_test()
     {
-        Assert.IsFalse(ServiceResult.Ok.Equals((object)false));
-        Assert.IsTrue(ServiceResult.Ok.Equals((object)true));
+        Assert.That(ServiceResult.Ok.Equals((object)false), Is.False);
+        Assert.That(ServiceResult.Ok.Equals((object)true));
 
-        Assert.IsFalse(ServiceResult.Ok.Equals((object)(ServiceResult)FailureReason.Unknown));
-        Assert.IsTrue(((ServiceResult)FailureReason.ServiceFailure).Equals((object)(ServiceResult)FailureReason.ServiceFailure));
+        Assert.That(ServiceResult.Ok.Equals((object)(ServiceResult)FailureReason.Unknown), Is.False);
+        Assert.That(((ServiceResult)FailureReason.ServiceFailure).Equals((object)(ServiceResult)FailureReason.ServiceFailure));
 
-        Assert.IsTrue(ServiceResult.Ok.Equals((Exception?)null));
-        Assert.IsFalse(((ServiceResult)new InvalidOperationException()).Equals((object)new StackOverflowException()));
-        Assert.IsTrue(((ServiceResult)new NullReferenceException()).Equals((object)new NullReferenceException()));
+        Assert.That(ServiceResult.Ok.Equals((Exception?)null));
+        Assert.That(((ServiceResult)new InvalidOperationException()).Equals((object)new StackOverflowException()), Is.False);
+        Assert.That(((ServiceResult)new NullReferenceException()).Equals((object)new NullReferenceException()));
 
-        Assert.IsFalse(ServiceResult.Ok!.Equals((object?)null));
-        Assert.IsFalse(ServiceResult.Ok!.Equals(new object()));
+        Assert.That(ServiceResult.Ok!.Equals((object?)null), Is.False);
+        Assert.That(ServiceResult.Ok!.Equals(new object()), Is.False);
     }
 
     [Test]
     public void Success_result_with_message_test()
     {
         var r = new ServiceResult("test");
-        Assert.IsTrue(r.Success);
-        Assert.AreEqual("test", r.Message);
+        Assert.That(r.Success);
+        Assert.That("test", Is.EqualTo(r.Message));
     }
 
     [Test]
     public void Custom_reason_message_test()
     {
         var r = ServiceResult.FailWith<ServiceResult>((FailureReason)0x08070605);
-        Assert.False(r.Success);
-        Assert.AreEqual("0x08070605", r.Message);
-        Assert.AreEqual(0x08070605, (int)r.Reason!);
+        Assert.That(r.Success, Is.False);
+        Assert.That("0x08070605", Is.EqualTo(r.Message));
+        Assert.That(0x08070605, Is.EqualTo((int)r.Reason!));
     }
 
     [Test]
@@ -127,26 +127,26 @@ public class ServiceResultTests
     {
         var ex = new IOException("Test");
         var r = ServiceResult.FailWith<ServiceResult>(ex);
-        Assert.False(r.Success);
-        Assert.AreEqual("Test", r.Message);
-        Assert.AreEqual(ex.HResult, (int)r.Reason!);
+        Assert.That(r.Success, Is.False);
+        Assert.That("Test", Is.EqualTo(r.Message));
+        Assert.That(ex.HResult, Is.EqualTo((int)r.Reason!));
     }
 
     [Test]
     public void Fail_with_message_test()
     {
         var r = ServiceResult.FailWith<ServiceResult>("Test");
-        Assert.False(r.Success);
-        Assert.AreEqual("Test", r.Message);
-        Assert.AreEqual(FailureReason.Unknown, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That("Test", Is.EqualTo(r.Message));
+        Assert.That(FailureReason.Unknown, Is.EqualTo(r.Reason));
     }
 
     [Test]
     public void Fail_with_reason_and_message_test()
     {
         var r = new ServiceResult(FailureReason.ConcurrencyFailure, "Test");
-        Assert.False(r.Success);
-        Assert.AreEqual("Test", r.Message);
-        Assert.AreEqual(FailureReason.ConcurrencyFailure, r.Reason);
+        Assert.That(r.Success, Is.False);
+        Assert.That("Test", Is.EqualTo(r.Message));
+        Assert.That(FailureReason.ConcurrencyFailure, Is.EqualTo(r.Reason));
     }
 }

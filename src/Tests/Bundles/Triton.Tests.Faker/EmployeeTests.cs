@@ -16,21 +16,21 @@ public class EmployeeTests
         Company company = new();
         var employee = Employee.Get(company);
 
-        Assert.IsInstanceOf<Employee>(employee);
-        Assert.IsNotEmpty(employee.FirstName);
-        Assert.IsNotEmpty(employee.Surname);
-        Assert.IsInstanceOf<Gender>(employee.Gender);
-        Assert.IsInstanceOf<DateTime>(employee.Birth);
-        Assert.IsNotEmpty(employee.UserName);
-        Assert.IsNotEmpty(employee.Name);
-        Assert.IsNotEmpty(employee.FullName);
-        Assert.IsInstanceOf<double>(employee.Age);
-        Assert.IsTrue(employee.Age.IsValid());
-        Assert.IsTrue(employee.Age.IsBetween(18, 80));
-        Assert.IsNotEmpty(employee.Email);
-        Assert.IsTrue(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"));
-        Assert.IsTrue(employee.Email.EndsWith($"@{company.DomainName}"));
-        Assert.IsNotEmpty(employee.Position);
+        Assert.That(employee, Is.InstanceOf<Employee>());
+        Assert.That(employee.FirstName, Is.Not.Empty);
+        Assert.That(employee.Surname, Is.Not.Empty);
+        Assert.That(employee.Gender, Is.InstanceOf<Gender>());
+        Assert.That(employee.Birth, Is.InstanceOf<DateTime>());
+        Assert.That(employee.UserName, Is.Not.Empty);
+        Assert.That(employee.Name, Is.Not.Empty);
+        Assert.That(employee.FullName, Is.Not.Empty);
+        Assert.That(employee.Age, Is.InstanceOf<double>());
+        Assert.That(employee.Age.IsValid(), Is.True);
+        Assert.That(employee.Age.IsBetween(18, 80), Is.True);
+        Assert.That(employee.Email, Is.Not.Empty);
+        Assert.That(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"), Is.True);
+        Assert.That(employee.Email.EndsWith($"@{company.DomainName}"), Is.True);
+        Assert.That(employee.Position, Is.Not.Empty);
     }
 
     [Test]
@@ -39,21 +39,21 @@ public class EmployeeTests
         Company company = new();
         var employee = Employee.GetChief(company);
 
-        Assert.IsInstanceOf<Employee>(employee);
-        Assert.IsNotEmpty(employee.FirstName);
-        Assert.IsNotEmpty(employee.Surname);
-        Assert.IsInstanceOf<Gender>(employee.Gender);
-        Assert.IsInstanceOf<DateTime>(employee.Birth);
-        Assert.IsNotEmpty(employee.UserName);
-        Assert.IsNotEmpty(employee.Name);
-        Assert.IsNotEmpty(employee.FullName);
-        Assert.IsInstanceOf<double>(employee.Age);
-        Assert.IsTrue(employee.Age.IsValid());
-        Assert.IsTrue(employee.Age.IsBetween(18, 80));
-        Assert.IsNotEmpty(employee.Email);
-        Assert.IsTrue(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"));
-        Assert.IsTrue(employee.Email.EndsWith($"@{company.DomainName}"));
-        Assert.IsNotEmpty(employee.Position);
+        Assert.That(employee, Is.InstanceOf<Employee>());
+        Assert.That(employee.FirstName, Is.Not.Empty);
+        Assert.That(employee.Surname, Is.Not.Empty);
+        Assert.That(employee.Gender, Is.InstanceOf<Gender>());
+        Assert.That(employee.Birth, Is.InstanceOf<DateTime>());
+        Assert.That(employee.UserName, Is.Not.Empty);
+        Assert.That(employee.Name, Is.Not.Empty);
+        Assert.That(employee.FullName, Is.Not.Empty);
+        Assert.That(employee.Age, Is.InstanceOf<double>());
+        Assert.That(employee.Age.IsValid(), Is.True);
+        Assert.That(employee.Age.IsBetween(18, 80), Is.True);
+        Assert.That(employee.Email, Is.Not.Empty);
+        Assert.That(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"), Is.True);
+        Assert.That(employee.Email.EndsWith($"@{company.DomainName}"), Is.True);
+        Assert.That(employee.Position, Is.Not.Empty);
     }
 
     [Test]
@@ -63,20 +63,20 @@ public class EmployeeTests
         Company company = new();
         var employee = Employee.FromPerson(person, company);
 
-        Assert.IsInstanceOf<Employee>(employee);
-        Assert.AreEqual(employee.FirstName, person.FirstName);
-        Assert.AreEqual(employee.Surname, person.Surname);
-        Assert.AreEqual(employee.Gender, person.Gender);
-        Assert.AreEqual(employee.Birth, person.Birth);
-        Assert.AreEqual(employee.UserName, person.UserName);
-        Assert.AreEqual(employee.Name, person.Name);
-        Assert.AreEqual(employee.FullName, person.FullName);
-        Assert.AreEqual(employee.Age, person.Age);
-        Assert.IsNotEmpty(employee.Email);
-        Assert.IsTrue(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"));
-        Assert.IsTrue(employee.Email.EndsWith($"@{company.DomainName}"));
-        Assert.IsTrue(employee.Email.StartsWith(person.UserName));
-        Assert.IsNotEmpty(employee.Position);
+        Assert.That(employee, Is.InstanceOf<Employee>());
+        Assert.That(employee.FirstName, Is.EqualTo(person.FirstName));
+        Assert.That(employee.Surname, Is.EqualTo(person.Surname));
+        Assert.That(employee.Gender, Is.EqualTo(person.Gender));
+        Assert.That(employee.Birth, Is.EqualTo(person.Birth));
+        Assert.That(employee.UserName, Is.EqualTo(person.UserName));
+        Assert.That(employee.Name, Is.EqualTo(person.Name));
+        Assert.That(employee.FullName, Is.EqualTo(person.FullName));
+        Assert.That(employee.Age, Is.EqualTo(person.Age));
+        Assert.That(employee.Email, Is.Not.Empty);
+        Assert.That(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"), Is.True);
+        Assert.That(employee.Email.EndsWith($"@{company.DomainName}"), Is.True);
+        Assert.That(employee.Email.StartsWith(person.UserName), Is.True);
+        Assert.That(employee.Position, Is.Not.Empty);
     }
 
     [Test]
@@ -86,19 +86,19 @@ public class EmployeeTests
         Company company = new();
         var employee = Employee.ChiefFromPerson(person, company);
 
-        Assert.IsInstanceOf<Employee>(employee);
-        Assert.AreEqual(employee.FirstName, person.FirstName);
-        Assert.AreEqual(employee.Surname, person.Surname);
-        Assert.AreEqual(employee.Gender, person.Gender);
-        Assert.AreEqual(employee.Birth, person.Birth);
-        Assert.AreEqual(employee.UserName, person.UserName);
-        Assert.AreEqual(employee.Name, person.Name);
-        Assert.AreEqual(employee.FullName, person.FullName);
-        Assert.AreEqual(employee.Age, person.Age);
-        Assert.IsNotEmpty(employee.Email);
-        Assert.IsTrue(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"));
-        Assert.IsTrue(employee.Email.EndsWith($"@{company.DomainName}"));
-        Assert.IsTrue(employee.Email.StartsWith(person.UserName));
-        Assert.IsNotEmpty(employee.Position);
+        Assert.That(employee, Is.InstanceOf<Employee>());
+        Assert.That(employee.FirstName, Is.EqualTo(person.FirstName));
+        Assert.That(employee.Surname, Is.EqualTo(person.Surname));
+        Assert.That(employee.Gender, Is.EqualTo(person.Gender));
+        Assert.That(employee.Birth, Is.EqualTo(person.Birth));
+        Assert.That(employee.UserName, Is.EqualTo(person.UserName));
+        Assert.That(employee.Name, Is.EqualTo(person.Name));
+        Assert.That(employee.FullName, Is.EqualTo(person.FullName));
+        Assert.That(employee.Age, Is.EqualTo(person.Age));
+        Assert.That(employee.Email, Is.Not.Empty);
+        Assert.That(Regex.IsMatch(employee.Email, ".+@.+[.].{2,}"), Is.True);
+        Assert.That(employee.Email.EndsWith($"@{company.DomainName}"), Is.True);
+        Assert.That(employee.Email.StartsWith(person.UserName), Is.True);
+        Assert.That(employee.Position, Is.Not.Empty);
     }
 }

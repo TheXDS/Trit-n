@@ -32,11 +32,11 @@ public partial class MiddlewareTests
         {
             if (!prologDidRun)
             {
-                Assert.AreEqual(CrudAction.Create, arg1);
+                Assert.That(arg1, Is.EqualTo(CrudAction.Create));
                 Assert.That(arg2, Is.Not.Null);
                 var j = arg2!.First();
-                Assert.IsInstanceOf<Post>(j);
-                Assert.AreEqual("0", j!.IdAsString);
+                Assert.That(j, Is.InstanceOf<Post>());
+                Assert.That(j!.IdAsString, Is.EqualTo("0"));
                 prologDidRun = true;
             }
             return null;
@@ -46,11 +46,11 @@ public partial class MiddlewareTests
         {
             if (!epilogDidRun)
             {
-                Assert.True(prologDidRun);
-                Assert.AreEqual(CrudAction.Create, arg1);
+                Assert.That(prologDidRun);
+                Assert.That(arg1, Is.EqualTo(CrudAction.Create));
                 Assert.That(arg2, Is.Not.Null);
                 var j = arg2!.First();
-                Assert.IsInstanceOf<Post>(j);
+                Assert.That(j, Is.InstanceOf<Post>());
                 epilogDidRun = true;
             }
             return null;
@@ -63,11 +63,11 @@ public partial class MiddlewareTests
         _srv.Configuration.AddProlog(TestProlog);
         _srv.Configuration.AddEpilog(TestEpilog);
         
-        Assert.False(prologDidRun);
-        Assert.False(epilogDidRun);
-        Assert.True(j.Create(new Post("Test", "Middleware test!", u)).Success);
-        Assert.True(prologDidRun);
-        Assert.True(epilogDidRun);            
-        Assert.True(j.Commit().Success);
+        Assert.That(prologDidRun, Is.False);
+        Assert.That(epilogDidRun, Is.False);
+        Assert.That(j.Create(new Post("Test", "Middleware test!", u)).Success);
+        Assert.That(prologDidRun);
+        Assert.That(epilogDidRun);            
+        Assert.That(j.Commit().Success);
     }
 }

@@ -16,8 +16,8 @@ public class Tests
     public void Basic_ServicePool_registration_Test()
     {
         ServicePool testPool = new();
-        Assert.IsInstanceOf<ITritonConfigurable>(testPool.UseTriton());
-        Assert.IsNotNull(testPool.Resolve<ITritonConfigurable>());
+        Assert.That(testPool.UseTriton(),Is.InstanceOf<ITritonConfigurable>());
+        Assert.That(testPool.Resolve<ITritonConfigurable>(), Is.Not.Null);
     }
 
     [Test]
@@ -25,8 +25,8 @@ public class Tests
     {
         ServicePool testPool = new();
         var c = testPool.UseTriton();
-        Assert.IsInstanceOf<ITritonConfigurable>(c);
-        Assert.AreSame(testPool, c.Pool);
+        Assert.That(c, Is.InstanceOf<ITritonConfigurable>());
+        Assert.That(c.Pool, Is.SameAs(testPool));
     }
 
     [Test]
@@ -35,7 +35,7 @@ public class Tests
         ServicePool testPool = new();
         testPool.UseTriton().DiscoverContexts();
         var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
-        Assert.IsTrue(s.Any(p => p is EfCoreTransFactory<TestDbContext>));
+        Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class Tests
         ServicePool testPool = new();
         testPool.UseTriton().UseContext<TestDbContext>();
         var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
-        Assert.IsTrue(s.Any(p => p is EfCoreTransFactory<TestDbContext>));
+        Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class Tests
         ServicePool testPool = new();
         testPool.UseTriton().UseContext(typeof(TestDbContext));
         var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
-        Assert.IsTrue(s.Any(p => p is EfCoreTransFactory<TestDbContext>));
+        Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
 
     [Test]
@@ -70,7 +70,7 @@ public class Tests
         DbContextOptions options = new DbContextOptionsBuilder().Options;
         testPool.UseTriton().UseContext(typeof(ConfigurableContext), options);
         var s = testPool.ResolveAll<TritonService>().ToArray();
-        Assert.IsTrue(s.Any(p => p.GetReadTransaction() is not null));
+        Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
@@ -79,7 +79,7 @@ public class Tests
         ServicePool testPool = new();
         testPool.UseTriton().UseContext(typeof(ConfigurableContext), (DbContextOptionsBuilder _) => { });
         var s = testPool.ResolveAll<TritonService>().ToArray();
-        Assert.IsTrue(s.Any(p => p.GetReadTransaction() is not null));
+        Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
@@ -89,7 +89,7 @@ public class Tests
         DbContextOptions<ConfigurableContext> options = new DbContextOptionsBuilder<ConfigurableContext>().Options;
         testPool.UseTriton().UseContext<ConfigurableContext>(options);
         var s = testPool.ResolveAll<TritonService>().ToArray();
-        Assert.IsTrue(s.Any(p => p.GetReadTransaction() is not null));
+        Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
@@ -98,7 +98,7 @@ public class Tests
         ServicePool testPool = new();
         testPool.UseTriton().UseContext((DbContextOptionsBuilder<ConfigurableContext> _) => { });
         var s = testPool.ResolveAll<TritonService>().ToArray();
-        Assert.IsTrue(s.Any(p => p.GetReadTransaction() is not null));
+        Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
@@ -106,11 +106,11 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseMiddleware<TestMiddleware>(out var m);
-        Assert.IsFalse(m.PrologRan);
+        Assert.That(m.PrologRan, Is.False);
         testPool.Resolve<IMiddlewareRunner>()?.RunProlog(CrudAction.Commit, null);
-        Assert.IsTrue(m.PrologRan);
+        Assert.That(m.PrologRan, Is.True);
         testPool.Resolve<IMiddlewareRunner>()?.RunEpilog(CrudAction.Commit, null);
-        Assert.IsTrue(m.EpilogRan);
+        Assert.That(m.EpilogRan, Is.True);
     }
     [Test]
     public void UseTransactionPrologs_registers_actions()
@@ -124,9 +124,9 @@ public class Tests
         
         ServicePool testPool = new();
         testPool.UseTriton().UseTransactionPrologs(TestAction);
-        Assert.IsFalse(actionRan);
+        Assert.That(actionRan, Is.False);
         testPool.Resolve<IMiddlewareRunner>()?.RunProlog(CrudAction.Commit, null);
-        Assert.IsTrue(actionRan);
+        Assert.That(actionRan, Is.True);
     }
     
     [Test]
@@ -141,16 +141,22 @@ public class Tests
         
         ServicePool testPool = new();
         testPool.UseTriton().UseTransactionEpilogs(TestAction);
-        Assert.IsFalse(actionRan);
+        Assert.That(actionRan, Is.False);
         testPool.Resolve<IMiddlewareRunner>()?.RunEpilog(CrudAction.Commit, null);
-        Assert.IsTrue(actionRan);
+        Assert.That(actionRan, Is.True);
     }
 
     [Test]
     public void UseTriton_with_config_callback()
     {
+        var configRan = false;
         ServicePool testPool = new();
-        Assert.AreSame(testPool, testPool.UseTriton(p => Assert.IsTrue(p.GetType().Implements<ITritonConfigurable>())));
+        Assert.That(testPool.UseTriton(p =>
+        {
+            Assert.That(p.GetType().Implements<ITritonConfigurable>());
+            configRan = true;
+        }), Is.SameAs(testPool));
+        Assert.That(configRan, Is.True);
     }
 
     [Test]
@@ -159,9 +165,9 @@ public class Tests
         ServicePool testPool = new();
         testPool.UseTriton();
         var tc = testPool.Resolve<ITritonConfigurable>();
-        Assert.IsNotNull(tc);
-        testPool.UseTriton(p => Assert.AreSame(tc, p));
-        Assert.AreEqual(1, testPool.ResolveAll<ITritonConfigurable>().Count());
+        Assert.That(tc, Is.Not.Null);
+        testPool.UseTriton(p => Assert.That(tc, Is.SameAs(p)));
+        Assert.That(testPool.ResolveAll<ITritonConfigurable>().Count(), Is.EqualTo(1));
     }
 
     [Test]
@@ -169,20 +175,20 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseContext<TestDbContext>();
-        Assert.IsAssignableFrom<TritonService>(testPool.ResolveTritonService<TestDbContext>());
+        Assert.That(testPool.ResolveTritonService<TestDbContext>(), Is.AssignableFrom<TritonService>());
     }
 
     [Test]
     public void ResolveTritonService_initializes_all_required_singletons_if_none_registered()
     {
         ServicePool testPool = new();
-        Assert.IsAssignableFrom<TritonService>(testPool.ResolveTritonService<TestDbContext>());
+        Assert.That(testPool.ResolveTritonService<TestDbContext>(), Is.AssignableFrom<TritonService>());
     }
 
     [Test]
     public void ConfigureMiddlewares_supports_callback()
     {
-        new ServicePool().UseTriton().ConfigureMiddlewares(Assert.NotNull);
+        new ServicePool().UseTriton().ConfigureMiddlewares(p => Assert.That(p, Is.Not.Null));
     }
     
     [Test]

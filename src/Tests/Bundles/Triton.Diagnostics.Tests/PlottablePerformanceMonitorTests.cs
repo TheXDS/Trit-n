@@ -23,11 +23,11 @@ public class PlottablePerformanceMonitorTests : PerformanceMonitorTestsBase<Plot
         await Run(testRepo, CrudAction.Commit, 2000);
         await Run(testRepo, CrudAction.Commit, 3000);
         var evts = perfMon.Events.ToArray();
-        Assert.AreEqual(3, perfMon.EventCount);
-        Assert.AreEqual(3, evts.Length);
-        Assert.True(evts[0] >= 900 && evts[0] <= 2100);
-        Assert.True(evts[1] >= 1900 && evts[1] <= 3100);
-        Assert.True(evts[2] >= 2900 && evts[2] <= 4100);
+        Assert.That(perfMon.EventCount, Is.EqualTo(3));
+        Assert.That(evts.Length, Is.EqualTo(3));
+        Assert.That(evts[0] >= 900 && evts[0] <= 2100);
+        Assert.That(evts[1] >= 1900 && evts[1] <= 3100);
+        Assert.That(evts[2] >= 2900 && evts[2] <= 4100);
     }
 
     [Test]
@@ -36,22 +36,22 @@ public class PlottablePerformanceMonitorTests : PerformanceMonitorTestsBase<Plot
         PlottablePerfMonitor p = new () { MaxSamples = 5 };
         ITransactionMiddleware perfMon = p;
         
-        Assert.AreEqual(5, p.MaxSamples);
+        Assert.That(p.MaxSamples, Is.EqualTo(5));
         for (var j = 0; j < 6; j++)
         {
             perfMon.PrologAction(CrudAction.Commit, null);
             await Task.Delay(500 * j);
             perfMon.EpilogAction(CrudAction.Commit, null);
         }
-        Assert.AreEqual(5, p.EventCount);
-        Assert.AreEqual(5, p.Events.Count());
-        Assert.IsTrue(p.Events.Last().IsBetween(2250, 2750));
-        Assert.IsTrue(p.Events.First().IsBetween(250, 750));
+        Assert.That(p.EventCount, Is.EqualTo(5));
+        Assert.That(p.Events.Count(), Is.EqualTo(5));
+        Assert.That(p.Events.Last().IsBetween(2250, 2750));
+        Assert.That(p.Events.First().IsBetween(250, 750));
 
         p.MaxSamples = 2;
-        Assert.AreEqual(2, p.EventCount);
-        Assert.AreEqual(2, p.Events.Count());
-        Assert.IsTrue(p.Events.Last().IsBetween(2250, 2750));
-        Assert.IsTrue(p.Events.First().IsBetween(1750, 2250));
+        Assert.That(p.EventCount, Is.EqualTo(2));
+        Assert.That(p.Events.Count(), Is.EqualTo(2));
+        Assert.That(p.Events.Last().IsBetween(2250, 2750));
+        Assert.That(p.Events.First().IsBetween(1750, 2250));
     }
 }

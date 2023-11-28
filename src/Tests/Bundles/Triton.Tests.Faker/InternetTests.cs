@@ -13,7 +13,7 @@ public class InternetTests
     {
         for (var j = 0; j < 100; j++)
         {
-            Assert.IsNotEmpty(Internet.FakeUsername());
+            Assert.That(Internet.FakeUsername(), Is.Not.Empty);
         }
     }
 
@@ -23,8 +23,8 @@ public class InternetTests
         for (var j = 0; j < 100; j++)
         {
             var e = Internet.FakeEmail();
-            Assert.IsNotEmpty(e);
-            Assert.IsTrue(Regex.IsMatch(e, ".+@.+[.].{2,}"));
+            Assert.That(e, Is.Not.Empty);
+            Assert.That(Regex.IsMatch(e, ".+@.+[.].{2,}"), Is.True);
         }
     }
 
@@ -34,8 +34,8 @@ public class InternetTests
         for (var j = 0; j < 100; j++)
         {
             var e = Internet.FakeEmail(Person.Someone());
-            Assert.IsNotEmpty(e);
-            Assert.IsTrue(Regex.IsMatch(e, ".+@.+[.].{2,}"));
+            Assert.That(e, Is.Not.Empty);
+            Assert.That(Regex.IsMatch(e, ".+@.+[.].{2,}"), Is.True);
         }
     }
 }
