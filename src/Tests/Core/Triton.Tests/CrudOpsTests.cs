@@ -1,14 +1,14 @@
 ﻿#pragma warning disable CS1591
 
-namespace TheXDS.Triton.Tests;
 using NUnit.Framework;
-using System.Threading.Tasks;
-using MCART.Types.Base;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Services.Base;
-using Models;
-using Services;
+using TheXDS.Triton.Tests.Models;
+using TheXDS.Triton.Tests.Services;
+
+namespace TheXDS.Triton.Tests;
 
 public class CrudOpsTests
 {

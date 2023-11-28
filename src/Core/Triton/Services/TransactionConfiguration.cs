@@ -184,6 +184,8 @@ public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunn
         return null;
     }
 
+    IMiddlewareConfigurator IMiddlewareRunner.Configurator => this;
+
     IMiddlewareRunner IMiddlewareConfigurator.GetRunner()
     {
         return this;

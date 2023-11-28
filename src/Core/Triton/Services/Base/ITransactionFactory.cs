@@ -11,38 +11,38 @@ public interface ITransactionFactory
     /// Fabrica una transacción que permite leer información de la base
     /// de datos.
     /// </summary>
-    /// <param name="configuration">
+    /// <param name="runner">
     /// Configuración a utilizar al manufacturar una transacción.
     /// </param>
     /// <returns>
     /// Una transacción que permite leer información de la base de 
     /// datos.
     /// </returns>
-    ICrudReadTransaction GetReadTransaction(IMiddlewareConfigurator configuration) => GetTransaction(configuration);
+    ICrudReadTransaction GetReadTransaction(IMiddlewareRunner runner) => GetTransaction(runner);
 
     /// <summary>
     /// Fabrica una transacción que permite escribir información en la
     /// base de datos.
     /// </summary>
-    /// <param name="configuration">
+    /// <param name="runner">
     /// Configuración a utilizar al manufacturar una transacción.
     /// </param>
     /// <returns>
     /// Una transacción que permite escribir información en la base de
     /// datos.
     /// </returns>
-    ICrudWriteTransaction GetWriteTransaction(IMiddlewareConfigurator configuration) => GetTransaction(configuration);
+    ICrudWriteTransaction GetWriteTransaction(IMiddlewareRunner runner) => GetTransaction(runner);
 
     /// <summary>
     /// Fabrica una transacción que permite leer y escribir información
     /// en la base de datos.
     /// </summary>
-    /// <param name="configuration">
+    /// <param name="runner">
     /// Configuración a utilizar al manufacturar una transacción.
     /// </param>
     /// <returns>
     /// Una transacción que permite leer y escribir información en la
     /// base de datos.
     /// </returns>
-    ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration);
+    ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner runner);
 }

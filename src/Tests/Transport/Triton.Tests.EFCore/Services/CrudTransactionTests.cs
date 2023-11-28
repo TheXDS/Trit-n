@@ -9,7 +9,7 @@ namespace TheXDS.Triton.Tests.EFCore.Services;
 
 public class CrudTransactionTests
 {
-    private static CrudTransaction<BlogContext> GetTestTransaction() => new(new TransactionConfiguration());
+    private static CrudTransaction<BlogContext> GetTestTransaction() => new(new TransactionConfiguration(), null);
 
     [Test]
     public void CrudTransaction_class_contains_Context_property()

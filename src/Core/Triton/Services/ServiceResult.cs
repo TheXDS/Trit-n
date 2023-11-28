@@ -7,7 +7,7 @@ namespace TheXDS.Triton.Services;
 /// Representa el resultado devuelto por un servicio al intentar
 /// realizar una operación.
 /// </summary>
-public class ServiceResult : IEquatable<ServiceResult>, IEquatable<Exception>
+public class ServiceResult : IEquatable<ServiceResult>, IEquatable<Exception>, IServiceResult
 {
     private static string MessageFrom(in FailureReason reason)
     {
@@ -50,7 +50,7 @@ public class ServiceResult : IEquatable<ServiceResult>, IEquatable<Exception>
     /// </returns>
     public static TServiceResult FailWith<TServiceResult>(Exception ex) where TServiceResult : ServiceResult, new()
     {
-        return new TServiceResult() 
+        return new TServiceResult()
         {
             Success = false,
             Message = ex.Message,

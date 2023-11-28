@@ -5,7 +5,7 @@
 /// realizar operaciones de lectura y de escritura basadas en
 /// transacción sobre una base de datos.
 /// </summary>
-public interface ICrudReadWriteTransaction<TContext> : ICrudReadWriteTransaction where TContext : DbContext , new() 
+public interface ICrudReadWriteTransaction<TContext> : ICrudReadWriteTransaction where TContext : DbContext
 {
     /// <summary>
     /// Obtiene a la instancia de contexto activa en esta transacción.

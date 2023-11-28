@@ -1,6 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TheXDS.MCART.Helpers;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.ServicePool.Extensions;
+using TheXDS.ServicePool.Triton.Resources;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Services;
+using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.ServicePool.Triton;
 
@@ -18,13 +23,66 @@ public interface ITritonConfigurable
     ServicePool Pool { get; }
 
     /// <summary>
-    /// Descubre automáticamente todos los servicios y contextos de datos a
-    /// exponer por medio de <see cref="ServicePool"/>.
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
     /// </summary>
+    /// <param name="contextType">Tipo de contexto a registrar.</param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
     /// <returns>
     /// La misma instancia del objeto utilizado para configurar Tritón.
     /// </returns>
-    ITritonConfigurable DiscoverContexts();
+    ITritonConfigurable UseContext(Type contextType, IMiddlewareConfigurator? configurator = null)
+    {
+        return UseContext(contextType, (DbContextOptionsSource?)null, configurator);
+    }
+
+    /// <summary>
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto a registrar.</param>
+    /// <param name="options">
+    /// Instancia de opciones de configuración de contexto a utilizar par
+    /// a configurar el contexto subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseContext(Type contextType, DbContextOptions options, IMiddlewareConfigurator? configurator = null)
+    {
+        return UseContext(contextType, new DbContextOptionsSource(options), configurator);
+    }
+
+    /// <summary>
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto a registrar.</param>
+    /// <param name="builder">
+    /// Método de configuración a llamar para configurar el contexto
+    /// subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseContext(Type contextType, Action<DbContextOptionsBuilder> builder, IMiddlewareConfigurator? configurator = null)
+    {
+        return UseContext(contextType, new DbContextOptionsSource(builder), configurator);
+    }
 
     /// <summary>
     /// Agrega un <see cref="DbContext"/> a la colección de servicios
@@ -33,24 +91,116 @@ public interface ITritonConfigurable
     /// <see cref="TritonService"/>.
     /// </summary>
     /// <typeparam name="T">Tipo de contexto a registrar.</typeparam>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
     /// <returns>
     /// La misma instancia del objeto utilizado para configurar Tritón.
     /// </returns>
-    ITritonConfigurable UseContext<T>() where T : DbContext, new();
+    ITritonConfigurable UseContext<T>(IMiddlewareConfigurator? configurator = null) where T : DbContext
+    {
+        return UseContext((DbContextOptionsSource<T>?)null, configurator);
+    }
 
     /// <summary>
-    /// Agrega un servicio a la colección de servicios hosteados dentro de
-    /// un <see cref="ServicePool"/>.
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
     /// </summary>
-    /// <typeparam name="T">Tipo de servicio a registrar.</typeparam>
+    /// <typeparam name="T">Tipo de contexto a registrar.</typeparam>
+    /// <param name="options">
+    /// Instancia de opciones de configuración de contexto a utilizar par
+    /// a configurar el contexto subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
     /// <returns>
     /// La misma instancia del objeto utilizado para configurar Tritón.
     /// </returns>
-    ITritonConfigurable UseService<T>() where T : TritonService;
+    ITritonConfigurable UseContext<T>(DbContextOptions<T> options, IMiddlewareConfigurator? configurator = null) where T : DbContext
+    {
+        return UseContext(new DbContextOptionsSource<T>(options), configurator);
+    }
 
     /// <summary>
-    /// Agrega un Middleware a la configuración de transacciones a utilizar
-    /// por los servicios de Tritón.
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
+    /// </summary>
+    /// <typeparam name="T">Tipo de contexto a registrar.</typeparam>
+    /// <param name="builder">
+    /// Método de configuración a llamar para configurar el contexto
+    /// subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseContext<T>(Action<DbContextOptionsBuilder<T>> builder, IMiddlewareConfigurator? configurator = null) where T : DbContext
+    {
+        return UseContext(new DbContextOptionsSource<T>(builder), configurator);
+    }
+
+    /// <summary>
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
+    /// </summary>
+    /// <typeparam name="T">Tipo de contexto a registrar.</typeparam>
+    /// <param name="optionsSource">
+    /// Objeto a utilizar para obtener la configuración de contexto a utilizar
+    /// al generar transacciones.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseContext<T>(DbContextOptionsSource<T>? optionsSource, IMiddlewareConfigurator? configurator = null) where T : DbContext
+    {
+        var factory = typeof(EfCoreTransFactory<T>).New<ITransactionFactory>((IDbContextOptionsSource?)optionsSource ?? DbContextOptionsSource.None);
+        Pool.Register(() => new TritonService(configurator ?? Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), factory));
+        return this;
+    }
+
+    /// <summary>
+    /// Agrega un <see cref="DbContext"/> a la colección de servicios
+    /// hosteados dentro de un
+    /// <see cref="ServicePool"/>, envolviendolo en un 
+    /// <see cref="TritonService"/>.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto a registrar.</param>
+    /// <param name="optionsSource">
+    /// Objeto a utilizar para obtener la configuración de contexto a utilizar
+    /// al generar transacciones.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseContext(Type contextType, DbContextOptionsSource? optionsSource, IMiddlewareConfigurator? configurator = null)
+    {
+        if (!contextType.Implements<DbContext>())
+        {
+            throw Errors.TypeMustImplDbContext(nameof(contextType));
+        }
+        var factory = typeof(EfCoreTransFactory<>).MakeGenericType(contextType).New<ITransactionFactory>(optionsSource ?? DbContextOptionsSource.None);
+        Pool.Register(() => new TritonService(configurator ?? Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), factory));
+        return this;
+    }
+
+    /// <summary>
+    /// Agrega un Middleware a la configuración predeterminada de transacciones
+    /// a utilizar por los servicios de Tritón.
     /// </summary>
     /// <typeparam name="T">Tipo de Middleware a agregar.</typeparam>
     /// <returns>
@@ -58,10 +208,10 @@ public interface ITritonConfigurable
     /// </returns>
     /// <seealso cref="ConfigureMiddlewares(Action{IMiddlewareConfigurator})"/>.
     ITritonConfigurable UseMiddleware<T>() where T : ITransactionMiddleware, new() => UseMiddleware<T>(out _);
-    
+
     /// <summary>
-    /// Agrega un Middleware a la configuración de transacciones a utilizar
-    /// por los servicios de Tritón.
+    /// Agrega un Middleware a la configuración predeterminada de transacciones
+    /// a utilizar por los servicios de Tritón.
     /// </summary>
     /// <param name="newMiddleware">
     /// Parámetro de salida. Middleware que ha sido creado y registrado.
@@ -71,11 +221,52 @@ public interface ITritonConfigurable
     /// La misma instancia del objeto utilizado para configurar Tritón.
     /// </returns>
     /// <seealso cref="ConfigureMiddlewares(Action{IMiddlewareConfigurator})"/>.
-    ITritonConfigurable UseMiddleware<T>(out T newMiddleware) where T : ITransactionMiddleware, new();
+    ITritonConfigurable UseMiddleware<T>(out T newMiddleware) where T : ITransactionMiddleware, new()
+    {
+        newMiddleware = new();
+        GetMiddlewareConfigurator().Attach(newMiddleware);
+        return this;
+    }
+
+
+
+
+
 
     /// <summary>
-    /// Ejecuta un método de configuración de middlewares para la instancia
-    /// configurada.
+    /// Descubre automáticamente todos los servicios y contextos de datos a
+    /// exponer por medio de <see cref="ServicePool"/>.
+    /// </summary>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable DiscoverContexts()
+    {
+        foreach (var j in ReflectionHelpers.GetTypes<DbContext>(true).Where(p => p.GetConstructor(Type.EmptyTypes) is not null))
+        {
+            UseContext(j);
+        }
+        return this;
+    }
+
+    ///// <summary>
+    ///// Agrega un servicio a la colección de servicios hosteados dentro de
+    ///// un <see cref="ServicePool"/>.
+    ///// </summary>
+    ///// <typeparam name="T">Tipo de servicio a registrar.</typeparam>
+    ///// <returns>
+    ///// La misma instancia del objeto utilizado para configurar Tritón.
+    ///// </returns>
+    //ITritonConfigurable UseService<T>() where T : TritonService
+    //{
+    //    Pool.Register<T>();
+    //    return this;
+    //}
+
+    /// <summary>
+    /// Ejecuta un método de configuración de middlewares predeterminados a
+    /// utilizar cuando no se especifique una configuración personalizada al
+    /// registrar un contexto o un servicio de Tritón.
     /// </summary>
     /// <param name="configuratorCallback">
     /// Método a utilizar para configurar los Middlewares a utilizar en las
@@ -91,22 +282,12 @@ public interface ITritonConfigurable
     /// </remarks>
     /// <seealso cref="UseMiddleware{T}(out T)"/>.
     /// <seealso cref="UseMiddleware{T}()"/>.
-    ITritonConfigurable ConfigureMiddlewares(Action<IMiddlewareConfigurator> configuratorCallback);
-
-    /// <summary>
-    /// Agrega un <see cref="DbContext"/> a la colección de servicios
-    /// hosteados dentro de un
-    /// <see cref="ServicePool"/>, envolviendolo en un 
-    /// <see cref="TritonService"/>.
-    /// </summary>
-    /// <param name="context">
-    /// Tipo de contexto a registrar. Debe implementar
-    /// <see cref="DbContext"/>.
-    /// </param>
-    /// <returns>
-    /// La misma instancia del objeto utilizado para configurar Tritón.
-    /// </returns>
-    ITritonConfigurable UseContext(Type context);
+    ITritonConfigurable ConfigureMiddlewares(Action<IMiddlewareConfigurator> configuratorCallback)
+    {
+        (configuratorCallback ?? throw new ArgumentNullException(nameof(configuratorCallback)))
+            .Invoke(GetMiddlewareConfigurator());
+        return this;
+    }
 
     /// <summary>
     /// Agrega una colección de acciones de Middleware de prólogo a la
@@ -116,7 +297,14 @@ public interface ITritonConfigurable
     /// <returns>
     /// La misma instancia del objeto utilizado para configurar Tritón.
     /// </returns>
-    ITritonConfigurable UseTransactionPrologs(params MiddlewareAction[] actions);
+    ITritonConfigurable UseTransactionPrologs(params MiddlewareAction[] actions)
+    {
+        foreach (MiddlewareAction j in actions)
+        {
+            GetMiddlewareConfigurator().AddProlog(j);
+        }
+        return this;
+    }
 
     /// <summary>
     /// Agrega una colección de acciones de Middleware de epílogo a la
@@ -126,5 +314,17 @@ public interface ITritonConfigurable
     /// <returns>
     /// La misma instancia del objeto utilizado para configurar Tritón.
     /// </returns>
-    ITritonConfigurable UseTransactionEpilogs(params MiddlewareAction[] actions);
+    ITritonConfigurable UseTransactionEpilogs(params MiddlewareAction[] actions)
+    {
+        foreach (MiddlewareAction j in actions)
+        {
+            GetMiddlewareConfigurator().AddEpilog(j);
+        }
+        return this;
+    }
+
+    private IMiddlewareConfigurator GetMiddlewareConfigurator()
+    {
+        return Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration().RegisterInto(Pool);
+    }
 }

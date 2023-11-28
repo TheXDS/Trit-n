@@ -9,7 +9,7 @@ namespace TheXDS.Triton.Services;
 /// <typeparam name="T">
 /// Tipo de contexto de datos a utilizar.
 /// </typeparam>
-public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction<T> where T : DbContext, new()
+public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransaction<T> where T : DbContext
 {
     private readonly ICrudReadTransaction _readTransaction;
     private readonly ICrudWriteTransaction _writeTransaction;
@@ -26,7 +26,12 @@ public class CrudTransaction<T> : CrudTransactionBase<T>, ICrudReadWriteTransact
     /// <param name="configuration">
     /// Configuración a pasar a las transacciones subyacentes.
     /// </param>
-    public CrudTransaction(IMiddlewareRunner configuration) : base(configuration)
+    /// <param name="options">
+    /// Opciones a utilizar para llamar al contructor del contexto de datos.
+    /// Establezca este parámetro en <see langword="null"/> para utilizar el
+    /// constructor público sin parámetros.
+    /// </param>
+    public CrudTransaction(IMiddlewareRunner configuration, DbContextOptions? options = null) : base(configuration, options)
     {
         _readTransaction = new CrudReadTransaction<T>(configuration, _context);
         _writeTransaction = new CrudWriteTransaction<T>(configuration, _context);

@@ -63,12 +63,25 @@ Tritón también requiere que [.Net SDK 6.0](https://dotnet.microsoft.com/) est�
 ```sh
 dotnet build ./src/Triton.sln
 ```
-Los binarios se encontarán en la carpeta `Build` en la raíz del repositorio.
+Los binarios se encontarán en la carpeta `./Build` en la raíz del repositorio.
 
 ### Ejecutando pruebas
 ```sh
 dotnet test ./src/Triton.sln
 ```
+#### Reporte de cobertura
+Es posible obtener un reporte de la cobertura de código de manera local. Para ello, es necesario instalar 
+[`ReportGenerator`](https://github.com/danielpalme/ReportGenerator) , que leerá los resultados de la ejecución de las pruebas, y generará una página web con el resultado de la cobertura.
+
+Para instalar `ReportGenerator` ejecuta:
+```sh
+dotnet tool install -g dotnet-reportgenerator-globaltool
+```
+Luego de haber instalado `ReportGenerator`, será posible ejecutar el siguiente comando:
+```sh
+dotnet test .\src\Triton.sln --collect:"XPlat Code Coverage" --results-directory:.\Build\Tests ; reportgenerator.exe -reports:.\Build\Tests\*\coverage.cobertura.xml -targetdir:.\Build\Coverage\
+```
+Los resultados de la cobertura se almacenarán en `./Build/Coverage`
 
 ## Contribuir
 Si Tritón te ha sido de utilidad, o te interesa donar para fomentar el

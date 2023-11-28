@@ -1,8 +1,5 @@
 ﻿using TheXDS.MCART.Types.Extensions;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using static TheXDS.Triton.Services.FailureReason;
-using System;
-using static System.Collections.Specialized.BitVector32;
 
 namespace TheXDS.Triton.Services;
 
@@ -13,7 +10,7 @@ namespace TheXDS.Triton.Services;
 /// <typeparam name="T">
 /// Tipo de contexto de datos a utilizar dentro de la transacción.
 /// </typeparam>
-public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransaction where T : DbContext, new()
+public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransaction where T : DbContext
 {
     /// <summary>
     /// Inicializa una nueva instancia de la clase
@@ -22,7 +19,12 @@ public class CrudWriteTransaction<T> : CrudTransactionBase<T>, ICrudWriteTransac
     /// <param name="configuration">
     /// Configuración a utilizar para la transacción.
     /// </param>
-    public CrudWriteTransaction(IMiddlewareRunner configuration) : base(configuration)
+    /// <param name="options">
+    /// Opciones a utilizar para llamar al contructor del contexto de datos.
+    /// Establezca este parámetro en <see langword="null"/> para utilizar el
+    /// constructor público sin parámetros.
+    /// </param>
+    public CrudWriteTransaction(IMiddlewareRunner configuration, DbContextOptions? options = null) : base(configuration, options)
     {
     }
 

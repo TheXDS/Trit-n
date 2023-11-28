@@ -20,9 +20,9 @@ public class TestTransFactory : ITransactionFactory
     /// Una transacción conectada a un almacén volátil sin persistencia en
     /// la memoria de la aplicación.
     /// </returns>
-    public ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration)
+    public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration)
     {
-        return InjectFailure ? new BrokenCrudTransaction() : new TestCrudTransaction(configuration);
+        return InjectFailure ? new BrokenCrudTransaction(FailureReason) : new TestCrudTransaction(configuration);
     }
 
     /// <summary>
@@ -31,4 +31,10 @@ public class TestTransFactory : ITransactionFactory
     /// datos de prueba.
     /// </summary>
     public bool InjectFailure { get; set; }
+
+    /// <summary>
+    /// Obtiene o establece el tipo de falla a devolver cuando
+    /// <see cref="InjectFailure"/> se establezca en <see langword="true"/>.
+    /// </summary>
+    public FailureReason FailureReason { get; set; } = FailureReason.ServiceFailure;
 }

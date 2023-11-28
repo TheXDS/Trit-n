@@ -70,7 +70,7 @@ namespace TheXDS.Triton.EFCore.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Se esperaba un método que no retorna valor (void).
+        ///   Busca una cadena traducida similar a Se esperaba un método que no retorna valor (void)..
         /// </summary>
         internal static string VoidMethodExpected {
             get {

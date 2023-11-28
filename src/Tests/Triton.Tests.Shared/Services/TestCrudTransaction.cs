@@ -98,10 +98,10 @@ public class TestCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     /// <param name="configuration">
     /// Configuración de transacciones a utilizar.
     /// </param>
-    public TestCrudTransaction(IMiddlewareConfigurator configuration)
+    public TestCrudTransaction(IMiddlewareRunner configuration)
     {
-        configuration.Attach(new PreconditionsCheckDefaultMiddleware(_store, _temp));
-        Configuration = configuration.GetRunner();
+        configuration.Configurator.Attach(new PreconditionsCheckDefaultMiddleware(_store, _temp));
+        Configuration = configuration;
     }
 
     /// <summary>
@@ -302,7 +302,7 @@ public class TestCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     {
         return Execute(CrudAction.Create | CrudAction.Update, () =>
         {
-            var oldEntities = entities.Select(p => FullSet<TModel>().First(q => p.IdAsString == q.IdAsString)).ToArray();
+            var oldEntities = entities.Select(p => FullSet<TModel>().FirstOrDefault(q => p.IdAsString == q.IdAsString)).NotNull().ToArray();
             foreach (var (newData, oldData) in entities.Zip(oldEntities))
             {
                 newData.ShallowCopyTo(oldData);

@@ -7,7 +7,7 @@
 /// <typeparam name="T">
 /// Tipo de resultado a devolver.
 /// </typeparam>
-public class ServiceResult<T> : ServiceResult
+public class ServiceResult<T> : ServiceResult, IServiceResult<T>
 {
     /// <summary>
     /// Obtiene el valor a devolver como parte del resultado de la

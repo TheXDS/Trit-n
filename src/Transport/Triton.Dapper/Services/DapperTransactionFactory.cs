@@ -57,8 +57,8 @@ public class DapperTransactionFactory : ITransactionFactory
     public IDictionary<Type, DapperModelDescriptor> ModelOverrides => _modelOverrides;
 
     /// <inheritdoc/>
-    public ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration)
+    public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner configuration)
     {
-        return new DapperTransaction(_factory.OpenConnection(), _modelOverrides, configuration.GetRunner());
+        return new DapperTransaction(_factory.OpenConnection(), _modelOverrides, configuration);
     }
 }

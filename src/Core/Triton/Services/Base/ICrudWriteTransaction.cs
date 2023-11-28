@@ -17,12 +17,12 @@ public interface ICrudWriteTransaction : IDisposableEx, IAsyncDisposable
 {
 #if PreferGenerics
 
-    private ServiceResult InvokeGeneric(Model[] entities, [CallerMemberName]string methodName = null!)
+    private ServiceResult InvokeGeneric(Model[] entities, [CallerMemberName] string methodName = null!)
     {
         var genArg = Type.MakeGenericMethodParameter(0).MakeArrayType();
-        var crudMethod = GetType().GetMethod(methodName, new Type[] { genArg }) ?? throw new MissingMethodException();
-        var ofTypeMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.OfType), new Type[] { typeof(IEnumerable) }) ?? throw new MissingMethodException();
-        var toArrayMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToArray), new Type[] { genArg }) ?? throw new MissingMethodException();
+        var crudMethod = GetType().GetMethod(methodName, new Type[] { genArg }) ?? typeof(ICrudWriteTransaction).GetMethod(methodName, new Type[] { genArg })!;
+        var ofTypeMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.OfType), new Type[] { typeof(IEnumerable) })!;
+        var toArrayMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToArray), new Type[] { genArg })!;
         foreach (var g in entities.GroupBy(p => p.GetType()))
         {
             var m = crudMethod.MakeGenericMethod(new[] { g.Key });

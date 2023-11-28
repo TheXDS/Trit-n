@@ -14,6 +14,6 @@ namespace TheXDS.Triton.SecurityEssentials.Ef.Services.Base;
 /// <see cref="DbSet{TEntity}"/> necesarios para implementar autenticación
 /// y permisos de usuarios.
 /// </typeparam>
-public abstract class UserServiceBase<T> : TritonService<T>, IEfUserService<T> where T : DbContext, IUserDbContext, new()
+public abstract class UserServiceBase<T> : TritonService, IEfUserService<T> where T : DbContext, IUserDbContext, new()
 {
 }

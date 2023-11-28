@@ -113,7 +113,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// Se produce si <paramref name="model"/> o <paramref name="key"/> son
     /// <see langword="null"/>.
     /// </exception>
-    ServiceResult<Model?> Read(Type model, object key)
+    IServiceResult<Model?> Read(Type model, object key)
     {
         return DynamicRead(model, key, p => p);
     }
@@ -151,7 +151,9 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// </exception>
     QueryServiceResult<Model> All(Type model)
     {
-        var m = GetType().GetMethod(nameof(All), 1, BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null)!.MakeGenericMethod(model);
+        var m = (GetType().GetMethod(nameof(All), 1, BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null) ??
+                    typeof(ICrudReadTransaction).GetMethod(nameof(All), 1, BindingFlags.Instance | BindingFlags.Public, null, Type.EmptyTypes, null) ??
+                    throw new TamperException()).MakeGenericMethod(model);
         object o = m.Invoke(this, Array.Empty<object>())!;
         ServiceResult r = (ServiceResult)o;
         if (r.Success)
@@ -229,7 +231,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     /// Se produce si <paramref name="model"/> o <paramref name="key"/> son
     /// <see langword="null"/>.
     /// </exception>
-    Task<ServiceResult<Model?>> ReadAsync(Type model, object key) => Task.Run(() => Read(model, key));
+    Task<IServiceResult<Model?>> ReadAsync(Type model, object key) => Task.Run(() => Read(model, key));
 
     /// <summary>
     /// Ejecuta una consulta que obtendrá un arreglo de entidades que 
@@ -254,12 +256,6 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool ChkIdType<T>(Type idType)
-    {
-        return ChkIdType(typeof(T), idType);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool ChkIdType(Type model, Type idType)
     {
         return typeof(Model<>).MakeGenericType(idType).IsAssignableFrom(model);
@@ -272,11 +268,11 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     }
 
     [DebuggerNonUserCode]
-    private TResult DynamicRead<TResult>(Type model, object key, Func<ServiceResult<Model?>, TResult> failureTransform, [CallerMemberName] string name = null!)
+    private TResult DynamicRead<TResult>(Type model, object key, Func<IServiceResult<Model?>, TResult> failureTransform, [CallerMemberName] string name = null!)
     {
         var t = key?.GetType() ?? throw new ArgumentNullException(nameof(key));
-        if (!ChkIdType(model, t)) return failureTransform.Invoke(new ServiceResult<Model?>(FailureReason.BadQuery));
-        foreach (var j in GetType().GetMethods().Where(p => p.Name == name))
+        if (!ChkIdType(model ?? throw new ArgumentNullException(nameof(model)), t)) return failureTransform.Invoke(new ServiceResult<Model?>(FailureReason.BadQuery));
+        foreach (var j in GetType().GetMethods().Concat(typeof(ICrudReadTransaction).GetMethods()).Where(p => p.Name == name))
         {
             var args = j.GetGenericArguments();
             var para = j.GetParameters();

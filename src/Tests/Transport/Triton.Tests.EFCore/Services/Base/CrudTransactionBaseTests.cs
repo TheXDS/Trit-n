@@ -15,7 +15,7 @@ public class CrudTransactionBaseTests
 {
     private class TestClass : CrudTransactionBase<BlogContext>
     {
-        public TestClass() : base(new TransactionConfiguration()) { }
+        public TestClass() : base(new TransactionConfiguration(), (DbContextOptions?)null) { }
 
         public IMiddlewareConfigurator Configurator => (IMiddlewareConfigurator)_configuration;
 

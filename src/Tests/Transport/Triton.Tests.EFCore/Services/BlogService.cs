@@ -15,7 +15,7 @@ public class BlogService : TritonService
     /// Inicializa una nueva instancia de la clase
     /// <see cref="BlogService"/>.
     /// </summary>
-    public BlogService() : base(new EfCoreTransFactory<BlogContext>())
+    public BlogService() : base(new EfCoreTransFactory<BlogContext>(DbContextOptionsSource.None))
     {
     }
 

@@ -38,4 +38,10 @@ public interface IMiddlewareRunner
     /// satisfactoriamente.
     /// </returns>
     ServiceResult? RunProlog(in CrudAction action, IEnumerable<Model>? entities);
+
+    /// <summary>
+    /// Obtiene una referencia al objeto utilizado para generar la
+    /// configuración de esta instancia.
+    /// </summary>
+    IMiddlewareConfigurator Configurator { get; }
 }

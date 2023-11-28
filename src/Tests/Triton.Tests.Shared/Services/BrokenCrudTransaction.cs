@@ -13,6 +13,21 @@ namespace TheXDS.Triton.Tests.Services;
 [ExcludeFromCodeCoverage]
 public class BrokenCrudTransaction : Disposable, ICrudReadWriteTransaction
 {
+    private readonly FailureReason reason;
+
+    /// <summary>
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="BrokenCrudTransaction"/>.
+    /// </summary>
+    /// <param name="reason">
+    /// Razón a devolver. De forma predeterminada, se devolverá
+    /// <see cref="FailureReason.ServiceFailure"/>.
+    /// </param>
+    public BrokenCrudTransaction(FailureReason reason = FailureReason.ServiceFailure)
+    {
+        this.reason = reason;
+    }
+
     /// <inheritdoc/>
     protected override void OnDispose()
     {
@@ -20,27 +35,27 @@ public class BrokenCrudTransaction : Disposable, ICrudReadWriteTransaction
 
     QueryServiceResult<TModel> ICrudReadTransaction.All<TModel>()
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     Task<ServiceResult> ICrudWriteTransaction.CommitAsync()
     {
-        return Task.FromResult((ServiceResult)FailureReason.ServiceFailure);
+        return Task.FromResult((ServiceResult)reason);
     }
 
     ServiceResult ICrudWriteTransaction.Create<TModel>(params TModel[] newEntity)
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     ServiceResult ICrudWriteTransaction.Delete<TModel>(params TModel[] entity)
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     ServiceResult ICrudWriteTransaction.Delete<TModel, TKey>(params TKey[] key)
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     ValueTask IAsyncDisposable.DisposeAsync()
@@ -51,32 +66,32 @@ public class BrokenCrudTransaction : Disposable, ICrudReadWriteTransaction
 
     Task<ServiceResult<TModel[]?>> ICrudReadTransaction.SearchAsync<TModel>(Expression<Func<TModel, bool>> predicate)
     {
-        return Task.FromResult((ServiceResult<TModel[]?>)FailureReason.ServiceFailure);
+        return Task.FromResult((ServiceResult<TModel[]?>)reason);
     }
 
     ServiceResult ICrudWriteTransaction.Update<TModel>(params TModel[] entity)
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     /// <inheritdoc/>
     public Task<ServiceResult<TModel?>> ReadAsync<TModel, TKey>(TKey key) where TModel : Model<TKey>, new() where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
     {
-        return Task.FromResult((ServiceResult<TModel?>)FailureReason.ServiceFailure);
+        return Task.FromResult((ServiceResult<TModel?>)reason);
     }
 
     ServiceResult ICrudWriteTransaction.CreateOrUpdate<TModel>(params TModel[] entities)
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     ServiceResult ICrudWriteTransaction.Delete<TModel>(params string[] stringKeys)
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 
     ServiceResult ICrudWriteTransaction.Discard()
     {
-        return FailureReason.ServiceFailure;
+        return reason;
     }
 }

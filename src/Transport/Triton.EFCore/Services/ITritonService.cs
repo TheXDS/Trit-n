@@ -7,6 +7,6 @@
 /// <typeparam name="T">
 /// Tipo de <see cref="DbContext"/> al cual este servicio ofrece acceso.
 /// </typeparam>
-public interface ITritonService<out T> : ITritonService where T : DbContext, new()
+public interface ITritonService<out T> : ITritonService where T : DbContext
 {
 }

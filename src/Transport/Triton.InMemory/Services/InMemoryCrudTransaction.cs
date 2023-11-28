@@ -100,11 +100,11 @@ public class InMemoryCrudTransaction : AsyncDisposable, ICrudReadWriteTransactio
     /// <param name="store">
     /// Collección de almacenamiento de datos.
     /// </param>
-    public InMemoryCrudTransaction(IMiddlewareConfigurator configuration, ICollection<Model> store)
+    public InMemoryCrudTransaction(IMiddlewareRunner configuration, ICollection<Model> store)
     {
         _store = store;
-        configuration.Attach(new PreconditionsCheckDefaultMiddleware(_store, _temp));
-        Configuration = configuration.GetRunner();
+        configuration.Configurator.Attach(new PreconditionsCheckDefaultMiddleware(_store, _temp));
+        Configuration = configuration;
     }
 
     /// <summary>

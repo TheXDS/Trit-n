@@ -12,6 +12,18 @@ namespace TheXDS.ServicePool.Triton;
 /// </summary>
 public static class ServicePoolExtensions
 {
+    private sealed class TritonConfigurable : ITritonConfigurable
+    {
+        public static TritonConfigurable Create(in ServicePool pool) => new(pool);
+
+        public ServicePool Pool { get; }
+
+        private TritonConfigurable(ServicePool pool)
+        {
+            Pool = pool;
+        }
+    }
+
     /// <summary>
     /// Configura un <see cref="ServicePool"/> para
     /// hostear servicios de datos de Tritón.
@@ -25,8 +37,7 @@ public static class ServicePoolExtensions
     /// </returns>
     public static ITritonConfigurable UseTriton(this ServicePool pool)
     {
-        pool.RegisterNow(new TransactionConfiguration());
-        return pool.Discover<ITritonConfigurable>() ?? new TritonConfigurable(pool).RegisterInto(pool);
+        return pool.Discover<ITritonConfigurable>() ?? TritonConfigurable.Create(pool).RegisterInto(pool);
     }
 
     /// <summary>

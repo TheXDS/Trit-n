@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection;
+using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.EFCore.Resources.Strings;
@@ -14,7 +15,7 @@ namespace TheXDS.Triton.Services.Base;
 /// <typeparam name="T">
 /// Tipo de contexto de datos a utilizar dentro de la transacción.
 /// </typeparam>
-public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbContext, new()
+public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbContext
 {
     /// <summary>
     /// Obtiene la configuración disponible para esta transacción.
@@ -27,62 +28,20 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
     /// </summary>
     protected readonly T _context;
 
-    /// <inheritdoc/>
-    protected override void OnDispose()
-    {
-        _context.Dispose();
-    }
-
-    /// <inheritdoc/>
-    protected override async ValueTask OnDisposeAsync()
-    {
-        await _context.DisposeAsync();
-    }
-
     /// <summary>
-    /// Obtiene un <see cref="ServiceResult"/> que representa un
-    /// <see cref="ServiceResult"/> fallido a partir de la excepción
-    /// producida.
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="CrudTransactionBase{T}"/>.
     /// </summary>
-    /// <param name="ex">Excepción que se ha producido.</param>
-    /// <returns>
-    /// Un resultado que representa y describe una falla en la 
-    /// operación solicitada.
-    /// </returns>
-    protected static ServiceResult ResultFromException(Exception ex)
-    {
-        return ex switch
-        {
-            null => throw new ArgumentNullException(nameof(ex)),
-            NullReferenceException _ => NotFound,
-            TaskCanceledException _ => NetworkFailure,
-            DbUpdateConcurrencyException _ => ConcurrencyFailure,
-            DbUpdateException _ => DbFailure,
-            RetryLimitExceededException _ => NetworkFailure,
-            _ => ex,
-        };
-    }
- 
-    /// <summary>
-    /// Mapea el valor <see cref="EntityState"/> a su valor equivalente
-    /// de tipo <see cref="CrudAction"/>.
-    /// </summary>
-    /// <param name="state">
-    /// Valor a convertir.
+    /// <param name="configuration">
+    /// Configuración a utilizar para la transacción.
     /// </param>
-    /// <returns>
-    /// Un valor <see cref="CrudAction"/> equivalente al
-    /// <see cref="EntityState"/> especificado.
-    /// </returns>
-    protected static CrudAction Map(EntityState state)
+    /// <param name="options">
+    /// Opciones a utilizar para llamar al contructor del contexto de datos.
+    /// Establezca este parámetro en <see langword="null"/> para utilizar el
+    /// constructor público sin parámetros.
+    /// </param>
+    protected CrudTransactionBase(IMiddlewareRunner configuration, DbContextOptions? options = null) : this(configuration, CreateContext(options))
     {
-        return state switch
-        {
-            EntityState.Deleted => CrudAction.Delete,
-            EntityState.Modified => CrudAction.Update,
-            EntityState.Added => CrudAction.Create,
-            _ => CrudAction.Read
-        };
     }
 
     /// <summary>
@@ -432,17 +391,6 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="CrudTransactionBase{T}"/>.
-    /// </summary>
-    /// <param name="configuration">
-    /// Configuración a utilizar para la transacción.
-    /// </param>
-    protected CrudTransactionBase(IMiddlewareRunner configuration) : this(configuration, new T())
-    {
-    }
-
-    /// <summary>
     /// Ejecuta una operación Crud de escritura.
     /// </summary>
     /// <typeparam name="TModel">
@@ -467,6 +415,77 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
         return TryCall(action, operation, new object?[] { entity });
     }
 
+    /// <summary>
+    /// Obtiene un <see cref="ServiceResult"/> que representa un
+    /// <see cref="ServiceResult"/> fallido a partir de la excepción
+    /// producida.
+    /// </summary>
+    /// <param name="ex">Excepción que se ha producido.</param>
+    /// <returns>
+    /// Un resultado que representa y describe una falla en la 
+    /// operación solicitada.
+    /// </returns>
+    protected static ServiceResult ResultFromException(Exception ex)
+    {
+        return ex switch
+        {
+            null => throw new ArgumentNullException(nameof(ex)),
+            NullReferenceException _ => NotFound,
+            TaskCanceledException _ => NetworkFailure,
+            DbUpdateConcurrencyException _ => ConcurrencyFailure,
+            DbUpdateException _ => DbFailure,
+            RetryLimitExceededException _ => NetworkFailure,
+            _ => ex,
+        };
+    }
+ 
+    /// <summary>
+    /// Mapea el valor <see cref="EntityState"/> a su valor equivalente
+    /// de tipo <see cref="CrudAction"/>.
+    /// </summary>
+    /// <param name="state">
+    /// Valor a convertir.
+    /// </param>
+    /// <returns>
+    /// Un valor <see cref="CrudAction"/> equivalente al
+    /// <see cref="EntityState"/> especificado.
+    /// </returns>
+    protected static CrudAction Map(EntityState state)
+    {
+        return state switch
+        {
+            EntityState.Deleted => CrudAction.Delete,
+            EntityState.Modified => CrudAction.Update,
+            EntityState.Added => CrudAction.Create,
+            _ => CrudAction.Read
+        };
+    }
+
+    /// <inheritdoc/>
+    protected override void OnDispose()
+    {
+        _context.Dispose();
+    }
+
+    /// <inheritdoc/>
+    protected override async ValueTask OnDisposeAsync()
+    {
+        await _context.DisposeAsync();
+    }
+
+    private static T CreateContext(DbContextOptions? o)
+    {
+        try
+        {
+            return o is null
+                ? typeof(T).New<T>()
+                : typeof(T).New<T>(o);
+        }
+        catch (Exception ex)
+        {
+            throw new ClassNotInstantiableException(ex);
+        }
+    }
 
     private static Model? GetFromResult(object? result)
     {

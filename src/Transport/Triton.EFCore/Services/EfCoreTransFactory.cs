@@ -7,86 +7,68 @@
 /// <typeparam name="T">
 /// Tipo de contexto de datos al cual conectarse.
 /// </typeparam>
-public class EfCoreTransFactory<T> : ITransactionFactory where T : DbContext, new()
+public class EfCoreTransFactory<T> : ITransactionFactory where T : DbContext
 {
-    /// <summary>
-    /// Construye un nuevo servicio simple utilizando un 
-    /// <see cref="EfCoreTransFactory{T}"/> para conectarse a un contexto
-    /// de datos.
-    /// </summary>
-    /// <param name="configuration">
-    /// Configuración de transacciones a aplicar al nuevo servicio.
-    /// </param>
-    /// <returns>
-    /// Un nuevo servicio con la configuración especificada, utilizando un
-    /// <see cref="EfCoreTransFactory{T}"/> para conectarse a un contexto
-    /// de datos.
-    /// </returns>
-    public static ITritonService BuildService(IMiddlewareConfigurator configuration)
-    {
-        return new TritonService(configuration, new EfCoreTransFactory<T>());
-    }
+    private readonly IDbContextOptionsSource options;
 
     /// <summary>
-    /// Construye un nuevo servicio simple utilizando un 
-    /// <see cref="EfCoreTransFactory{T}"/> para conectarse a un contexto
-    /// de datos.
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="EfCoreTransFactory{T}"/>.
     /// </summary>
-    /// <returns>
-    /// Un nuevo servicio con una configuración de transacciones
-    /// predetermianda y utilizando un <see cref="EfCoreTransFactory{T}"/>
-    /// para conectarse a un contexto de datos.
-    /// </returns>
-    public static ITritonService BuildService()
+    /// <param name="options">
+    /// Opciones de contexto a utilizar para crear instancias de
+    /// <see cref="DbContext"/>.
+    /// </param>
+    public EfCoreTransFactory(IDbContextOptionsSource options)
     {
-        return new TritonService(new EfCoreTransFactory<T>());
+        this.options = options;
     }
 
     /// <summary>
     /// Obtiene una transacción que permite leer información desde el
     /// contexto de datos.
     /// </summary>
-    /// <param name="configuration">
+    /// <param name="runner">
     /// Confiuración de transacción a utilizar.
     /// </param>
     /// <returns>
     /// Una transacción que permite leer información desde el contexto de
     /// datos.
     /// </returns>
-    public ICrudReadTransaction GetReadTransaction(IMiddlewareConfigurator configuration)
+    public ICrudReadTransaction GetReadTransaction(IMiddlewareRunner runner)
     {
-        return new CrudReadTransaction<T>(configuration.GetRunner());
+        return new CrudReadTransaction<T>(runner, options.GetOptions());
     }
 
     /// <summary>
     /// Obtiene una transacción que permite escribir información desde el
     /// contexto de datos.
     /// </summary>
-    /// <param name="configuration">
+    /// <param name="runner">
     /// Confiuración de transacción a utilizar.
     /// </param>
     /// <returns>
     /// Una transacción que permite escribir información desde el contexto
     /// de datos.
     /// </returns>
-    public ICrudWriteTransaction GetWriteTransaction(IMiddlewareConfigurator configuration)
+    public ICrudWriteTransaction GetWriteTransaction(IMiddlewareRunner runner)
     {
-        return new CrudWriteTransaction<T>(configuration.GetRunner());
+        return new CrudWriteTransaction<T>(runner, options.GetOptions());
     }
 
     /// <summary>
     /// Obtiene una transacción que permite leer y escribir información
     /// desde el contexto de datos.
     /// </summary>
-    /// <param name="configuration">
+    /// <param name="runner">
     /// Confiuración de transacción a utilizar.
     /// </param>
     /// <returns>
     /// Una transacción que permite leer y escribir información desde el 
     /// contexto de datos.
     /// </returns>
-    public ICrudReadWriteTransaction GetTransaction(IMiddlewareConfigurator configuration)
+    public ICrudReadWriteTransaction GetTransaction(IMiddlewareRunner runner)
     {
-        return new CrudTransaction<T>(configuration.GetRunner());
+        return new CrudTransaction<T>(runner, options.GetOptions());
     }
 }

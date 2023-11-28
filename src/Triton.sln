@@ -95,7 +95,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevTools", "DevTools", "{2E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StringPacker", "DevTools\StringPacker\StringPacker.csproj", "{8001D6D1-0CCC-4B88-BACD-EC75D9247ABE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triton.Tests.InMemory", "Tests\Transport\Triton.Tests.InMemory\Triton.Tests.InMemory.csproj", "{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.InMemory", "Tests\Transport\Triton.Tests.InMemory\Triton.Tests.InMemory.csproj", "{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -245,6 +245,7 @@ Global
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{27e6a82a-3b24-4c3c-b020-cb3c43c98d43}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{2e38da0f-4a03-444c-9de4-d148a4b07edd}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{78090f4b-9e5d-42dd-bb86-527e237ce5b0}*SharedItemsImports = 5
+		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{78f4617e-af45-472c-b01f-eea5676bc21f}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{7f412054-c343-4ece-a450-329e20770ec4}*SharedItemsImports = 5
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{8ecfeedf-ce5b-4aba-b72f-99eb3652f908}*SharedItemsImports = 13
 		Tests\Triton.Tests.Shared\Triton.Tests.Shared.projitems*{9bba1578-9edc-46ba-b895-dab65d83c0f0}*SharedItemsImports = 5

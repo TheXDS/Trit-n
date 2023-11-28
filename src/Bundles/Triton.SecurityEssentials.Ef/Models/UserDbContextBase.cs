@@ -10,6 +10,24 @@ namespace TheXDS.Triton.SecurityEssentials.Ef.Models;
 /// </summary>
 public abstract class UserDbContextBase : DbContext, IUserDbContext
 {
+    /// <summary>
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="UserDbContextBase"/>.
+    /// </summary>
+    protected UserDbContextBase()
+    {
+    }
+
+    /// <summary>
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="UserDbContextBase"/>, permitiendo especificar las opciones
+    /// del contexto de datos.
+    /// </summary>
+    /// <param name="options">Opciones del contexto de datos.</param>
+    protected UserDbContextBase(DbContextOptions options) : base(options)
+    {
+    }
+
     /// <inheritdoc/>
     public DbSet<LoginCredential> LoginCredentials { get; set; } = null!;
 
