@@ -30,7 +30,7 @@ public interface IUserService : ITritonService
     {
         await using var j = GetReadTransaction();
         var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
-        return r.Success ? (r.ReturnValue!.FirstOrDefault() ?? ServiceResult.FailWith<ServiceResult<LoginCredential?>>(FailureReason.NotFound)) : r.CastUp<LoginCredential?>(null);
+        return r.Success ? (r.Result!.FirstOrDefault() ?? ServiceResult.FailWith<ServiceResult<LoginCredential?>>(FailureReason.NotFound)) : r.CastUp<LoginCredential?>(null);
     }
 
     /// <summary>
@@ -48,21 +48,43 @@ public interface IUserService : ITritonService
     /// Una tarea que, al finalizar, contiene el resultado reportado de la
     /// operación ejecutada por el servicio subyacente.
     /// </returns>
-    async Task<ServiceResult> AddNewLoginCredential(string username, SecureString password)
+    Task<ServiceResult> AddNewLoginCredential(string username, SecureString password)
+    {
+        return AddNewLoginCredential<Pbkdf2Storage>(username, password);
+    }
+
+    /// <summary>
+    /// Permite crear nuevas credenciales de inicio de sesión, ejecutando
+    /// algunos pasos esenciales sobre la misma.
+    /// </summary>
+    /// <typeparam name="TAlg">
+    /// Tipo de algoritmo de almacenamiento de contraseñas a utilizar.
+    /// </typeparam>
+    /// <param name="username">
+    /// Nombre de inicio de sesión a utilizar para identificar a la nueva
+    /// credencial.
+    /// </param>
+    /// <param name="password">
+    /// Contraseña a registrar en la nueva credencial.
+    /// </param>
+    /// <returns>
+    /// Una tarea que, al finalizar, contiene el resultado reportado de la
+    /// operación ejecutada por el servicio subyacente.
+    /// </returns>
+    async Task<ServiceResult> AddNewLoginCredential<TAlg>(string username, SecureString password) where TAlg : IPasswordStorage, new()
     {
         await using var j = GetTransaction();
 
         var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
         if (!r.Success) return r;
-        if (r.ReturnValue!.Any()) return FailureReason.EntityDuplication;
-
+        if (r.Result!.Any()) return FailureReason.EntityDuplication;
         Guid id;
         do
         {
             id = Guid.NewGuid();
-        } while ((await j.ReadAsync<LoginCredential, Guid>(id)).ReturnValue is not null);
+        } while ((await j.ReadAsync<LoginCredential, Guid>(id)).Result is not null);
 
-        j.Create(new LoginCredential(username, await HashPasswordAsync(password)) { Id = id });
+        j.Create(new LoginCredential(username, await HashPasswordAsync<TAlg>(password)) { Id = id });
         return await j.CommitAsync();
     }
 
@@ -84,19 +106,37 @@ public interface IUserService : ITritonService
     async Task<ServiceResult<Session?>> Authenticate(string username, SecureString password)
     {
         var r = await VerifyPassword(username, password);
-        if (!(r.Success && r.ReturnValue is { } result)) return r.CastUp<Session?>(null);
+        if (!(r.Success && r.Result is { } result)) return r.CastUp<Session?>(null);
         if (!(result.Valid ?? false)) return FailureReason.Forbidden;
         await using var j = GetWriteTransaction();
-        Session s = new() { Timestamp = DateTime.UtcNow, Credential = result.LoginCredential };
+        Session s = new() { Timestamp = DateTime.UtcNow };
+        result.LoginCredential.Sessions.Add(s);
         j.Create(s);
         return (await j.CommitAsync()).CastUp(s);
     }
 
     /// <summary>
+    /// Finaliza una sesión abierta.
+    /// </summary>
+    /// <param name="session">Sesión a finalizar.</param>
+    /// <returns>
+    /// Una tarea que, al finalizar, contiene el resultado reportado de la
+    /// operación ejecutada por el servicio subyacente.
+    /// </returns>
+    async Task<ServiceResult> EndSession(Session session)
+    {
+        if (session.EndTimestamp.HasValue) return ServiceResult.FailWith<ServiceResult>(FailureReason.Idempotency);
+        await using var t = GetWriteTransaction();
+        session.EndTimestamp = DateTime.UtcNow;
+        t.Update(session);
+        return await t.CommitAsync();
+    }
+
+    /// <summary>
     /// Verifica que las credenciales provistas sean válidas.
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="password"></param>
+    /// <param name="userId">Nombre de inicio de sesión.</param>
+    /// <param name="password">Contraseña.</param>
     /// <returns>
     /// Una tarea que, al finalizar, retornará una tupla de valores que indica si la 
     /// </returns>
@@ -110,8 +150,8 @@ public interface IUserService : ITritonService
     {
         var r = await GetCredential(userId);
         if (!r.Success) return r.CastUp<VerifyPasswordResult?>(null);
-        return r.ReturnValue is not { PasswordHash: { } passwd, Enabled: true } user
-            ? VerifyPasswordResult.Invalid 
+        return r.Result is not { PasswordHash: { } passwd, Enabled: true } user
+            ? VerifyPasswordResult.Invalid
             : new VerifyPasswordResult(PasswordStorage.VerifyPassword(password, passwd), user);
     }
 
@@ -128,7 +168,24 @@ public interface IUserService : ITritonService
     /// </returns>
     byte[] HashPassword(SecureString password)
     {
-        return PasswordStorage.CreateHash(new Pbkdf2Storage(), password);
+        return HashPassword<Pbkdf2Storage>(password);
+    }
+
+    /// <summary>
+    /// Calcula el hash utilizado para almacenar la información de
+    /// comprobación de la contraseña.
+    /// </summary>
+    /// <typeparam name="TAlg">Tipo de algoritmo a utilizar.</typeparam>
+    /// <param name="password">
+    /// Contraseña para la cual generar el Hash seguro.
+    /// </param>
+    /// <returns>
+    /// Un arreglo de bytes con el Hash que ha sido calculado a partir de
+    /// la contraseña provista.
+    /// </returns>
+    byte[] HashPassword<TAlg>(SecureString password) where TAlg : IPasswordStorage, new()
+    {
+        return PasswordStorage.CreateHash<TAlg>(password);
     }
 
     /// <summary>
@@ -144,7 +201,24 @@ public interface IUserService : ITritonService
     /// </returns>
     Task<byte[]> HashPasswordAsync(SecureString password)
     {
-        return Task.Run(() => HashPassword(password));
+        return HashPasswordAsync<Pbkdf2Storage>(password);
+    }
+
+    /// <summary>
+    /// Calcula de forma asíncrona el hash utilizado para almacenar la
+    /// información de comprobación de la contraseña.
+    /// </summary>
+    /// <typeparam name="TAlg">Tipo de algoritmo a utilizar.</typeparam>
+    /// <param name="password">
+    /// Contraseña para la cual generar el Hash seguro.
+    /// </param>
+    /// <returns>
+    /// Una tarea que, al finalizar, devolverá un arreglo de bytes con el
+    /// Hash que ha sido calculado a partir de la contraseña provista.
+    /// </returns>
+    Task<byte[]> HashPasswordAsync<TAlg>(SecureString password) where TAlg : IPasswordStorage, new()
+    {
+        return Task.Run(() => HashPassword<TAlg>(password));
     }
 
     /// <summary>
@@ -163,7 +237,7 @@ public interface IUserService : ITritonService
     async Task<ServiceResult<bool?>> CheckAccess(string username, string context, PermissionFlags requested)
     {
         var r = await GetCredential(username);
-        if (!r.Success || r.ReturnValue is not { } c) return r.CastUp<bool?>(null);
+        if (!r.Success || r.Result is not { } c) return r.CastUp<bool?>(null);
         return CheckAccess(c, context, requested);
     }
 

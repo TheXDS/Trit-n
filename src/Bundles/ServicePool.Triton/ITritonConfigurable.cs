@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.ServicePool.Extensions;
@@ -37,7 +39,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext(Type contextType, IMiddlewareConfigurator? configurator = null)
     {
-        return UseContext(contextType, (DbContextOptionsSource?)null, configurator);
+        return UseService(contextType, (m, f) => new TritonService(m, f), configurator);
     }
 
     /// <summary>
@@ -59,7 +61,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext(Type contextType, DbContextOptions options, IMiddlewareConfigurator? configurator = null)
     {
-        return UseContext(contextType, new DbContextOptionsSource(options), configurator);
+        return UseService(contextType, (m, f) => new TritonService(m, f), options, configurator);
     }
 
     /// <summary>
@@ -81,7 +83,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext(Type contextType, Action<DbContextOptionsBuilder> builder, IMiddlewareConfigurator? configurator = null)
     {
-        return UseContext(contextType, new DbContextOptionsSource(builder), configurator);
+        return UseService(contextType, (m, f) => new TritonService(m, f), builder, configurator);
     }
 
     /// <summary>
@@ -99,7 +101,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext<T>(IMiddlewareConfigurator? configurator = null) where T : DbContext
     {
-        return UseContext((DbContextOptionsSource<T>?)null, configurator);
+        return UseService<TritonService, T>((m, f) => new TritonService(m, f), configurator);
     }
 
     /// <summary>
@@ -121,7 +123,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext<T>(DbContextOptions<T> options, IMiddlewareConfigurator? configurator = null) where T : DbContext
     {
-        return UseContext(new DbContextOptionsSource<T>(options), configurator);
+        return UseService((m, f) => new TritonService(m, f), options, configurator);
     }
 
     /// <summary>
@@ -143,7 +145,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext<T>(Action<DbContextOptionsBuilder<T>> builder, IMiddlewareConfigurator? configurator = null) where T : DbContext
     {
-        return UseContext(new DbContextOptionsSource<T>(builder), configurator);
+        return UseService((m, f) => new TritonService(m, f), builder, configurator);
     }
 
     /// <summary>
@@ -165,9 +167,7 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext<T>(DbContextOptionsSource<T>? optionsSource, IMiddlewareConfigurator? configurator = null) where T : DbContext
     {
-        var factory = typeof(EfCoreTransFactory<T>).New<ITransactionFactory>((IDbContextOptionsSource?)optionsSource ?? DbContextOptionsSource.None);
-        Pool.Register(() => new TritonService(configurator ?? Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), factory));
-        return this;
+        return UseService((m, f) => new TritonService(m, f), optionsSource, configurator);
     }
 
     /// <summary>
@@ -189,12 +189,170 @@ public interface ITritonConfigurable
     /// </returns>
     ITritonConfigurable UseContext(Type contextType, DbContextOptionsSource? optionsSource, IMiddlewareConfigurator? configurator = null)
     {
-        if (!contextType.Implements<DbContext>())
-        {
-            throw Errors.TypeMustImplDbContext(nameof(contextType));
-        }
-        var factory = typeof(EfCoreTransFactory<>).MakeGenericType(contextType).New<ITransactionFactory>(optionsSource ?? DbContextOptionsSource.None);
-        Pool.Register(() => new TritonService(configurator ?? Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), factory));
+        return UseService(contextType, (m, f) => new TritonService(m, f), optionsSource, configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <typeparam name="TService">Tipo de servicio a registrar.</typeparam>
+    /// <typeparam name="TContext">Tipo de contexto de datos a registrar.</typeparam>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService<TService, TContext>(Func<IMiddlewareConfigurator, EfCoreTransFactory<TContext>, TService> factoryCallback, IMiddlewareConfigurator? configurator = null)
+        where TService : ITritonService where TContext : DbContext
+    {
+        return UseService(factoryCallback, (DbContextOptionsSource<TContext>?)null, configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <typeparam name="TService">Tipo de servicio a registrar.</typeparam>
+    /// <typeparam name="TContext">Tipo de contexto de datos a registrar.</typeparam>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="options">
+    /// Instancia de opciones de configuración de contexto a utilizar par
+    /// a configurar el contexto subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService<TService, TContext>(Func<IMiddlewareConfigurator, EfCoreTransFactory<TContext>, TService> factoryCallback, DbContextOptions<TContext> options, IMiddlewareConfigurator? configurator = null)
+        where TService : ITritonService where TContext : DbContext
+    {
+        return UseService(factoryCallback, new DbContextOptionsSource<TContext>(options), configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <typeparam name="TService">Tipo de servicio a registrar.</typeparam>
+    /// <typeparam name="TContext">Tipo de contexto de datos a registrar.</typeparam>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="configCallback">
+    /// Método de configuración a llamar para configurar el contexto
+    /// subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService<TService, TContext>(Func<IMiddlewareConfigurator, EfCoreTransFactory<TContext>, TService> factoryCallback, Action<DbContextOptionsBuilder<TContext>> configCallback, IMiddlewareConfigurator? configurator = null)
+        where TService : ITritonService where TContext : DbContext
+    {
+        return UseService(factoryCallback, new DbContextOptionsSource<TContext>(configCallback), configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <typeparam name="TService">Tipo de servicio a registrar.</typeparam>
+    /// <typeparam name="TContext">Tipo de contexto de datos a registrar.</typeparam>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="optionsSource">
+    /// Objeto a utilizar para obtener la configuración de contexto a utilizar
+    /// al generar transacciones.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService<TService, TContext>(Func<IMiddlewareConfigurator, EfCoreTransFactory<TContext>, TService> factoryCallback, DbContextOptionsSource<TContext>? optionsSource, IMiddlewareConfigurator? configurator = null)
+        where TService : ITritonService
+        where TContext : DbContext
+    {
+        Pool.Register(() => factoryCallback.Invoke(configurator ?? Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), new EfCoreTransFactory<TContext>(optionsSource ?? DbContextOptionsSource.None)));
+        return this;
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto de datos a registrar.</param>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService(Type contextType, Func<IMiddlewareConfigurator, ITransactionFactory, ITritonService> factoryCallback, IMiddlewareConfigurator? configurator = null)
+    {
+        return UseService(contextType, factoryCallback, (DbContextOptionsSource?)null, configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto de datos a registrar.</param>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="options">
+    /// Instancia de opciones de configuración de contexto a utilizar par
+    /// a configurar el contexto subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService(Type contextType, Func<IMiddlewareConfigurator, ITransactionFactory, ITritonService> factoryCallback, DbContextOptions options, IMiddlewareConfigurator? configurator = null)
+    {
+        return UseService(contextType, factoryCallback, new DbContextOptionsSource(options), configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto de datos a registrar.</param>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="configCallback">
+    /// Método de configuración a llamar para configurar el contexto
+    /// subyacente.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService(Type contextType, Func<IMiddlewareConfigurator, ITransactionFactory, ITritonService> factoryCallback, Action<DbContextOptionsBuilder> configCallback, IMiddlewareConfigurator? configurator = null)
+    {
+        return UseService(contextType, factoryCallback, new DbContextOptionsSource(configCallback), configurator);
+    }
+
+    /// <summary>
+    /// Registra un servicio para acceder a datos.
+    /// </summary>
+    /// <param name="contextType">Tipo de contexto de datos a registrar.</param>
+    /// <param name="factoryCallback">Método a llamar para crear el servicio.</param>
+    /// <param name="optionsSource">
+    /// Objeto a utilizar para obtener la configuración de contexto a utilizar
+    /// al generar transacciones.
+    /// </param>
+    /// <param name="configurator">
+    /// Configuración de Middleware a utilizar al generar transacciones.
+    /// </param>
+    /// <returns>
+    /// La misma instancia del objeto utilizado para configurar Tritón.
+    /// </returns>
+    ITritonConfigurable UseService(Type contextType, Func<IMiddlewareConfigurator, ITransactionFactory, ITritonService> factoryCallback, DbContextOptionsSource? optionsSource, IMiddlewareConfigurator? configurator = null)
+    {
+        CheckContextType(contextType);
+        Pool.Register(() => factoryCallback.Invoke(configurator ?? Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration(), CreateEfFactory(contextType, optionsSource)));
         return this;
     }
 
@@ -307,5 +465,23 @@ public interface ITritonConfigurable
     private IMiddlewareConfigurator GetMiddlewareConfigurator()
     {
         return Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration().RegisterInto(Pool);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerNonUserCode]
+    private static void CheckContextType(Type contextType)
+    {
+        if (!contextType.Implements<DbContext>())
+        {
+            throw Errors.TypeMustImplDbContext(nameof(contextType));
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerNonUserCode]
+    private static ITransactionFactory CreateEfFactory(Type contextType, IDbContextOptionsSource? optionsSource)
+    {
+        CheckContextType(contextType);
+        return typeof(EfCoreTransFactory<>).MakeGenericType(contextType).New<ITransactionFactory>(optionsSource ?? DbContextOptionsSource.None);
     }
 }

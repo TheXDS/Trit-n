@@ -43,7 +43,7 @@ public class CrudTransactionTests
         using var t = GetTestTransaction();
         var r = t.Read<User, string>("user1");
         Assert.That(r.Success, Is.True);
-        Assert.That(r.ReturnValue, Is.Not.Null);
+        Assert.That(r.Result, Is.Not.Null);
     }
 
     [Test]
@@ -52,7 +52,7 @@ public class CrudTransactionTests
         await using var t = GetTestTransaction();
         var r = t.Read<User, string>("user1");
         Assert.That(r.Success, Is.True);
-        Assert.That(r.ReturnValue, Is.Not.Null);
+        Assert.That(r.Result, Is.Not.Null);
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class CrudTransactionTests
 
         using (var t = GetTestTransaction())
         {
-            var u = t.Read<User, string>("user456").ReturnValue!;
+            var u = t.Read<User, string>("user456").Result!;
             var r = t.Delete(u);
             Assert.That(r.Success, Is.True);
         }
@@ -187,7 +187,7 @@ public class CrudTransactionTests
 
         await using (var t = GetTestTransaction())
         {
-            var u = t.Read<User, string>("user456").ReturnValue!;
+            var u = t.Read<User, string>("user456").Result!;
             var r = t.Delete(u);
             Assert.That(r.Success, Is.True);
             await t.CommitAsync();
@@ -239,7 +239,7 @@ public class CrudTransactionTests
 
         await using (var t = GetTestTransaction())
         {
-            var u = (await t.ReadAsync<User, string>("user789")).ReturnValue;
+            var u = (await t.ReadAsync<User, string>("user789")).Result;
             u!.PublicName = "User 1-2-3";
             Assert.That(t.Update(u).Success, Is.True);
             Assert.That((await t.CommitAsync()).Success, Is.True);
@@ -267,7 +267,7 @@ public class CrudTransactionTests
         {
             var r = await t.ReadAsync<User, string>("user987");
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
+            Assert.That(r.Result, Is.Not.Null);
         }
     }
 
@@ -275,7 +275,7 @@ public class CrudTransactionTests
     public async Task SearchAsync_test()
     {
         await using var t = GetTestTransaction();
-        var r = (await t.SearchAsync<User>(p => p.PublicName != null)).ReturnValue!;
+        var r = (await t.SearchAsync<User>(p => p.PublicName != null)).Result!;
         Assert.That(r, Is.Not.Null);
         Assert.That(r.Length, Is.Not.Zero);
     }

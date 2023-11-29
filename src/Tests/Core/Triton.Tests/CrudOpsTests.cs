@@ -146,7 +146,7 @@ public class CrudOpsTests
         User r;
         using (var t = _srv.GetReadTransaction())
         {
-            r = t.Read<User, string>("user1").ReturnValue!;
+            r = t.Read<User, string>("user1").Result!;
         }
 
         r.PublicName = "Test #1";
@@ -158,7 +158,7 @@ public class CrudOpsTests
 
         using (var t = _srv.GetReadTransaction())
         {
-            r = t.Read<User, string>("user1").ReturnValue!;
+            r = t.Read<User, string>("user1").Result!;
         }
         Assert.That(r.PublicName, Is.EqualTo("Test #1"));
     }
@@ -172,7 +172,7 @@ public class CrudOpsTests
         }
         using (var t = _srv.GetReadTransaction())
         {
-            Assert.That(t.Read<User, string>("user3").ReturnValue, Is.Null);
+            Assert.That(t.Read<User, string>("user3").Result, Is.Null);
         }
     }
 
@@ -180,7 +180,7 @@ public class CrudOpsTests
     public async Task ReadAsync_Test()
     {
         await using var t = _srv.GetReadTransaction();
-        User r = (await t.ReadAsync<User, string>("user1")).ReturnValue!;
+        User r = (await t.ReadAsync<User, string>("user1")).Result!;
         Assert.That(r, Is.Not.Null);
         Assert.That(r, Is.InstanceOf<User>());
     }
@@ -189,7 +189,7 @@ public class CrudOpsTests
     public async Task SearchAsync_test()
     {
         await using var t = _srv.GetReadTransaction();
-        var r = (await t.SearchAsync<User>(p => p.PublicName != null)).ReturnValue!;
+        var r = (await t.SearchAsync<User>(p => p.PublicName != null)).Result!;
         Assert.That(r, Is.Not.Null);
         Assert.That(r.Length, Is.Not.Zero);
     }

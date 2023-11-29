@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS1591
 
 using NUnit.Framework;
+using TheXDS.MCART.Security;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Services;
@@ -70,7 +71,7 @@ public class DbPopulation
                 Credential = lc,
                 Id = Guid.NewGuid(),
                 Timestamp = new DateTime(2022, 1, 1),
-                TtlHours = int.MaxValue,
+                TtlSeconds = int.MaxValue,
                 Token = "abcd1234"
             }.PushInto(lc.Sessions));
             t.Create(new UserGroupMembership()

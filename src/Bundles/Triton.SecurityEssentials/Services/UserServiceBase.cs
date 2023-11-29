@@ -1,25 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TheXDS.Triton.SecurityEssentials.Ef.Models;
-using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
+﻿using TheXDS.Triton.Services.Base;
 
-namespace TheXDS.Triton.SecurityEssentials.Ef.Services.Base;
+namespace TheXDS.Triton.Services;
 
 /// <summary>
 /// Clase base para los servicios de Tritón que permitan acceso a un
 /// contexto de datos con información de autenticación y permisos de
 /// usuarios.
 /// </summary>
-/// <typeparam name="T">
-/// Tipo de <see cref="DbContext"/> que contiene los
-/// <see cref="DbSet{TEntity}"/> necesarios para implementar autenticación
-/// y permisos de usuarios.
-/// </typeparam>
-public abstract class UserServiceBase<T> : UserServiceBase, IEfUserService<T> where T : DbContext, IUserDbContext, new()
+public abstract class UserServiceBase : TritonService, IUserService
 {
     /// <summary>
     /// Inicializa una nueva instancia de la clase 
-    /// <see cref="UserServiceBase{T}"/>, buscando automáticamente la
+    /// <see cref="UserServiceBase"/>, buscando automáticamente la
     /// configuración de transacciones a utilizar.
     /// </summary>
     public UserServiceBase() : base()
@@ -28,7 +20,7 @@ public abstract class UserServiceBase<T> : UserServiceBase, IEfUserService<T> wh
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase 
-    /// <see cref="UserServiceBase{T}"/>, buscando automáticamente la
+    /// <see cref="UserServiceBase"/>, buscando automáticamente la
     /// configuración de transacciones a utilizar.
     /// </summary>
     /// <param name="factory">Fábrica de transacciones a utilizar.</param>
@@ -37,7 +29,7 @@ public abstract class UserServiceBase<T> : UserServiceBase, IEfUserService<T> wh
     }
     /// <summary>
     /// Inicializa una nueva instancia de la clase 
-    /// <see cref="UserServiceBase{T}"/>, buscando automáticamente la
+    /// <see cref="UserServiceBase"/>, buscando automáticamente la
     /// configuración de transacciones a utilizar.
     /// </summary>
     /// <param name="transactionConfiguration">
@@ -50,7 +42,7 @@ public abstract class UserServiceBase<T> : UserServiceBase, IEfUserService<T> wh
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase 
-    /// <see cref="UserServiceBase{T}"/>, especificando la configuración a
+    /// <see cref="UserServiceBase"/>, especificando la configuración a
     /// utilizar.
     /// </summary>
     /// <param name="transactionConfiguration">
@@ -58,7 +50,7 @@ public abstract class UserServiceBase<T> : UserServiceBase, IEfUserService<T> wh
     /// servicio.
     /// </param>
     /// <param name="factory">Fábrica de transacciones a utilizar.</param>
-    protected UserServiceBase(IMiddlewareConfigurator transactionConfiguration, EfCoreTransFactory<T> factory)
+    protected UserServiceBase(IMiddlewareConfigurator transactionConfiguration, ITransactionFactory factory)
         : base(transactionConfiguration, factory)
     {
     }

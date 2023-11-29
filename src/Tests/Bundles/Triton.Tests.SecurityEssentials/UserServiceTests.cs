@@ -28,9 +28,9 @@ public class UserServiceTests
         var epsilon = TimeSpan.FromSeconds(30);
         var r = await _svc.Authenticate("test", "test".ToSecureString());
         Assert.That(r.Success, Is.True);
-        Assert.That(r.ReturnValue, Is.AssignableFrom<Session>());
-        Assert.That(r.ReturnValue!.Credential.Username, Is.EqualTo("test"));
-        Assert.That(r.ReturnValue!.Timestamp.IsBetween(t - epsilon, t + epsilon), Is.True);
+        Assert.That(r.Result, Is.AssignableFrom<Session>());
+        Assert.That(r.Result!.Credential.Username, Is.EqualTo("test"));
+        Assert.That(r.Result!.Timestamp.IsBetween(t - epsilon, t + epsilon), Is.True);
     }
     
     [Test]
@@ -38,7 +38,7 @@ public class UserServiceTests
     {
         var r = await _svc.Authenticate("test", "test".ToSecureString());
         await using var t = _svc.GetReadTransaction();
-        Assert.That(await t.ReadAsync<Session, Guid>(r.ReturnValue!.Id), Is.Not.Null);
+        Assert.That(await t.ReadAsync<Session, Guid>(r.Result!.Id), Is.Not.Null);
     }
 
     [Test]
@@ -46,7 +46,7 @@ public class UserServiceTests
     {
         var r = await _svc.Authenticate("nonExistentUser", "test".ToSecureString());
         Assert.That(r.Success, Is.False);
-        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Result, Is.Null);
         Assert.That(r.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
         
@@ -55,7 +55,7 @@ public class UserServiceTests
     {
         var r = await _svc.Authenticate("disabled", "test".ToSecureString());
         Assert.That(r.Success, Is.False);
-        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Result, Is.Null);
         Assert.That(r.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
 
@@ -64,7 +64,7 @@ public class UserServiceTests
     {
         var r = await _svc.Authenticate("test", "wrong".ToSecureString());
         Assert.That(r.Success, Is.False);
-        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Result, Is.Null);
         Assert.That(r.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
 
@@ -78,7 +78,7 @@ public class UserServiceTests
     [TestCase("nonRegisteredContext", PermissionFlags.Elevate, null)]
     public async Task CheckAccess_permissions_Test(string context, PermissionFlags flags, bool? result)
     {
-        Assert.That((await _svc.CheckAccess("test", context, flags)).ReturnValue, Is.EqualTo(result));
+        Assert.That((await _svc.CheckAccess("test", context, flags)).Result, Is.EqualTo(result));
     }
 
     [Test]
@@ -86,7 +86,7 @@ public class UserServiceTests
     {
         var r = await _badSvc.CheckAccess("test", "testViewContext", PermissionFlags.View);
         Assert.That(r.Success, Is.False);
-        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Result, Is.Null);
     }
 
     [Test]
@@ -94,7 +94,7 @@ public class UserServiceTests
     {
         var r = await _badSvc.Authenticate("test", "test".ToSecureString());
         Assert.That(r.Success, Is.False);
-        Assert.That(r.ReturnValue, Is.Null);
+        Assert.That(r.Result, Is.Null);
         Assert.That(r.Reason, Is.EqualTo(FailureReason.ServiceFailure));
     }
 
@@ -104,9 +104,9 @@ public class UserServiceTests
         Assert.That((await _svc.AddNewLoginCredential("newUser", "newPassword".ToSecureString())).Success, Is.True);
         var u = await _svc.GetCredential("newUser");
         Assert.That(u.Success, Is.True);
-        Assert.That(u.ReturnValue, Is.Not.Null);
-        Assert.That(u.ReturnValue!.PasswordHash.Any(), Is.True);
-        Assert.That((await _svc.VerifyPassword("newUser", "newPassword".ToSecureString())).ReturnValue?.Valid, Is.True);
+        Assert.That(u.Result, Is.Not.Null);
+        Assert.That(u.Result!.PasswordHash.Any(), Is.True);
+        Assert.That((await _svc.VerifyPassword("newUser", "newPassword".ToSecureString())).Result?.Valid, Is.True);
     }
 
     [Test]

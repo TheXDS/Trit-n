@@ -13,7 +13,7 @@ public class ICrudReadTransactionTests : TransactionTestBase
     public void Read_with_type_and_key_as_object()
     {
         using var t = GetTransaction();
-        Model? u = t.Read(typeof(User), "user1").ReturnValue;
+        Model? u = t.Read(typeof(User), "user1").Result;
         Assert.That(u, Is.Not.Null);
         Assert.That(u, Is.InstanceOf<User>());
         Assert.That(u!.IdAsString, Is.EqualTo("user1"));
@@ -31,7 +31,7 @@ public class ICrudReadTransactionTests : TransactionTestBase
     public async Task ReadAsync_with_type_and_key_as_object()
     {
         using var t = GetTransaction();
-        Model u = (await t.ReadAsync(typeof(User), "user1")).ReturnValue!;
+        Model u = (await t.ReadAsync(typeof(User), "user1")).Result!;
         Assert.That(u, Is.Not.Null);
         Assert.That(u, Is.InstanceOf<User>());
         Assert.That(u.IdAsString, Is.EqualTo("user1"));
@@ -72,8 +72,8 @@ public class ICrudReadTransactionTests : TransactionTestBase
         var q = await t.SearchAsync<User>(u => u.Id == "user1");
         Assert.That(q, Is.Not.Null);
         Assert.That(q.Success, Is.True);
-        Assert.That(q.ReturnValue, Is.Not.Null);
-        Assert.That(q.ReturnValue, Is.Not.Empty);
-        Assert.That(q.ReturnValue![0].IdAsString, Is.EqualTo("user1"));
+        Assert.That(q.Result, Is.Not.Null);
+        Assert.That(q.Result, Is.Not.Empty);
+        Assert.That(q.Result![0].IdAsString, Is.EqualTo("user1"));
     }
 }

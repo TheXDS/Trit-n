@@ -24,6 +24,7 @@ public class ServiceResult : IEquatable<ServiceResult>, IEquatable<Exception>, I
             FailureReason.NotFound => St.EntityNotFound,
             FailureReason.BadQuery => St.BadQuery,
             FailureReason.QueryOverLimit => St.QueryOverLimit,
+            FailureReason.Idempotency => St.Idempotency,
             _ => $"0x{reason.ToString("X").PadLeft(8, '0')}",
         };
     }

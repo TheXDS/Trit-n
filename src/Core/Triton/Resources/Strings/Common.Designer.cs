@@ -115,6 +115,15 @@ namespace TheXDS.Triton.Resources.Strings {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a La operación ya se ha realizado a cabo..
+        /// </summary>
+        internal static string Idempotency {
+            get {
+                return ResourceManager.GetString("Idempotency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El servicio solicitado no ha sido cargado..
         /// </summary>
         internal static string MissingService {

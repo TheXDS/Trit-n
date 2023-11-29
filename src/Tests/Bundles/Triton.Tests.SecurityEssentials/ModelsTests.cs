@@ -78,12 +78,12 @@ public class ModelsTests
             Id = testId,
             Credential = l,
             Token = "abcd1234",
-            TtlHours = 48
+            TtlSeconds = 48
         };
         Assert.That(x.Id, Is.EqualTo(testId));
         Assert.That(x.Credential, Is.SameAs(l));
         Assert.That(x.Token, Is.EqualTo("abcd1234"));
-        Assert.That(x.TtlHours, Is.EqualTo(48));
+        Assert.That(x.TtlSeconds, Is.EqualTo(48));
     }
 
     [Test]

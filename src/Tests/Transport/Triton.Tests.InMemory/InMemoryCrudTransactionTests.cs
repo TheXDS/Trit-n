@@ -19,7 +19,7 @@ public class InMemoryCrudTransactionTests
         Assert.That((await t.CommitAsync()).Success, Is.True);
         var readResult = await t.ReadAsync<User, string>("CreateTest");
         Assert.That(readResult.Success, Is.True);
-        Assert.That(readResult.ReturnValue, Is.InstanceOf<User>());
+        Assert.That(readResult.Result, Is.InstanceOf<User>());
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class InMemoryCrudTransactionTests
         Assert.That((await t.CommitAsync()).Success, Is.True);
         var readResult = await t.ReadAsync<User, string>("CreateOrUpdateNewTest");
         Assert.That(readResult.Success, Is.True);
-        Assert.That(readResult.ReturnValue, Is.InstanceOf<User>());
+        Assert.That(readResult.Result, Is.InstanceOf<User>());
     }
 
     [Test]
@@ -49,8 +49,8 @@ public class InMemoryCrudTransactionTests
         Assert.That((await t.CommitAsync()).Success, Is.True);
         var readResult = await t.ReadAsync<User, string>("CreateOrUpdateExistingTest");
         Assert.That(readResult.Success, Is.True);
-        Assert.That(readResult.ReturnValue, Is.InstanceOf<User>());
-        Assert.That(readResult.ReturnValue!.PublicName, Is.EqualTo("BBB"));
+        Assert.That(readResult.Result, Is.InstanceOf<User>());
+        Assert.That(readResult.Result!.PublicName, Is.EqualTo("BBB"));
     }
 
     [Test]
@@ -67,7 +67,7 @@ public class InMemoryCrudTransactionTests
         Assert.That((await t.CommitAsync()).Success, Is.True);
         var readResult = await t.ReadAsync<User, string>("UpdateExistingTest");
         Assert.That(readResult.Success, Is.True);
-        Assert.That(readResult.ReturnValue, Is.InstanceOf<User>());
-        Assert.That(readResult.ReturnValue!.PublicName, Is.EqualTo("BBB"));
+        Assert.That(readResult.Result, Is.InstanceOf<User>());
+        Assert.That(readResult.Result!.PublicName, Is.EqualTo("BBB"));
     }
 }

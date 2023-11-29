@@ -42,7 +42,7 @@ public class AuthenticationBrokerTests
     public async Task Authenticate_test(string user, bool canElevate)
     {
         IAuthenticationBroker broker = GetNewBroker();
-        var credential = (await _svc.GetCredential(user)).ReturnValue!;
+        var credential = (await _svc.GetCredential(user)).Result!;
         broker.Authenticate(credential);
         CheckState(broker, credential, false, canElevate);
     }
@@ -52,7 +52,7 @@ public class AuthenticationBrokerTests
     {
         IAuthenticationBroker broker = GetNewBroker();
 
-        var elevatable = (await _svc.GetCredential("elevatable")).ReturnValue!;
+        var elevatable = (await _svc.GetCredential("elevatable")).Result!;
         broker.Authenticate(elevatable);
         CheckState(broker, elevatable, false, true);
         Assert.That(elevatable, Is.SameAs(broker.GetActor()));
@@ -61,7 +61,7 @@ public class AuthenticationBrokerTests
         Assert.That(elevationResult.Success, Is.True);
         CheckState(broker, elevatable, true, true);
         Assert.That(elevatable, Is.Not.SameAs(broker.GetActor()));
-        Assert.That(elevationResult.ReturnValue!.Credential, Is.SameAs(broker.GetActor()));
+        Assert.That(elevationResult.Result!.Credential, Is.SameAs(broker.GetActor()));
     }
 
     [Test]
@@ -69,7 +69,7 @@ public class AuthenticationBrokerTests
     {
         IAuthenticationBroker broker = GetNewBroker();
 
-        var elevatable = (await _svc.GetCredential("disabled")).ReturnValue!;
+        var elevatable = (await _svc.GetCredential("disabled")).Result!;
         broker.Authenticate(elevatable);
         CheckState(broker, elevatable, false, false);
         Assert.That(elevatable, Is.SameAs(broker.GetActor()));
@@ -86,7 +86,7 @@ public class AuthenticationBrokerTests
     {
         IAuthenticationBroker broker = GetNewBroker();
 
-        var elevatable = (await _svc.GetCredential("elevatable")).ReturnValue!;
+        var elevatable = (await _svc.GetCredential("elevatable")).Result!;
         broker.Authenticate(elevatable);
         await broker.Elevate("root", "root".ToSecureString());
         CheckState(broker, elevatable, true, true);

@@ -51,6 +51,12 @@ public class LoginCredential : SecurityObject
     public bool Enabled { get; set; }
 
     /// <summary>
+    /// Obtiene o establece un valor que indica si se ha programado un cambio
+    /// de contraseña para la credencial.
+    /// </summary>
+    public bool PasswordChangeScheduled { get; set; }
+
+    /// <summary>
     /// Obtiene o establece la colección de sesiones activas para el usuario
     ///  representado por esta entidad.
     /// </summary>

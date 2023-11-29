@@ -135,6 +135,9 @@
   <data name="FailureUnknown" xml:space="preserve">
     <value>An unknown error has occurred during the operation.</value>
   </data>
+  <data name="Idempotency" xml:space="preserve">
+    <value>The operation was performed already.</value>
+  </data>
   <data name="MissingService" xml:space="preserve">
     <value>The requested service has not been loaded.</value>
   </data>

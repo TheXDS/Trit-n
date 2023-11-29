@@ -21,7 +21,7 @@ public partial class CrudOpsTests
         using var t = _srv.GetTransaction();
         var post = t.Read<Post>(id);
         Assert.That(post.Success, Is.False);
-        Assert.That(post.ReturnValue, Is.Null);
+        Assert.That(post.Result, Is.Null);
         Assert.That(post.Reason.HasValue, Is.True);
         return post.Reason!.Value;
     }

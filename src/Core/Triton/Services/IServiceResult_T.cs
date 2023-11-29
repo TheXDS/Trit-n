@@ -13,5 +13,5 @@ public interface IServiceResult<out T> : IServiceResult
     /// Obtiene el valor a devolver como parte del resultado de la
     /// operación de servicio.
     /// </summary>
-    T ReturnValue { get; }
+    T Result { get; }
 }

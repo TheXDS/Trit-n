@@ -20,7 +20,7 @@ public class ServiceResult_T_Tests
         var u = new User("0", "Zero");
         var r = new ServiceResult<User>(u, "Test");
         Assert.That("Test", Is.EqualTo(r.Message));
-        Assert.That(r.ReturnValue, Is.SameAs(u));
+        Assert.That(r.Result, Is.SameAs(u));
     }
 
     [Test]

@@ -64,5 +64,10 @@ public enum FailureReason
     /// <summary>
     /// Query que devolvería demasiados datos.
     /// </summary>
-    QueryOverLimit
+    QueryOverLimit,
+
+    /// <summary>
+    /// La acción ya fue ejecutada en otra transacción anterior.
+    /// </summary>
+    Idempotency
 }

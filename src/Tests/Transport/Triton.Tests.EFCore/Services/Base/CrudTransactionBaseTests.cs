@@ -161,7 +161,7 @@ public class CrudTransactionBaseTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result!.Success, Is.True);
         Assert.That(delegateRan, Is.True);
-        Assert.That(result.ReturnValue, Is.EqualTo(1));
+        Assert.That(result.Result, Is.EqualTo(1));
     }
 
     [Test]
@@ -196,7 +196,7 @@ public class CrudTransactionBaseTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result!.Success, Is.False);
         Assert.That(delegateRan, Is.False);
-        Assert.That(result.ReturnValue, Is.EqualTo(default(int)));
+        Assert.That(result.Result, Is.EqualTo(default(int)));
         Assert.That(result.Reason, Is.EqualTo(FailureReason.Tamper));
     }
 }

@@ -13,7 +13,7 @@ public class ServiceResult<T> : ServiceResult, IServiceResult<T>
     /// Obtiene el valor a devolver como parte del resultado de la
     /// operación de servicio.
     /// </summary>
-    public T ReturnValue { get; } = default!;
+    public T Result { get; } = default!;
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase
@@ -37,12 +37,12 @@ public class ServiceResult<T> : ServiceResult, IServiceResult<T>
     /// Inicializa una nueva instancia de la clase
     /// <see cref="ServiceResult"/>.
     /// </summary>
-    /// <param name="returnValue">
+    /// <param name="result">
     /// Objeto relevante retornado por la función.
     /// </param>
-    public ServiceResult(T returnValue) : base()
+    public ServiceResult(T result) : base()
     {
-        ReturnValue = returnValue;
+        Result = result;
     }
 
     /// <summary>
@@ -50,13 +50,13 @@ public class ServiceResult<T> : ServiceResult, IServiceResult<T>
     /// <see cref="ServiceResult"/>, indicando un mensaje de estado 
     /// personalizado a mostrar.
     /// </summary>
-    /// <param name="returnValue">
+    /// <param name="result">
     /// Objeto relevante retornado por la función.
     /// </param>
     /// <param name="message">Mensaje descriptivo del resultado.</param>
-    public ServiceResult(T returnValue, string message) : base(message)
+    public ServiceResult(T result, string message) : base(message)
     {
-        ReturnValue = returnValue;
+        Result = result;
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public class ServiceResult<T> : ServiceResult, IServiceResult<T>
     /// <param name="result">
     /// Resultado de la operación.
     /// </param>
-    public static implicit operator T(ServiceResult<T> result) => result.ReturnValue;
+    public static implicit operator T(ServiceResult<T> result) => result.Result;
 
     /// <summary>
     /// Convierte implícitamente un <see cref="Exception"/> en un

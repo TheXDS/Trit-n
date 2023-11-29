@@ -45,7 +45,7 @@ public class DataLayerMiddlewareTests
     {
         static async Task<LoginCredential> GetCredential(string credential, IUserService userService)
         {
-            var cred = (await userService.GetCredential(credential)).ReturnValue;
+            var cred = (await userService.GetCredential(credential)).Result;
             Assert.That(cred, Is.Not.Null);
             return cred!;
         }

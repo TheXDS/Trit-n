@@ -45,7 +45,7 @@ public class AuthenticationBroker : IAuthenticationBroker
     }
 
     /// <inheritdoc/>
-    bool IAuthenticationBroker.CanElevate(SecurityObject? actor) => actor is not null && (_userService.CheckAccess(actor, GetType().Name, PermissionFlags.Elevate).ReturnValue ?? false);
+    bool IAuthenticationBroker.CanElevate(SecurityObject? actor) => actor is not null && (_userService.CheckAccess(actor, GetType().Name, PermissionFlags.Elevate).Result ?? false);
 
     /// <inheritdoc/>
     async Task<ServiceResult<Session?>> IAuthenticationBroker.Elevate(string username, SecureString password)
@@ -55,7 +55,7 @@ public class AuthenticationBroker : IAuthenticationBroker
             var cred = await _userService.Authenticate(username, password);
             if (cred.Success)
             {
-                _elevation = cred.ReturnValue!.Credential;
+                _elevation = cred.Result!.Credential;
             }
             return cred;
         }

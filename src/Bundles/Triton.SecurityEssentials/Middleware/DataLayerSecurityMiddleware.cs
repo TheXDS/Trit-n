@@ -38,7 +38,7 @@ public class DataLayerSecurityMiddleware : ITransactionMiddleware
 
         var entityType = entities.GetType();
 
-        return _userService.CheckAccess(actor, GetModelContextString(action, entityType), MapCrudActionToFlags(action)).ReturnValue == true
+        return _userService.CheckAccess(actor, GetModelContextString(action, entityType), MapCrudActionToFlags(action)).Result == true
             ? null
             : ServiceResult.FailWith<ServiceResult>(FailureReason.Forbidden);
     }

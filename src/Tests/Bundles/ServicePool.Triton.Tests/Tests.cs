@@ -34,6 +34,7 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().DiscoverContexts();
+        testPool.InitNow();
         var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
         Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
@@ -59,6 +60,7 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseContext(typeof(TestDbContext));
+        testPool.InitNow();
         var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
         Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
@@ -69,6 +71,7 @@ public class Tests
         ServicePool testPool = new();
         DbContextOptions options = new DbContextOptionsBuilder().Options;
         testPool.UseTriton().UseContext(typeof(ConfigurableContext), options);
+        testPool.InitNow();
         var s = testPool.ResolveAll<TritonService>().ToArray();
         Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
@@ -78,6 +81,7 @@ public class Tests
     {
         ServicePool testPool = new();
         testPool.UseTriton().UseContext(typeof(ConfigurableContext), (DbContextOptionsBuilder _) => { });
+        testPool.InitNow();
         var s = testPool.ResolveAll<TritonService>().ToArray();
         Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }

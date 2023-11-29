@@ -14,36 +14,52 @@ public class Session : TimestampModel<Guid>
     public LoginCredential Credential { get; set; } = null!;
 
     /// <summary>
-    /// Obtiene o establece el tóken de sesión para esta entidad.
+    /// Obtiene o establece un valor que indica la marca de tiempo del final de
+    /// la sesión.
     /// </summary>
-    public string Token { get; set; }
+    /// <value>
+    /// Si este valor se establece en <see langword="null"/>, se debe entender
+    /// que la sesión sigue activa, siempre y cuando la diferencia entre la
+    /// propiedad <see cref="TimestampModel{T}.Timestamp"/> y el instante
+    /// actual no supere la cantidad de segundos indicada por la propiedad
+    /// <see cref="TtlSeconds"/>.
+    /// </value>
+    public DateTime? EndTimestamp { get; set; }
 
     /// <summary>
-    /// Obtiene o establece el tiempo de vida en horas para esta sessión.
+    /// Obtiene o establece el tóken de sesión para esta entidad.
     /// </summary>
-    public int TtlHours { get; set; }
+    public string? Token { get; set; }
+
+    /// <summary>
+    /// Obtiene o establece el tiempo de vida en segundos para esta sessión.
+    /// </summary>
+    /// <value>
+    /// Si esta propiedad se establece en cero, se debe entender que la sesión
+    /// no vencerá nunca.
+    /// </value>
+    public int TtlSeconds { get; set; }
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="Session"/>.
     /// </summary>
-    /// <param name="ttlHours">
+    /// <param name="ttlSeconds">
     /// Tiempo de vida en horas para esta sesión.
     /// </param>
     /// <param name="token">Token de sesión a asociar con esta sesión.</param>
     /// <param name="timestamp">
     /// Marca de tiempo de creación de la sesión.
     /// </param>
-    public Session(int ttlHours, string token, DateTime timestamp) : base(timestamp)
+    public Session(int ttlSeconds, string? token, DateTime timestamp) : base(timestamp)
     {
-        TtlHours = ttlHours;
+        TtlSeconds = ttlSeconds;
         Token = token;
     }
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="Session"/>.
     /// </summary>
-    public Session()
-     : this(default, null!, default)
+    public Session() : this(default, null, DateTime.Now)
     {
     }
 }

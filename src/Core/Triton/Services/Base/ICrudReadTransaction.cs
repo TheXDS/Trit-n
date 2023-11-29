@@ -40,7 +40,7 @@ public interface ICrudReadTransaction : IDisposableEx, IAsyncDisposable
     ServiceResult Read<TModel, TKey>(TKey key, out TModel? entity) where TModel : Model<TKey>, new() where TKey : notnull, IComparable<TKey>, IEquatable<TKey>
     {
         var r = Read<TModel, TKey>(key);
-        entity = r.ReturnValue;
+        entity = r.Result;
         return r;
     }
 

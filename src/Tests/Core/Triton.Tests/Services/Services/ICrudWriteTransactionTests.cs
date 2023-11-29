@@ -23,9 +23,9 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         {
             var r = t.Read<User>(id);
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
-            Assert.That(r.ReturnValue!.IdAsString, Is.EqualTo(id));
-            Assert.That(r.ReturnValue.PublicName, Is.EqualTo("Name"));
+            Assert.That(r.Result, Is.Not.Null);
+            Assert.That(r.Result!.IdAsString, Is.EqualTo(id));
+            Assert.That(r.Result.PublicName, Is.EqualTo("Name"));
         }
     }
     [Test]
@@ -42,9 +42,9 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         {
             var r = t.Read<User>(id);
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
-            Assert.That(r.ReturnValue!.IdAsString, Is.EqualTo(id));
-            Assert.That(r.ReturnValue.PublicName, Is.EqualTo("Name"));
+            Assert.That(r.Result, Is.Not.Null);
+            Assert.That(r.Result!.IdAsString, Is.EqualTo(id));
+            Assert.That(r.Result.PublicName, Is.EqualTo("Name"));
         }
     }
 
@@ -67,9 +67,9 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         {
             var r = t.Read<User>(id);
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
-            Assert.That(r.ReturnValue!.IdAsString, Is.EqualTo(id));
-            Assert.That(r.ReturnValue.PublicName, Is.EqualTo("newName"));
+            Assert.That(r.Result, Is.Not.Null);
+            Assert.That(r.Result!.IdAsString, Is.EqualTo(id));
+            Assert.That(r.Result.PublicName, Is.EqualTo("newName"));
         }
     }
 
@@ -92,9 +92,9 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         {
             var r = t.Read<User>(id);
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
-            Assert.That(r.ReturnValue!.IdAsString, Is.EqualTo(id));
-            Assert.That(r.ReturnValue.PublicName, Is.EqualTo("newName"));
+            Assert.That(r.Result, Is.Not.Null);
+            Assert.That(r.Result!.IdAsString, Is.EqualTo(id));
+            Assert.That(r.Result.PublicName, Is.EqualTo("newName"));
         }
     }
 
@@ -117,9 +117,9 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         {
             var r = t.Read<User>(id);
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
-            Assert.That(r.ReturnValue!.IdAsString, Is.EqualTo(id));
-            Assert.That(r.ReturnValue.PublicName, Is.EqualTo("newName"));
+            Assert.That(r.Result, Is.Not.Null);
+            Assert.That(r.Result!.IdAsString, Is.EqualTo(id));
+            Assert.That(r.Result.PublicName, Is.EqualTo("newName"));
         }
     }
 
@@ -142,9 +142,9 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         {
             var r = t.Read<User>(id);
             Assert.That(r.Success, Is.True);
-            Assert.That(r.ReturnValue, Is.Not.Null);
-            Assert.That(r.ReturnValue!.IdAsString, Is.EqualTo(id));
-            Assert.That(r.ReturnValue.PublicName, Is.EqualTo("newName"));
+            Assert.That(r.Result, Is.Not.Null);
+            Assert.That(r.Result!.IdAsString, Is.EqualTo(id));
+            Assert.That(r.Result.PublicName, Is.EqualTo("newName"));
         }
     }
 
@@ -159,7 +159,7 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         }
         using (var t = GetTransaction())
         {
-            User u = t.Read<User>(id).ReturnValue!;
+            User u = t.Read<User>(id).Result!;
             Assert.That(t.Delete(u).Success, Is.True);
             Assert.That(t.Commit().Success, Is.True);
         }
@@ -182,7 +182,7 @@ public class ICrudWriteTransactionTests : TransactionTestBase
         }
         using (var t = GetTransaction())
         {
-            Model u = t.Read<User>(id).ReturnValue!;
+            Model u = t.Read<User>(id).Result!;
             Assert.That(t.Delete(u).Success, Is.True);
             Assert.That(t.Commit().Success, Is.True);
         }
