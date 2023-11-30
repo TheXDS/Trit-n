@@ -109,10 +109,13 @@ public interface IUserService : ITritonService
         if (!(r.Success && r.Result is { } result)) return r.CastUp<Session?>(null);
         if (!(result.Valid ?? false)) return FailureReason.Forbidden;
         await using var j = GetWriteTransaction();
-        Session s = new() { Timestamp = DateTime.UtcNow };
+        Session s = new() { Timestamp = DateTime.UtcNow, Token = GenerateToken() };
         result.LoginCredential.Sessions.Add(s);
+        j.Update(result.LoginCredential);
         j.Create(s);
-        return (await j.CommitAsync()).CastUp(s);
+        var retVal = await j.CommitAsync();
+        s.Credential ??= result.LoginCredential;
+        return retVal.CastUp(s);
     }
 
     /// <summary>
@@ -130,6 +133,25 @@ public interface IUserService : ITritonService
         session.EndTimestamp = DateTime.UtcNow;
         t.Update(session);
         return await t.CommitAsync();
+    }
+
+    /// <summary>
+    /// Obtiene una sesión previamente activa utilizando el token de la misma.
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    async Task<ServiceResult<Session?>> ContinueSession(string token)
+    {
+        await using var j = GetTransaction();
+        var query = j.All<Session>();
+        if (query.Success)
+        {
+            return await Task.Run(() => query.FirstOrDefault(p => p.Token == token)) is { } session && IsSessionValid(session) ? session : FailureReason.Forbidden;
+        }
+        else
+        {
+            return query.Reason!;
+        }
     }
 
     /// <summary>
@@ -276,5 +298,18 @@ public interface IUserService : ITritonService
         return obj.Granted.HasFlag(flags) ? true
             : obj.Revoked.HasFlag(flags) ? false
             : null;
+    }
+
+    private static string GenerateToken(int length = 128)
+    {
+        using var rnd = System.Security.Cryptography.RandomNumberGenerator.Create();
+        var retVal = new byte[length];
+        rnd.GetBytes(retVal);
+        return Convert.ToBase64String(retVal);
+    }
+
+    private static bool IsSessionValid(Session session)
+    {
+        return session.EndTimestamp is null && session.Timestamp + TimeSpan.FromSeconds(session.TtlSeconds) > DateTime.UtcNow;
     }
 }
