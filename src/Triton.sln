@@ -97,6 +97,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StringPacker", "DevTools\St
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.InMemory", "Tests\Transport\Triton.Tests.InMemory\Triton.Tests.InMemory.csproj", "{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicePool.Triton.Ef", "Bundles\ServicePool.Triton.Ef\ServicePool.Triton.Ef.csproj", "{81240C98-9FC6-4E3F-A856-865FF5BC635C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -199,6 +201,10 @@ Global
 		{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81240C98-9FC6-4E3F-A856-865FF5BC635C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81240C98-9FC6-4E3F-A856-865FF5BC635C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81240C98-9FC6-4E3F-A856-865FF5BC635C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81240C98-9FC6-4E3F-A856-865FF5BC635C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +242,7 @@ Global
 		{F0E2A344-A56E-48B5-99CB-F54744F1C3DD} = {1A768325-E365-4BFD-9E23-25348A4EF7F6}
 		{8001D6D1-0CCC-4B88-BACD-EC75D9247ABE} = {2EA87E08-DD62-463C-9860-BF8B7B8A4122}
 		{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD} = {3595A323-AE03-4D5E-B061-ACA95E346800}
+		{81240C98-9FC6-4E3F-A856-865FF5BC635C} = {5C704905-ABCB-467E-989B-70F11B6AF621}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6545C72E-7B60-45C6-A03A-1F5E78BA9FFE}

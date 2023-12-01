@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TheXDS.ServicePool.Triton.Resources.Strings {
+namespace TheXDS.ServicePool.Triton.Ef.Resources.Strings {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TheXDS.ServicePool.Triton.Resources.Strings {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.ServicePool.Triton.Resources.Strings.Errors", typeof(Errors).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TheXDS.ServicePool.Triton.Ef.Resources.Strings.Errors", typeof(Errors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

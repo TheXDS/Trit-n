@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Bundles\ServicePool.Triton.Ef\ServicePool.Triton.Ef.csproj" />
       <ProjectReference Include="..\..\..\Bundles\ServicePool.Triton\ServicePool.Triton.csproj" />
     </ItemGroup>
 

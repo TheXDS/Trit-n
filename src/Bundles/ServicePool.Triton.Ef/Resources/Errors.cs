@@ -1,4 +1,4 @@
-﻿using Ers = TheXDS.ServicePool.Triton.Resources.Strings.Errors;
+﻿using Ers = TheXDS.ServicePool.Triton.Ef.Resources.Strings.Errors;
 
 namespace TheXDS.ServicePool.Triton.Resources;
 

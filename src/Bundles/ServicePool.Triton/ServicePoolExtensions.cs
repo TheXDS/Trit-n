@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TheXDS.ServicePool.Extensions;
-using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
+﻿using TheXDS.ServicePool.Extensions;
 
 namespace TheXDS.ServicePool.Triton;
 
@@ -58,32 +55,5 @@ public static class ServicePoolExtensions
     {
         configurator(UseTriton(pool));
         return pool;
-    }
-
-    /// <summary>
-    /// Resuelve una instancia de un servicio que puede utilizarse para 
-    /// acceder a la base de datos solicitada.
-    /// </summary>
-    /// <typeparam name="T">
-    /// Tipo de contexto de datos a utilizar.
-    /// </typeparam>
-    /// <param name="pool">
-    /// <see cref="ServicePool"/> a configurar.
-    /// </param>
-    /// <returns>
-    /// Una instancia de <see cref="ITritonService"/> que permite acceder al 
-    /// contexto de datos solicitado.
-    /// </returns>
-    /// <remarks>
-    /// Prefiera resolver directamente un <see cref="ITritonService"/> si
-    /// necesita acceder directamente a la funcionalidad de un servicio
-    /// concreto.
-    /// </remarks>
-    public static ITritonService ResolveTritonService<T>(this ServicePool pool) where T : DbContext, new()
-    {
-        var s = pool.ResolveAll<TritonService>().FirstOrDefault(p => p.Factory is EfCoreTransFactory<T>);
-        if (s is not null) return s;
-        pool.UseTriton().UseContext<T>();
-        return ResolveTritonService<T>(pool);
     }
 }

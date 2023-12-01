@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ServicePool.Triton\ServicePool.Triton.csproj" />
+    <ProjectReference Include="..\ServicePool.Triton.Ef\ServicePool.Triton.Ef.csproj" />
     <ProjectReference Include="..\Triton.EfContextBuilder\Triton.EfContextBuilder.csproj" />
   </ItemGroup>
 

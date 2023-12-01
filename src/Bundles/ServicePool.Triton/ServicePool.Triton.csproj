@@ -1,29 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
-    <ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Resources\Strings\Errors.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Errors.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings\Errors.en-US.resx">
-      <LastGenOutput>Errors.en-us.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Strings\Errors.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Errors.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
+	</ItemGroup>
 </Project>

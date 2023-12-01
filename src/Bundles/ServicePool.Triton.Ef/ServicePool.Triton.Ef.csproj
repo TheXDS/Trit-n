@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
+		<ProjectReference Include="..\..\Transport\Triton.EFCore\Triton.EFCore.csproj" />
+		<ProjectReference Include="..\ServicePool.Triton\ServicePool.Triton.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Resources\Strings\Errors.Designer.cs">
+	    <DependentUpon>Errors.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Strings\Errors.en-US.resx">
+	    <LastGenOutput>Errors.en-us.Designer.cs</LastGenOutput>
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Strings\Errors.resx">
+	    <LastGenOutput>Errors.Designer.cs</LastGenOutput>
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>
+</Project>
