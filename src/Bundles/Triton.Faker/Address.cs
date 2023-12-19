@@ -8,7 +8,7 @@ namespace TheXDS.Triton.Faker;
 /// <summary>
 /// Objeto que describe una ubicación física completa.
 /// </summary>
-public record Address(string AddressLine, string? AddressLine2, string City, string Country, ushort Zip)
+public record Address(string AddressLine, string? AddressLine2, string City, string Country, int Zip)
 {
     /// <inheritdoc/>
     public override string ToString()
@@ -33,7 +33,7 @@ public record Address(string AddressLine, string? AddressLine2, string City, str
         }
         static string? RndLine2() => _rnd.CoinFlip() ? $"{new[] { "#", "Apt.", "House", "Building" }.Pick()} {_rnd.Next(1, 9999)}" : null;
         static string RndCity() => string.Join(' ', new [] { Capitalize(StringTables.Surnames.Pick()), _rnd.CoinFlip() ? "City" : null }.NotNull());
-        return new(RndAddress(), RndLine2(), RndCity(), RandomCountry(), (ushort)_rnd.Next(10001, 99999));
+        return new(RndAddress(), RndLine2(), RndCity(), RandomCountry(), _rnd.Next(10001, 99999));
     }
 
     /// <summary>
