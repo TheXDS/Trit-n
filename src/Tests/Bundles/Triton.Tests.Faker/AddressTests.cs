@@ -17,7 +17,7 @@ public class AddressTests
             if (a.AddressLine2 is not null) Assert.That(a.AddressLine2, Is.Not.Empty);
             Assert.That(a.City, Is.Not.Empty);
             Assert.That(a.Country, Is.Not.Empty);
-            Assert.That(a.Zip, Is.AssignableFrom<ushort>());
+            Assert.That(a.Zip, Is.AssignableFrom<int>());
 
             var s = a.ToString();
             Assert.That(s.Contains(a.AddressLine), Is.True);
