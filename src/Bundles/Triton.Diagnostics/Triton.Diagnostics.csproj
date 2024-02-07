@@ -23,6 +23,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="thexds.mcart.mvvm" Version="0.17.0" />
+    <PackageReference Include="thexds.mcart.mvvm" Version="0.17.1" />
   </ItemGroup>
 </Project>
