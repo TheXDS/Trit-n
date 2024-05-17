@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)Core\Triton\Triton.csproj" />
@@ -23,6 +23,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="thexds.mcart.mvvm" Version="0.17.0" />
+    <PackageReference Include="thexds.mcart.mvvm" Version="0.17.2" />
   </ItemGroup>
 </Project>

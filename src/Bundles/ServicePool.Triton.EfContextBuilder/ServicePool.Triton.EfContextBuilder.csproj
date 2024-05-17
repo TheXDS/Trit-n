@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.0" />
+    <PackageReference Include="TheXDS.MCART.TypeFactory" Version="0.17.2" />
   </ItemGroup>
 
 </Project>

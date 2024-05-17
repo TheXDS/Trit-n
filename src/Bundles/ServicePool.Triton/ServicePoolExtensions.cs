@@ -11,14 +11,28 @@ public static class ServicePoolExtensions
 {
     private sealed class TritonConfigurable : ITritonConfigurable
     {
-        public static TritonConfigurable Create(in ServicePool pool) => new(pool);
+        public static TritonConfigurable Create(in PoolBase pool) => new(pool);
 
-        public ServicePool Pool { get; }
+        public PoolBase Pool { get; }
 
-        private TritonConfigurable(ServicePool pool)
+        private TritonConfigurable(PoolBase pool)
         {
             Pool = pool;
         }
+    }
+
+    private static TritonConfigurable RegisterNewConfigIntoPool(PoolBase pool)
+    {
+        var c = TritonConfigurable.Create(pool);
+        return c.RegisterInto(pool);
+        //switch (pool)
+        //{
+        //    case FlexPool fp:
+        //    case Pool p:
+        //        p.RegisterNow(c, [typeof(ITritonConfigurable)]);
+        //        return c;
+        //    default: throw new NotImplementedException();
+        //}
     }
 
     /// <summary>
@@ -32,9 +46,10 @@ public static class ServicePoolExtensions
     /// Un objeto que puede utilizarse para configiurar los servicios de
     /// Tritón.
     /// </returns>
-    public static ITritonConfigurable UseTriton(this ServicePool pool)
+    public static ITritonConfigurable UseTriton<TPool>(this TPool pool) where TPool : PoolBase
     {
-        return pool.Discover<ITritonConfigurable>() ?? TritonConfigurable.Create(pool).RegisterInto(pool);
+        ArgumentNullException.ThrowIfNull(pool);
+        return pool.Discover<ITritonConfigurable>() ?? RegisterNewConfigIntoPool(pool);
     }
 
     /// <summary>
@@ -51,8 +66,10 @@ public static class ServicePoolExtensions
     /// La misma instancia que <paramref name="pool"/>, permitiendo el uso
     /// de sintaxis Fluent.
     /// </returns>
-    public static ServicePool UseTriton(this ServicePool pool, Action<ITritonConfigurable> configurator)
+    public static TPool UseTriton<TPool>(this TPool pool, Action<ITritonConfigurable> configurator) where TPool : PoolBase
     {
+        ArgumentNullException.ThrowIfNull(pool);
+        ArgumentNullException.ThrowIfNull(configurator);
         configurator(UseTriton(pool));
         return pool;
     }

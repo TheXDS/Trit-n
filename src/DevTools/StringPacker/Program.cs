@@ -4,6 +4,8 @@ namespace TheXDS.StringPacker;
 
 internal class Program
 {
+    private static readonly string[] separators = [",", ";"];
+
     static void Main(string[] args)
     {
         if (args.Length < 2)
@@ -20,7 +22,6 @@ Usage:
         using var fs = outFile.OpenWrite();
         using var ds = new DeflateStream(fs, CompressionMode.Compress);
         using var sw = new StreamWriter(ds);
-        sw.Write(args[1..].SelectMany(p => p.Split(new[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)).ToArray());
-
+        sw.Write(args[1..].SelectMany(p => p.Split(separators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)).ToArray());
     }
 }

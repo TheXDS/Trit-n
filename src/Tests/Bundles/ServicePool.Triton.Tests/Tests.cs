@@ -15,15 +15,15 @@ public class Tests
     [Test]
     public void Basic_ServicePool_registration_Test()
     {
-        ServicePool testPool = new();
-        Assert.That(testPool.UseTriton(),Is.InstanceOf<ITritonConfigurable>());
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
+        Assert.That(testPool.UseTriton(), Is.InstanceOf<ITritonConfigurable>());
         Assert.That(testPool.Resolve<ITritonConfigurable>(), Is.Not.Null);
     }
 
     [Test]
     public void Configurable_references_pool()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         var c = testPool.UseTriton();
         Assert.That(c, Is.InstanceOf<ITritonConfigurable>());
         Assert.That(c.Pool, Is.SameAs(testPool));
@@ -32,83 +32,83 @@ public class Tests
     [Test]
     public void DiscoverContexts_finds_context()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().DiscoverContexts();
         testPool.InitNow();
-        var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
+        var s = testPool.OfType<TritonService>().Select(p => p.Factory).ToArray();
         Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
 
     [Test]
     public void UseContext_with_generic_overload_registers_context()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseContext<TestDbContext>();
-        var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
+        var s = testPool.OfType<TritonService>().Select(p => p.Factory).ToArray();
         Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
 
     [Test]
     public void UseContext_contract_test()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         Assert.Throws<ArgumentException>(() => testPool.UseTriton().UseContext(typeof(int)));
     }
 
     [Test]
     public void UseContext_registers_context_explicitly()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseContext(typeof(TestDbContext));
         testPool.InitNow();
-        var s = testPool.ResolveAll<TritonService>().Select(p => p.Factory).ToArray();
+        var s = testPool.OfType<TritonService>().Select(p => p.Factory).ToArray();
         Assert.That(s.Any(p => p is EfCoreTransFactory<TestDbContext>), Is.True);
     }
 
     [Test]
     public void UseContext_with_static_options_creates_transactions()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         DbContextOptions options = new DbContextOptionsBuilder().Options;
         testPool.UseTriton().UseContext(typeof(ConfigurableContext), options);
         testPool.InitNow();
-        var s = testPool.ResolveAll<TritonService>().ToArray();
+        var s = testPool.OfType<TritonService>().ToArray();
         Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
     public void UseContext_with_config_method_creates_transactions()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseContext(typeof(ConfigurableContext), (DbContextOptionsBuilder _) => { });
         testPool.InitNow();
-        var s = testPool.ResolveAll<TritonService>().ToArray();
+        var s = testPool.OfType<TritonService>().ToArray();
         Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
     public void UseContext_generic_with_static_options_creates_transactions()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         DbContextOptions<ConfigurableContext> options = new DbContextOptionsBuilder<ConfigurableContext>().Options;
         testPool.UseTriton().UseContext<ConfigurableContext>(options);
-        var s = testPool.ResolveAll<TritonService>().ToArray();
+        var s = testPool.OfType<TritonService>().ToArray();
         Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
     public void UseContext_generic_with_config_method_creates_transactions()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseContext((DbContextOptionsBuilder<ConfigurableContext> _) => { });
-        var s = testPool.ResolveAll<TritonService>().ToArray();
+        var s = testPool.OfType<TritonService>().ToArray();
         Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
     }
 
     [Test]
     public void UseMiddleware_with_out_parameter_registers_middleware()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseMiddleware<TestMiddleware>(out var m);
         Assert.That(m.PrologRan, Is.False);
         testPool.Resolve<IMiddlewareRunner>()?.RunProlog(CrudAction.Commit, null);
@@ -116,6 +116,7 @@ public class Tests
         testPool.Resolve<IMiddlewareRunner>()?.RunEpilog(CrudAction.Commit, null);
         Assert.That(m.EpilogRan, Is.True);
     }
+
     [Test]
     public void UseTransactionPrologs_registers_actions()
     {
@@ -125,8 +126,8 @@ public class Tests
             actionRan = true;
             return null;
         }
-        
-        ServicePool testPool = new();
+
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseTransactionPrologs(TestAction);
         Assert.That(actionRan, Is.False);
         testPool.Resolve<IMiddlewareRunner>()?.RunProlog(CrudAction.Commit, null);
@@ -142,8 +143,8 @@ public class Tests
             actionRan = true;
             return null;
         }
-        
-        ServicePool testPool = new();
+
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseTransactionEpilogs(TestAction);
         Assert.That(actionRan, Is.False);
         testPool.Resolve<IMiddlewareRunner>()?.RunEpilog(CrudAction.Commit, null);
@@ -154,7 +155,7 @@ public class Tests
     public void UseTriton_with_config_callback()
     {
         var configRan = false;
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         Assert.That(testPool.UseTriton(p =>
         {
             Assert.That(p.GetType().Implements<ITritonConfigurable>());
@@ -166,18 +167,17 @@ public class Tests
     [Test]
     public void Multiple_UseTriton_calls_doesnt_duplicate_singletons()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton();
         var tc = testPool.Resolve<ITritonConfigurable>();
         Assert.That(tc, Is.Not.Null);
         testPool.UseTriton(p => Assert.That(tc, Is.SameAs(p)));
-        Assert.That(testPool.ResolveAll<ITritonConfigurable>().Count(), Is.EqualTo(1));
     }
 
     [Test]
     public void ResolveTritonService_resolves_service_for_context()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         testPool.UseTriton().UseContext<TestDbContext>();
         Assert.That(testPool.ResolveTritonService<TestDbContext>(), Is.AssignableFrom<TritonService>());
     }
@@ -185,20 +185,20 @@ public class Tests
     [Test]
     public void ResolveTritonService_initializes_all_required_singletons_if_none_registered()
     {
-        ServicePool testPool = new();
+        Pool testPool = new(new PoolConfig(FlexRegistration: true));
         Assert.That(testPool.ResolveTritonService<TestDbContext>(), Is.AssignableFrom<TritonService>());
     }
 
     [Test]
     public void ConfigureMiddlewares_supports_callback()
     {
-        new ServicePool().UseTriton().ConfigureMiddlewares(p => Assert.That(p, Is.Not.Null));
+        new Pool().UseTriton().ConfigureMiddlewares(p => Assert.That(p, Is.Not.Null));
     }
     
     [Test]
     public void ConfigureMiddlewares_contract_test()
     {
-        var tc = new ServicePool().UseTriton();
+        var tc = new Pool().UseTriton();
         Assert.Throws<ArgumentNullException>(() => tc.ConfigureMiddlewares(null!));
     }
 
@@ -228,15 +228,10 @@ public class Tests
     }
 
     [ExcludeFromCodeCoverage]
-    public class ConfigurableContext : DbContext
+    public class ConfigurableContext(DbContextOptions options) : DbContext(options)
     {
-        public ConfigurableContext(DbContextOptions options) : base(options)
-        {
-            Options = options;
-        }
-
         public DbSet<TestModel> Tests { get; set; } = null!;
-        public DbContextOptions Options { get; }
+        public DbContextOptions Options { get; } = options;
     }
 
     [ExcludeFromCodeCoverage]

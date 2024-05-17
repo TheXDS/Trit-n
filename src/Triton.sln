@@ -97,7 +97,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StringPacker", "DevTools\St
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Triton.Tests.InMemory", "Tests\Transport\Triton.Tests.InMemory\Triton.Tests.InMemory.csproj", "{2E38DA0F-4A03-444C-9DE4-D148A4B07EDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicePool.Triton.Ef", "Bundles\ServicePool.Triton.Ef\ServicePool.Triton.Ef.csproj", "{81240C98-9FC6-4E3F-A856-865FF5BC635C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicePool.Triton.Ef", "Bundles\ServicePool.Triton.Ef\ServicePool.Triton.Ef.csproj", "{81240C98-9FC6-4E3F-A856-865FF5BC635C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

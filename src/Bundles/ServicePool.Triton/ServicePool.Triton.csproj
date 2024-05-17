@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="TheXDS.ServicePool" Version="1.0.5" />
+		<PackageReference Include="TheXDS.ServicePool" Version="2.0.0-beta.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Triton\Triton.csproj" />
