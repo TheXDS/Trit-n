@@ -29,7 +29,7 @@ public static class ServicePoolEfExtensions
     /// necesita acceder directamente a la funcionalidad de un servicio
     /// concreto.
     /// </remarks>
-    public static ITritonService ResolveTritonService<T>(this PoolBase pool) where T : DbContext, new()
+    public static ITritonService ResolveTritonService<T>(this Pool pool) where T : DbContext, new()
     {
         var s = pool.OfType<TritonService>().FirstOrDefault(p => p.Factory is EfCoreTransFactory<T>);
         if (s is not null) return s;

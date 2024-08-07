@@ -11,28 +11,20 @@ public static class ServicePoolExtensions
 {
     private sealed class TritonConfigurable : ITritonConfigurable
     {
-        public static TritonConfigurable Create(in PoolBase pool) => new(pool);
+        public static TritonConfigurable Create(in Pool pool) => new(pool);
 
-        public PoolBase Pool { get; }
+        public Pool Pool { get; }
 
-        private TritonConfigurable(PoolBase pool)
+        private TritonConfigurable(Pool pool)
         {
             Pool = pool;
         }
     }
 
-    private static TritonConfigurable RegisterNewConfigIntoPool(PoolBase pool)
+    private static TritonConfigurable RegisterNewConfigIntoPool(Pool pool)
     {
         var c = TritonConfigurable.Create(pool);
         return c.RegisterInto(pool);
-        //switch (pool)
-        //{
-        //    case FlexPool fp:
-        //    case Pool p:
-        //        p.RegisterNow(c, [typeof(ITritonConfigurable)]);
-        //        return c;
-        //    default: throw new NotImplementedException();
-        //}
     }
 
     /// <summary>
@@ -46,7 +38,7 @@ public static class ServicePoolExtensions
     /// Un objeto que puede utilizarse para configiurar los servicios de
     /// Tritón.
     /// </returns>
-    public static ITritonConfigurable UseTriton<TPool>(this TPool pool) where TPool : PoolBase
+    public static ITritonConfigurable UseTriton(this Pool pool)
     {
         ArgumentNullException.ThrowIfNull(pool);
         return pool.Discover<ITritonConfigurable>() ?? RegisterNewConfigIntoPool(pool);
@@ -66,7 +58,7 @@ public static class ServicePoolExtensions
     /// La misma instancia que <paramref name="pool"/>, permitiendo el uso
     /// de sintaxis Fluent.
     /// </returns>
-    public static TPool UseTriton<TPool>(this TPool pool, Action<ITritonConfigurable> configurator) where TPool : PoolBase
+    public static Pool UseTriton(this Pool pool, Action<ITritonConfigurable> configurator)
     {
         ArgumentNullException.ThrowIfNull(pool);
         ArgumentNullException.ThrowIfNull(configurator);

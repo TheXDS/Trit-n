@@ -16,7 +16,7 @@ public interface ITritonConfigurable
     /// Obtiene una referencia al repositorio de servicios en el cual se ha
     /// registrado esta instancia.
     /// </summary>
-    PoolBase Pool { get; }
+    Pool Pool { get; }
 
     /// <summary>
     /// Registra un servicio para acceder a datos.
@@ -133,19 +133,5 @@ public interface ITritonConfigurable
     private IMiddlewareConfigurator GetMiddlewareConfigurator()
     {
         return Pool.Resolve<IMiddlewareConfigurator>() ?? new TransactionConfiguration().RegisterInto(Pool);
-    }
-
-    private static TransactionConfiguration RegisterNewIntoPool(PoolBase pool)
-    {
-        var t = new TransactionConfiguration();
-
-        switch (pool)
-        {
-            case FlexPool fp: return t.RegisterInto(fp);
-            case Pool p:
-                p.RegisterNow(t, [typeof(IMiddlewareConfigurator), typeof(IMiddlewareRunner)]);
-                return t;
-            default: throw new NotImplementedException();
-        }
     }
 }
