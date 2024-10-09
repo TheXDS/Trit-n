@@ -329,7 +329,7 @@ public class TestCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     /// </summary>
     protected override void OnDispose()
     {
-        if (_temp.Count == 0) CommitAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        if (!IsDisposed && _temp.Count != 0) CommitAsync().ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -342,7 +342,7 @@ public class TestCrudTransaction : AsyncDisposable, ICrudReadWriteTransaction
     /// </returns>
     protected override async ValueTask OnDisposeAsync()
     {
-        if (_temp.Count == 0) await CommitAsync().ConfigureAwait(false);
+        if (!IsDisposed && _temp.Count != 0) await CommitAsync().ConfigureAwait(false);
     }
 
     private IEnumerable<TModel> FullSet<TModel>()
