@@ -44,11 +44,19 @@ public interface IUserService : ITritonService
     /// <param name="password">
     /// Contraseña a registrar en la nueva credencial.
     /// </param>
+    /// <param name="granted">Banderas de permisos otorgados.</param>
+    /// <param name="revoked">Banderas de permisos denegados.</param>
+    /// <param name="enabled">
+    /// Indica si la nueva credencial estará habilitada.
+    /// </param>
+    /// <param name="groups">
+    /// Indica los grupos a los cuales la credencial pertenece.
+    /// </param>
     /// <returns>
     /// Una tarea que, al finalizar, contiene el resultado reportado de la
     /// operación ejecutada por el servicio subyacente.
     /// </returns>
-    Task<ServiceResult> AddNewLoginCredential(string username, SecureString password)
+    Task<ServiceResult> AddNewLoginCredential(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, params UserGroup[] groups)
     {
         return AddNewLoginCredential<Pbkdf2Storage>(username, password);
     }
@@ -67,24 +75,41 @@ public interface IUserService : ITritonService
     /// <param name="password">
     /// Contraseña a registrar en la nueva credencial.
     /// </param>
+    /// <param name="granted">Banderas de permisos otorgados.</param>
+    /// <param name="revoked">Banderas de permisos denegados.</param>
+    /// <param name="enabled">
+    /// Indica si la nueva credencial estará habilitada.
+    /// </param>
+    /// <param name="groups">
+    /// Indica los grupos a los cuales la credencial pertenece.
+    /// </param>
     /// <returns>
     /// Una tarea que, al finalizar, contiene el resultado reportado de la
     /// operación ejecutada por el servicio subyacente.
     /// </returns>
-    async Task<ServiceResult> AddNewLoginCredential<TAlg>(string username, SecureString password) where TAlg : IPasswordStorage, new()
+    async Task<ServiceResult> AddNewLoginCredential<TAlg>(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, params UserGroup[] groups) where TAlg : IPasswordStorage, new()
     {
         await using var j = GetTransaction();
-
         var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
         if (!r.Success) return r;
-        if (r.Result!.Any()) return FailureReason.EntityDuplication;
+        if (r.Result!.Length != 0) return FailureReason.EntityDuplication;
         Guid id;
         do
         {
             id = Guid.NewGuid();
         } while ((await j.ReadAsync<LoginCredential, Guid>(id)).Result is not null);
-
-        j.Create(new LoginCredential(username, await HashPasswordAsync<TAlg>(password)) { Id = id });
+        var newCred = new LoginCredential(username, await HashPasswordAsync<TAlg>(password))
+        {
+            Id = id,
+            Granted = granted,
+            Revoked = revoked,
+            Enabled = enabled,
+        };
+        foreach (var group in groups)
+        {
+            newCred.Membership.Add(new() { Group = group, SecurityObject = newCred });
+        }
+        j.Create(newCred);
         return await j.CommitAsync();
     }
 
