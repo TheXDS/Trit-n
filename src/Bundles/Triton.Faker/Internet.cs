@@ -137,7 +137,7 @@ public static class Internet
     /// </returns>
     public static string NewDomain(IEnumerable<string> names, Address? countryHint)
     {
-        string[] top = { "com", "net", "edu", "gov", "org", "info", "io" };
+        string[] top = ["com", "net", "edu", "gov", "org", "info", "io"];
         var ctop = countryHint?.Country is not null ? GetTopDomainForCountry(countryHint.Country) : GetRandomCultureTopDomain();
         return $"{string.Concat(names)}.{top.Pick()}{(_rnd.CoinFlip() ? $".{ctop}" : null)}".ToLower().Replace(" ", "");
     }
@@ -159,7 +159,7 @@ public static class Internet
     /// <param name="count">Cantidad de dominios a generar.</param>
     public static void UseFauxDomains(in int count)
     {
-        if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (count <= 0) ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         UseDomains(GetFauxDomains(count));
     }
 
@@ -172,14 +172,14 @@ public static class Internet
     /// </returns>
     public static IEnumerable<string> GetFauxDomains(in int count)
     {
-        if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (count <= 0) ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         return Enumerable.Range(0, count).Select(_ => NewDomain(GetName(), GetName()));
     }
 
     private static string GetRandomCultureTopDomain()
     {
         return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            .Except(new[] { CultureInfo.InvariantCulture })
+            .Except([CultureInfo.InvariantCulture])
             .Where(p => !p.IsNeutralCulture)
             .Select(p => p.TwoLetterISOLanguageName.ToLower())
             .Distinct()

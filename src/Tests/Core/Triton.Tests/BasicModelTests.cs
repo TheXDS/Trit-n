@@ -10,9 +10,9 @@ namespace TheXDS.Triton.Tests;
 
 public class BasicModelTests
 {
-    private class ConcurrentTestModel : ConcurrentModel<int>
-    {
-    }
+    private class ConcurrentTestModel : ConcurrentModel<int>;
+
+    private class CatalogModelTest : CatalogModel<int>;
 
     private class TestModel : Model<string>
     {
@@ -23,6 +23,17 @@ public class BasicModelTests
         public TestModel(string id): base(id)
         {
         }
+    }
+
+    [Test]
+    public void CatalogModel_T_includes_description()
+    {
+        var t = typeof(CatalogModelTest);
+        Assert.That(t.GetProperties().SingleOrDefault(p => p.IsReadWrite() && p.PropertyType == typeof(string) && p.Name == nameof(CatalogModel<int>.Description)), Is.Not.Null);
+        var x = new CatalogModelTest();
+        Assert.That(x.Description, Is.Null);
+        x.Description = "Test";
+        Assert.That(x.Description, Is.EqualTo("Test"));
     }
 
     [Test]

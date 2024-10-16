@@ -1,54 +1,15 @@
 ﻿#pragma warning disable CS1591
 
-using System.Reflection;
 using NUnit.Framework;
-using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Diagnostics.Middleware;
-using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 using TheXDS.Triton.Tests.Models;
 
 namespace TheXDS.Triton.Tests.Diagnostics;
 
-public class TextFileJournalTests
+public class TextFileJournalTests : JournalTestsBase
 {
-    private class TestActorProvider : IActorProvider
-    {
-        public string? GetCurrentActor() => "Test executor";
-    }
-
-    private class TestOldValueProvider : IOldValueProvider
-    {
-        public IEnumerable<KeyValuePair<PropertyInfo, object?>>? GetOldValues(Model? entity)
-        {
-            if (entity is null) yield break;
-            foreach (var j in entity.GetType().GetProperties().Where(p => p.CanRead))
-            {
-                yield return new KeyValuePair<PropertyInfo, object?>(j, j.PropertyType.Default());
-            }
-        }
-    }
-
-    [TestCase(CrudAction.Create, true, false)]
-    [TestCase(CrudAction.Read, true, false)]
-    [TestCase(CrudAction.Update, true, false)]
-    [TestCase(CrudAction.Delete, true, false)]
-    [TestCase(CrudAction.Commit, true, false)]
-    [TestCase(CrudAction.Create, false, false)]
-    [TestCase(CrudAction.Read, false, false)]
-    [TestCase(CrudAction.Update, false, false)]
-    [TestCase(CrudAction.Delete, false, false)]
-    [TestCase(CrudAction.Commit, false, false)]
-    [TestCase(CrudAction.Create, true, true)]
-    [TestCase(CrudAction.Read, true, true)]
-    [TestCase(CrudAction.Update, true, true)]
-    [TestCase(CrudAction.Delete, true, true)]
-    [TestCase(CrudAction.Commit, true, true)]
-    [TestCase(CrudAction.Create, false, true)]
-    [TestCase(CrudAction.Read, false, true)]
-    [TestCase(CrudAction.Update, false, true)]
-    [TestCase(CrudAction.Delete, false, true)]
-    [TestCase(CrudAction.Commit, false, true)]
+    [TestCaseSource(nameof(GetTestCases))]
     public void Journal_writes_data(CrudAction action, bool withEntity, bool withSettings)
     {
         string p = Path.GetTempFileName();

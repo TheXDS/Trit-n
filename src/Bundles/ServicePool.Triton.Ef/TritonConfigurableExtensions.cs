@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.ServicePool.Triton.Resources;
@@ -342,7 +343,7 @@ public static class TritonConfigurableExtensions
     /// </returns>
     public static ITritonConfigurable UseService(this ITritonConfigurable configurable, Type contextType, Func<IMiddlewareConfigurator, ITransactionFactory, ITritonService> factoryCallback, IDbContextOptionsSource? optionsSource, IMiddlewareConfigurator? configurator = null)
     {
-        CheckContextType(contextType);
+        CheckContextType(contextType, optionsSource);
         return configurable.UseService(factoryCallback, () => CreateEfFactory(contextType, optionsSource), configurator);
     }
 
@@ -364,11 +365,16 @@ public static class TritonConfigurableExtensions
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerNonUserCode]
-    private static void CheckContextType(Type contextType)
+    private static void CheckContextType(Type contextType, IDbContextOptionsSource? optionsSource)
     {
         if (!contextType.Implements<DbContext>())
         {
             throw Errors.TypeMustImplDbContext(nameof(contextType));
+        }
+        var options  = (optionsSource ?? DbContextOptionsSource.None).GetOptions();
+        if ((options is null && !contextType.IsInstantiable([])) || (options is not null && !contextType.IsInstantiable([typeof(DbContextOptions)])))
+        {
+            throw new ClassNotInstantiableException();
         }
     }
 
@@ -376,7 +382,7 @@ public static class TritonConfigurableExtensions
     [DebuggerNonUserCode]
     private static ITransactionFactory CreateEfFactory(Type contextType, IDbContextOptionsSource? optionsSource)
     {
-        CheckContextType(contextType);
+        CheckContextType(contextType, optionsSource);
         return typeof(EfCoreTransFactory<>).MakeGenericType(contextType).New<ITransactionFactory>(optionsSource ?? DbContextOptionsSource.None);
     }
 }

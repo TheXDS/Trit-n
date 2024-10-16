@@ -3,6 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Middleware;
 using TheXDS.Triton.Models.Base;
@@ -77,6 +78,50 @@ public class Tests
     }
 
     [Test]
+    public void UseContext_with_IDbContextOptionsSource_creates_transactions()
+    {
+        Pool testPool = new(PoolConfig.FlexResolve);
+        testPool.UseTriton().UseContext(typeof(TestDbContext), DbContextOptionsSource.None);
+        testPool.InitNow();
+        var s = testPool.OfType<TritonService>().ToArray();
+        Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
+    }
+
+    [Test]
+    public void UseContext_with_DbContextOptionsSource_None_throws_with_configurable_context()
+    {
+        Pool testPool = new(PoolConfig.FlexResolve);
+        Assert.That(() => testPool.UseTriton().UseContext(typeof(ConfigurableContext), DbContextOptionsSource.None), Throws.InstanceOf<ClassNotInstantiableException>());
+    }
+
+    [Test]
+    public void UseContext_with_DbContextOptionsSource_throws_with_nonconfigurable_context()
+    {
+        Pool testPool = new(PoolConfig.FlexResolve);
+        Assert.That(() => testPool.UseTriton().UseContext(typeof(TestDbContext), new DbContextOptionsSource<TestDbContext>(o => { })), Throws.InstanceOf<ClassNotInstantiableException>());
+    }
+
+    [Test]
+    public void UseContext_with_DbContextOptionsSource_T_creates_transactions()
+    {
+        Pool testPool = new(PoolConfig.FlexResolve);
+        testPool.UseTriton().UseContext(typeof(ConfigurableContext), new DbContextOptionsSource<ConfigurableContext>(_ => { }));
+        testPool.InitNow();
+        var s = testPool.OfType<TritonService>().ToArray();
+        Assert.That(s.Any(p => p.GetReadTransaction() is not null), Is.True);
+    }
+
+    [Test]
+    public void GetReadTransaction_throws_on_broken_DbContext()
+    {
+        Pool testPool = new(PoolConfig.FlexResolve);
+        testPool.UseTriton().UseContext(typeof(BrokenDbContext), new DbContextOptionsSource<ConfigurableContext>(_ => { }));
+        testPool.InitNow();
+        var s = testPool.OfType<TritonService>().ToArray();
+        Assert.That(() => s.Any(p => p.GetReadTransaction() is not null), Throws.InstanceOf<ClassNotInstantiableException>());
+    }
+
+    [Test]
     public void UseContext_with_config_method_creates_transactions()
     {
         Pool testPool = new(PoolConfig.FlexResolve);
@@ -111,10 +156,18 @@ public class Tests
         Pool testPool = new(PoolConfig.FlexResolve);
         testPool.UseTriton().UseMiddleware<TestMiddleware>(out var m);
         Assert.That(m.PrologRan, Is.False);
-        testPool.Resolve<IMiddlewareRunner>()?.RunProlog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunProlog(CrudAction.Commit, null);
         Assert.That(m.PrologRan, Is.True);
-        testPool.Resolve<IMiddlewareRunner>()?.RunEpilog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunEpilog(CrudAction.Commit, null);
         Assert.That(m.EpilogRan, Is.True);
+    }
+
+    [Test]
+    public void UseMiddleware_registers_middleware()
+    {
+        Pool testPool = new(PoolConfig.FlexResolve);
+        testPool.UseTriton().UseMiddleware<TestMiddleware>();
+        Assert.That(testPool.Resolve<IMiddlewareRunner>(), Is.Not.Null);
     }
 
     [Test]
@@ -130,7 +183,7 @@ public class Tests
         Pool testPool = new(PoolConfig.FlexResolve);
         testPool.UseTriton().UseTransactionPrologs(TestAction);
         Assert.That(actionRan, Is.False);
-        testPool.Resolve<IMiddlewareRunner>()?.RunProlog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunProlog(CrudAction.Commit, null);
         Assert.That(actionRan, Is.True);
     }
     
@@ -147,7 +200,7 @@ public class Tests
         Pool testPool = new(PoolConfig.FlexResolve);
         testPool.UseTriton().UseTransactionEpilogs(TestAction);
         Assert.That(actionRan, Is.False);
-        testPool.Resolve<IMiddlewareRunner>()?.RunEpilog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunEpilog(CrudAction.Commit, null);
         Assert.That(actionRan, Is.True);
     }
 
@@ -232,6 +285,17 @@ public class Tests
     {
         public DbSet<TestModel> Tests { get; set; } = null!;
         public DbContextOptions Options { get; } = options;
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class BrokenDbContext : DbContext
+    {
+        public BrokenDbContext(DbContextOptions options)
+        {
+            throw new Exception("Test");
+        }
+
+        public DbSet<TestModel> Tests { get; set; } = null!;
     }
 
     [ExcludeFromCodeCoverage]
