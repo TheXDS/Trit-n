@@ -5,7 +5,17 @@ namespace TheXDS.Triton.Models;
 /// <summary>
 /// Modelo que representa una sessión de usuario activa.
 /// </summary>
-public class Session : TimestampModel<Guid>
+/// <remarks>
+/// Inicializa una nueva instancia de la clase <see cref="Session"/>.
+/// </remarks>
+/// <param name="ttlSeconds">
+/// Tiempo de vida en horas para esta sesión.
+/// </param>
+/// <param name="token">Token de sesión a asociar con esta sesión.</param>
+/// <param name="timestamp">
+/// Marca de tiempo de creación de la sesión.
+/// </param>
+public class Session(int ttlSeconds, string? token, DateTime timestamp) : TimestampModel<Guid>(timestamp)
 {
     /// <summary>
     /// Obtiene o establece la credencial para la cual se ha creado este objeto
@@ -29,7 +39,7 @@ public class Session : TimestampModel<Guid>
     /// <summary>
     /// Obtiene o establece el tóken de sesión para esta entidad.
     /// </summary>
-    public string? Token { get; set; }
+    public string? Token { get; set; } = token;
 
     /// <summary>
     /// Obtiene o establece el tiempo de vida en segundos para esta sessión.
@@ -38,23 +48,7 @@ public class Session : TimestampModel<Guid>
     /// Si esta propiedad se establece en cero, se debe entender que la sesión
     /// no vencerá nunca.
     /// </value>
-    public int TtlSeconds { get; set; }
-
-    /// <summary>
-    /// Inicializa una nueva instancia de la clase <see cref="Session"/>.
-    /// </summary>
-    /// <param name="ttlSeconds">
-    /// Tiempo de vida en horas para esta sesión.
-    /// </param>
-    /// <param name="token">Token de sesión a asociar con esta sesión.</param>
-    /// <param name="timestamp">
-    /// Marca de tiempo de creación de la sesión.
-    /// </param>
-    public Session(int ttlSeconds, string? token, DateTime timestamp) : base(timestamp)
-    {
-        TtlSeconds = ttlSeconds;
-        Token = token;
-    }
+    public int TtlSeconds { get; set; } = ttlSeconds;
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="Session"/>.

@@ -13,27 +13,6 @@ namespace TheXDS.Triton.Services;
 public interface IUserService : ITritonService
 {
     /// <summary>
-    /// Obtiene una credencial de inicio de sesión registrada con el nombre
-    /// de inicio de sesión especificado.
-    /// </summary>
-    /// <param name="username">
-    /// Nombre de inicio de sesión registrado.
-    /// </param>
-    /// <returns>
-    /// Una tarea que, al finalizar, contiene el resultado reportado de la
-    /// operación ejecutada por el servicio subyacente, incluyendo como
-    /// valor de resultado a la entidad obtenida en la operación de
-    /// lectura. Si no existe una entidad con el nombre de inicio de sesión
-    /// especificado, el valor de resultado será <see langword="null"/>.
-    /// </returns>
-    async Task<ServiceResult<LoginCredential?>> GetCredential(string username)
-    {
-        await using var j = GetReadTransaction();
-        var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
-        return r.Success ? (r.Result!.FirstOrDefault() ?? ServiceResult.FailWith<ServiceResult<LoginCredential?>>(FailureReason.NotFound)) : r.CastUp<LoginCredential?>(null);
-    }
-
-    /// <summary>
     /// Permite crear nuevas credenciales de inicio de sesión, ejecutando
     /// algunos pasos esenciales sobre la misma.
     /// </summary>
@@ -49,6 +28,10 @@ public interface IUserService : ITritonService
     /// <param name="enabled">
     /// Indica si la nueva credencial estará habilitada.
     /// </param>
+    /// <param name="passwordChangeScheduled">
+    /// Indica si la nueva credencial está programada para cambiar la
+    /// contraseña al iniciar sesión.
+    /// </param>
     /// <param name="groups">
     /// Indica los grupos a los cuales la credencial pertenece.
     /// </param>
@@ -56,9 +39,9 @@ public interface IUserService : ITritonService
     /// Una tarea que, al finalizar, contiene el resultado reportado de la
     /// operación ejecutada por el servicio subyacente.
     /// </returns>
-    Task<ServiceResult> AddNewLoginCredential(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, params UserGroup[] groups)
+    Task<ServiceResult> AddNewLoginCredential(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, bool passwordChangeScheduled = false, params UserGroup[] groups)
     {
-        return AddNewLoginCredential<Pbkdf2Storage>(username, password);
+        return AddNewLoginCredential<Pbkdf2Storage>(username, password, granted, revoked, enabled, passwordChangeScheduled, groups);
     }
 
     /// <summary>
@@ -80,6 +63,10 @@ public interface IUserService : ITritonService
     /// <param name="enabled">
     /// Indica si la nueva credencial estará habilitada.
     /// </param>
+    /// <param name="passwordChangeScheduled">
+    /// Indica si la nueva credencial está programada para cambiar la
+    /// contraseña al iniciar sesión.
+    /// </param>
     /// <param name="groups">
     /// Indica los grupos a los cuales la credencial pertenece.
     /// </param>
@@ -87,7 +74,7 @@ public interface IUserService : ITritonService
     /// Una tarea que, al finalizar, contiene el resultado reportado de la
     /// operación ejecutada por el servicio subyacente.
     /// </returns>
-    async Task<ServiceResult> AddNewLoginCredential<TAlg>(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, params UserGroup[] groups) where TAlg : IPasswordStorage, new()
+    async Task<ServiceResult> AddNewLoginCredential<TAlg>(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, bool passwordChangeScheduled = false, params UserGroup[] groups) where TAlg : IPasswordStorage, new()
     {
         await using var j = GetTransaction();
         var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
@@ -104,6 +91,7 @@ public interface IUserService : ITritonService
             Granted = granted,
             Revoked = revoked,
             Enabled = enabled,
+            PasswordChangeScheduled = passwordChangeScheduled,
         };
         foreach (var group in groups)
         {
@@ -132,7 +120,9 @@ public interface IUserService : ITritonService
     {
         var r = await VerifyPassword(username, password);
         if (!(r.Success && r.Result is { } result)) return r.CastUp<Session?>(null);
-        if (!(result.Valid ?? false)) return FailureReason.Forbidden;
+
+        if (result.Valid != true) return FailureReason.Forbidden;
+
         await using var j = GetWriteTransaction();
         Session s = new() { Timestamp = DateTime.UtcNow, Token = GenerateToken() };
         result.LoginCredential.Sessions.Add(s);
@@ -141,6 +131,72 @@ public interface IUserService : ITritonService
         var retVal = await j.CommitAsync();
         s.Credential ??= result.LoginCredential;
         return retVal.CastUp(s);
+    }
+
+    /// <summary>
+    /// Comprueba el acceso de un usuario a un contexto de seguridad
+    /// específico.
+    /// </summary>
+    /// <param name="username">Nombre de usuario a comprobar.</param>
+    /// <param name="context">Contexto de seguridad a comprobar.</param>
+    /// <param name="requested">Banderas de acceso solicitadas.</param>
+    /// <returns>
+    /// <see langword="true"/> si el usuario posee acceso al recurso,
+    /// <see langword="false"/> en caso que el acceso ha sido denegado
+    /// explícitamente, o <see langword="null"/> si no existe un objeto ni
+    /// bandera de seguridad definida para el contexto.
+    /// </returns>
+    async Task<ServiceResult<bool?>> CheckAccess(string username, string context, PermissionFlags requested)
+    {
+        var r = await GetCredential(username);
+        if (!r.Success || r.Result is not { } c) return r.CastUp<bool?>(null);
+        return CheckAccess(c, context, requested);
+    }
+
+    /// <summary>
+    /// Comprueba el acceso de un usuario a un contexto de seguridad
+    /// específico.
+    /// </summary>
+    /// <param name="credential">Credencial a comprobar.</param>
+    /// <param name="context">Contexto de seguridad a comprobar.</param>
+    /// <param name="requested">Banderas de acceso solicitadas.</param>
+    /// <returns>
+    /// <see langword="true"/> si el usuario posee acceso al recurso,
+    /// <see langword="false"/> en caso que el acceso ha sido denegado
+    /// explícitamente, o <see langword="null"/> si no existe un objeto ni
+    /// bandera de seguridad definida para el contexto.
+    /// </returns>
+    ServiceResult<bool?> CheckAccess(SecurityObject credential, string context, PermissionFlags requested)
+    {
+        foreach (var j in new[] { credential }.Concat(credential.Membership.Select(p => p.Group)))
+        {
+            if (ChkAccessInternal(j, context, requested) is { } b) return b;
+        }
+        return new((bool?)null);
+    }
+
+    /// <summary>
+    /// Obtiene una sesión previamente activa utilizando el token de la misma.
+    /// </summary>
+    /// <param name="token">Token de sesión a ser continuada.</param>
+    /// <returns>
+    /// Una tarea que contiene el resultado de la operación asíncrona. El
+    /// resultado podrá incluir una referencia a la sesión que será continuada,
+    /// o <see langword="null"/> en caso que la sesión no exista, sea inválida
+    /// o que ocurra una falla en el servicio de datos subyacente.
+    /// </returns>
+    async Task<ServiceResult<Session?>> ContinueSession(string token)
+    {
+        await using var j = GetReadTransaction();
+        var query = j.All<Session>();
+        if (query.Success)
+        {
+            return await Task.Run(() => query.FirstOrDefault(p => p.Token == token)) is { } session && IsSessionValid(session) ? session : FailureReason.Forbidden;
+        }
+        else
+        {
+            return query.Reason!;
+        }
     }
 
     /// <summary>
@@ -161,45 +217,30 @@ public interface IUserService : ITritonService
     }
 
     /// <summary>
-    /// Obtiene una sesión previamente activa utilizando el token de la misma.
+    /// Obtiene una credencial de inicio de sesión registrada con el nombre
+    /// de inicio de sesión especificado.
     /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    async Task<ServiceResult<Session?>> ContinueSession(string token)
-    {
-        await using var j = GetTransaction();
-        var query = j.All<Session>();
-        if (query.Success)
-        {
-            return await Task.Run(() => query.FirstOrDefault(p => p.Token == token)) is { } session && IsSessionValid(session) ? session : FailureReason.Forbidden;
-        }
-        else
-        {
-            return query.Reason!;
-        }
-    }
-
-    /// <summary>
-    /// Verifica que las credenciales provistas sean válidas.
-    /// </summary>
-    /// <param name="userId">Nombre de inicio de sesión.</param>
-    /// <param name="password">Contraseña.</param>
+    /// <param name="username">
+    /// Nombre de inicio de sesión registrado.
+    /// </param>
     /// <returns>
-    /// Una tarea que, al finalizar, retornará una tupla de valores que indica si la 
+    /// Una tarea que, al finalizar, contiene el resultado reportado de la
+    /// operación ejecutada por el servicio subyacente, incluyendo como
+    /// valor de resultado a la entidad obtenida en la operación de
+    /// lectura. Si no existe una entidad con el nombre de inicio de sesión
+    /// especificado, el valor de resultado será <see langword="null"/>.
     /// </returns>
-    /// <remarks>
-    /// Si desea autenticar a un usuario, utilice el método
-    /// <see cref="Authenticate(string, SecureString)"/>, ya que éste
-    /// creará y persistirá un objeto que represente a la sesión actual.
-    /// </remarks>
-    /// <seealso cref="Authenticate(string, SecureString)"/>.
-    async Task<ServiceResult<VerifyPasswordResult?>> VerifyPassword(string userId, SecureString password)
+    async Task<ServiceResult<LoginCredential?>> GetCredential(string username)
     {
-        var r = await GetCredential(userId);
-        if (!r.Success) return r.CastUp<VerifyPasswordResult?>(null);
-        return r.Result is not { PasswordHash: { } passwd, Enabled: true } user
-            ? VerifyPasswordResult.Invalid
-            : new VerifyPasswordResult(PasswordStorage.VerifyPassword(password, passwd), user);
+        await using var j = GetReadTransaction();
+        var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
+        if (r.Success)
+        {
+            return r.Result?.FirstOrDefault() is { } credential
+                ? new ServiceResult<LoginCredential?>(credential)
+                : ServiceResult.FailWith<ServiceResult<LoginCredential?>>(FailureReason.NotFound);
+        }
+        return r.CastUp<LoginCredential?>(null);
     }
 
     /// <summary>
@@ -269,45 +310,35 @@ public interface IUserService : ITritonService
     }
 
     /// <summary>
-    /// Comprueba el acceso de un usuario a un contexto de seguridad
-    /// específico.
+    /// Verifica que las credenciales provistas sean válidas.
     /// </summary>
-    /// <param name="username">Nombre de usuario a comprobar.</param>
-    /// <param name="context">Contexto de seguridad a comprobar.</param>
-    /// <param name="requested">Banderas de acceso solicitadas.</param>
+    /// <param name="userId">Nombre de inicio de sesión.</param>
+    /// <param name="password">Contraseña.</param>
     /// <returns>
-    /// <see langword="true"/> si el usuario posee acceso al recurso,
-    /// <see langword="false"/> en caso que el acceso ha sido denegado
-    /// explícitamente, o <see langword="null"/> si no existe un objeto ni
-    /// bandera de seguridad definida para el contexto.
+    /// Una tarea que, al finalizar, retornará una tupla de valores que indica si la 
     /// </returns>
-    async Task<ServiceResult<bool?>> CheckAccess(string username, string context, PermissionFlags requested)
+    /// <remarks>
+    /// Si desea autenticar a un usuario, utilice el método
+    /// <see cref="Authenticate(string, SecureString)"/>, ya que éste
+    /// creará y persistirá un objeto que represente a la sesión actual.
+    /// </remarks>
+    /// <seealso cref="Authenticate(string, SecureString)"/>.
+    async Task<ServiceResult<VerifyPasswordResult?>> VerifyPassword(string userId, SecureString password)
     {
-        var r = await GetCredential(username);
-        if (!r.Success || r.Result is not { } c) return r.CastUp<bool?>(null);
-        return CheckAccess(c, context, requested);
-    }
-
-    /// <summary>
-    /// Comprueba el acceso de un usuario a un contexto de seguridad
-    /// específico.
-    /// </summary>
-    /// <param name="credential">Credencial a comprobar.</param>
-    /// <param name="context">Contexto de seguridad a comprobar.</param>
-    /// <param name="requested">Banderas de acceso solicitadas.</param>
-    /// <returns>
-    /// <see langword="true"/> si el usuario posee acceso al recurso,
-    /// <see langword="false"/> en caso que el acceso ha sido denegado
-    /// explícitamente, o <see langword="null"/> si no existe un objeto ni
-    /// bandera de seguridad definida para el contexto.
-    /// </returns>
-    ServiceResult<bool?> CheckAccess(SecurityObject credential, string context, PermissionFlags requested)
-    {
-        foreach (var j in new[] { credential }.Concat(credential.Membership.Select(p => p.Group)))
+        VerifyPasswordResult GetResult(byte[] expected, LoginCredential? user)
         {
-            if (ChkAccessInternal(j, context, requested) is { } b) return b;
+            var success = PasswordStorage.VerifyPassword(password, expected) ?? false;
+            return new VerifyPasswordResult(success, success ? user : null);
         }
-        return new((bool?)null);
+
+        var r = await GetCredential(userId);
+        return r switch
+        {
+            { Success: false, Reason: FailureReason.NotFound } => VerifyPasswordResult.Invalid,
+            { Success: false } failure => failure.CastUp<VerifyPasswordResult?>(null),
+            { Success: true, Result: { PasswordHash: { } passwd, Enabled: true } user } => GetResult(passwd, user),
+            _ => VerifyPasswordResult.Invalid
+        };
     }
 
     private static bool? ChkAccessInternal(SecurityObject obj, string context, PermissionFlags requested)

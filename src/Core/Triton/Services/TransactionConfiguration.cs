@@ -12,7 +12,7 @@ public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunn
 {
     private class MiddlewareActionList : IMiddlewareActionList, IEnumerable<MiddlewareAction>
     {
-        private readonly List<MiddlewareAction> _list = new();
+        private readonly List<MiddlewareAction> _list = [];
         private int _tail = 0;
         
         /// <inheritdoc/>

@@ -57,15 +57,15 @@ public class DataLayerMiddlewareTests
         var disabled = await GetCredential("disabled", svc);
 
         prov.SecurityObject = null;
-        Assert.That(middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() })!.Reason, Is.EqualTo(FailureReason.Tamper));
-        Assert.That(middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() })!.Reason, Is.EqualTo(FailureReason.Tamper));
+        Assert.That(middleware.PrologAction(CrudAction.Create, [new LoginCredential()])!.Reason, Is.EqualTo(FailureReason.Tamper));
+        Assert.That(middleware.PrologAction(CrudAction.Commit, [new LoginCredential()])!.Reason, Is.EqualTo(FailureReason.Tamper));
 
         prov.SecurityObject =  root;
         Assert.That(middleware.PrologAction(CrudAction.Commit, null), Is.Null);
-        Assert.That(middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() }), Is.Null);
+        Assert.That(middleware.PrologAction(CrudAction.Create, [new LoginCredential()]), Is.Null);
 
         prov.SecurityObject = disabled;
         Assert.That(middleware.PrologAction(CrudAction.Commit, null), Is.Null);
-        Assert.That(middleware.PrologAction(CrudAction.Create, new[] { new LoginCredential() })!.Reason, Is.EqualTo(FailureReason.Forbidden));
+        Assert.That(middleware.PrologAction(CrudAction.Create, [new LoginCredential()])!.Reason, Is.EqualTo(FailureReason.Forbidden));
     }
 }

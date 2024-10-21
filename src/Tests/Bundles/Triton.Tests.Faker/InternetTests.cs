@@ -6,7 +6,7 @@ using TheXDS.Triton.Faker;
 
 namespace TheXDS.Triton.Tests.Faker;
 
-public class InternetTests
+public partial class InternetTests
 {
     [Test]
     public void FakeUsername_Test()
@@ -24,7 +24,7 @@ public class InternetTests
         {
             var e = Internet.FakeEmail();
             Assert.That(e, Is.Not.Empty);
-            Assert.That(Regex.IsMatch(e, ".+@.+[.].{2,}"), Is.True);
+            Assert.That(EmailRegex().IsMatch(e), Is.True);
         }
     }
 
@@ -35,7 +35,22 @@ public class InternetTests
         {
             var e = Internet.FakeEmail(Person.Someone());
             Assert.That(e, Is.Not.Empty);
-            Assert.That(Regex.IsMatch(e, ".+@.+[.].{2,}"), Is.True);
+            Assert.That(EmailRegex().IsMatch(e), Is.True);
         }
     }
+
+    [Test]
+    public void UseFauxDomains_contract_test()
+    {
+        Assert.That(() => Internet.UseFauxDomains(0), Throws.InstanceOf<ArgumentOutOfRangeException>());
+    }
+
+    [Test]
+    public void GetFauxDomains_contract_test()
+    {
+        Assert.That(() => Internet.GetFauxDomains(0), Throws.InstanceOf<ArgumentOutOfRangeException>());
+    }
+
+    [GeneratedRegex(".+@.+[.].{2,}")]
+    private static partial Regex EmailRegex();
 }

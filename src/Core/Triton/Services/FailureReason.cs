@@ -67,7 +67,7 @@ public enum FailureReason
     QueryOverLimit,
 
     /// <summary>
-    /// La acción ya fue ejecutada en otra transacción anterior.
+    /// La acción ya fue ejecutada en una transacción anterior.
     /// </summary>
     Idempotency
 }

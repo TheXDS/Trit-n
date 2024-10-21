@@ -12,35 +12,25 @@ namespace TheXDS.Triton.Middleware;
 /// acceso a datos cuyas reglas están basadas en la información de acceso
 /// del sistema.
 /// </summary>
-public class DataLayerSecurityMiddleware : ITransactionMiddleware
+/// <param name="securityActorProvider">
+/// Proveedor del objeto de seguridad que intenta ejecutar la acción.
+/// </param>
+/// <param name="userService"></param>
+public class DataLayerSecurityMiddleware(ISecurityActorProvider securityActorProvider, IUserService userService) : ITransactionMiddleware
 {
-    private readonly IUserService _userService;
-    private readonly ISecurityActorProvider _securityActorProvider;
-
-    /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="DataLayerSecurityMiddleware"/>.
-    /// </summary>
-    /// <param name="securityActorProvider">
-    /// Proveedor del objeto de seguridad que intenta ejecutar la acción.
-    /// </param>
-    /// <param name="userService"></param>
-    public DataLayerSecurityMiddleware(ISecurityActorProvider securityActorProvider, IUserService userService)
-    {
-        _securityActorProvider = securityActorProvider;
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
+    private readonly ISecurityActorProvider _securityActorProvider = securityActorProvider;
 
     ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, IEnumerable<Model>? entities)
     {
         if (entities is null) return null;
-        if (_securityActorProvider.GetActor() is not { } actor) return ServiceResult.FailWith<ServiceResult>(FailureReason.Tamper);
+        if (_securityActorProvider.GetActor() is not { } actor) return FailureReason.Tamper;
 
         var entityType = entities.GetType();
 
         return _userService.CheckAccess(actor, GetModelContextString(action, entityType), MapCrudActionToFlags(action)).Result == true
             ? null
-            : ServiceResult.FailWith<ServiceResult>(FailureReason.Forbidden);
+            : FailureReason.Forbidden;
     }
 
     /// <summary>

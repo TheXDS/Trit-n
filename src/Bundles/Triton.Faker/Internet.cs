@@ -159,7 +159,6 @@ public static class Internet
     /// <param name="count">Cantidad de dominios a generar.</param>
     public static void UseFauxDomains(in int count)
     {
-        if (count <= 0) ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         UseDomains(GetFauxDomains(count));
     }
 
