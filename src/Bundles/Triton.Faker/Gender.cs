@@ -1,16 +1,16 @@
 ﻿namespace TheXDS.Triton.Faker;
 
 /// <summary>
-/// Enumera los géneros biológicos de una persona.
+/// Enumerates the biological genders of a person.
 /// </summary>
 public enum Gender : byte
 {
     /// <summary>
-    /// Género femenino.
+    /// Female gender.
     /// </summary>
     Female,
     /// <summary>
-    /// Género masculino.
+    /// Male gender.
     /// </summary>
     Male
 }

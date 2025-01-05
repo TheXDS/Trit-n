@@ -8,17 +8,16 @@ using static TheXDS.Triton.Faker.Globals;
 namespace TheXDS.Triton.Faker;
 
 /// <summary>
-/// Contiene funciones auxiliares de generación de texto aleatorio.
+/// Contains auxiliary functions for generating random text.
 /// </summary>
 public static class Text
 {
     /// <summary>
-    /// Obtiene un texto aleatorio de tipo Lorem con la cantidad de
-    /// palabras especificadas.
+    /// Obtains a random text of type Lorem with the specified number of words.
     /// </summary>
-    /// <param name="words">Cantidad de palabras a generar.</param>
+    /// <param name="words">Number of words to generate.</param>
     /// <returns>
-    /// Un texto aleatorio de tipo Lorem Ipsum.
+    /// A random text of type Lorem Ipsum.
     /// </returns>
     public static string Lorem(in int words)
     {
@@ -26,14 +25,13 @@ public static class Text
     }
 
     /// <summary>
-    /// Obtiene un texto aleatorio de tipo Lorem con la cantidad de
-    /// palabras especificadas.
+    /// Obtains a random text of type Lorem with the specified number of words.
     /// </summary>
-    /// <param name="words">Cantidad de palabras a generar.</param>
-    /// <param name="wordsPerSentence">Palabras por oración.</param>
-    /// <param name="sentencesPerParagraph">Oraciones por párrafo.</param>
+    /// <param name="words">Number of words to generate.</param>
+    /// <param name="wordsPerSentence">Words per sentence.</param>
+    /// <param name="sentencesPerParagraph">Sentences per paragraph.</param>
     /// <returns>
-    /// Un texto aleatorio de tipo Lorem Ipsum.
+    /// A random text of type Lorem Ipsum.
     /// </returns>
     public static string Lorem(in int words, in int wordsPerSentence, in int sentencesPerParagraph)
     {
@@ -41,26 +39,25 @@ public static class Text
     }
 
     /// <summary>
-    /// Obtiene un texto aleatorio de tipo Lorem con la cantidad de
-    /// palabras especificadas.
+    /// Obtains a random text of type Lorem with the specified number of words.
     /// </summary>
-    /// <param name="words">Cantidad de palabras a generar.</param>
-    /// <param name="wordsPerSentence">Palabras por oración.</param>
-    /// <param name="sentencesPerParagraph">Oraciones por párrafo.</param>
-    /// <param name="delta">Delta de variación, en %</param>
+    /// <param name="words">Number of words to generate.</param>
+    /// <param name="wordsPerSentence">Words per sentence.</param>
+    /// <param name="sentencesPerParagraph">Sentences per paragraph.</param>
+    /// <param name="delta">Delta of variation, in %.</param>
     /// <returns>
-    /// Un texto aleatorio de tipo Lorem Ipsum.
+    /// A random text of type Lorem Ipsum.
     /// </returns>
     public static string Lorem(in int words, in int wordsPerSentence, in int sentencesPerParagraph, in double delta)
     {
         Lorem_Contract(words, wordsPerSentence, sentencesPerParagraph, delta);
 
-        StringBuilder text = new();
+        var text = new StringBuilder();
         double wps = wordsPerSentence;
         double spp = sentencesPerParagraph;
-        int twc = 0; // Cuenta de palabras en total.
-        int swc = 0; // Cuenta de palabras por oración.
-        int psc = 0; // Cuenta de oraciones por párrafo.
+        int twc = 0; // Total word count.
+        int swc = 0; // Sentence word count.
+        int psc = 0; // Paragraph sentence count.
         do
         {
             var word = StringTables.Lorem.Pick();

@@ -3,25 +3,23 @@
 namespace TheXDS.Triton.Component;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que permita realizar
-/// verificaciones de autenticación multi-factor con datos proporcionados para
-/// el usuario que desea iniciar sesión.
+/// Defines the contract for types that provide multi-factor authentication
+/// (MFA) processing capabilities.
 /// </summary>
 public interface IMfaProcessor : IExposeGuid
 {
     /// <summary>
-    /// Comprueba que la información de MFA provista es válida.
+    /// Validates the provided MFA data against the user's credentials.
     /// </summary>
-    /// <param name="mfaData">Datos de MFA del usuario.</param>
+    /// <param name="mfaData">The MFA data to be validated.</param>
     /// <returns>
-    /// <see langword="true"/> si el MFA valida correctamente la información
-    /// del usuario, <see langword="false"/> en caso contrario.
+    /// <see langword="true"/> if the MFA data is valid,
+    /// <see langword="false"/> otherwise.
     /// </returns>
     /// <remarks>
-    /// Al implementar y registrar un servicio de MFA, éste debe implementar la
-    /// interacción de UI requerida para obtener los datos de autenticación de
-    /// múltiple factor; como OTP, llaves de hardware, entrada de número PIN,
-    /// solicitudes biométricas, etc.
+    /// Implementations of this interface must provide a user interface to
+    /// collect MFA data, such as one-time passwords (OTPs), hardware tokens,
+    /// PINs, or biometric data.
     /// </remarks>
-    bool IsMfaValid(byte[] mfaData);
+    bool ValidateMfaData(byte[] mfaData);
 }

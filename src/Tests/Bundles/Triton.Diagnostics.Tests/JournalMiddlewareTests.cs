@@ -2,42 +2,30 @@
 
 using Moq;
 using NUnit.Framework;
+using System.Diagnostics.CodeAnalysis;
+using TheXDS.Triton.Diagnostics.Extensions;
 using TheXDS.Triton.Diagnostics.Middleware;
 using TheXDS.Triton.Middleware;
-using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
-using TheXDS.Triton.Tests.Models;
 
 namespace TheXDS.Triton.Tests.Diagnostics;
 
-public class JournalMiddlewareTests : MiddlewareTestsBase
+public class JournalMiddlewareTests
 {
+    [ExcludeFromCodeCoverage]
     private class TestJournal : IJournalMiddleware
     {
-        public record Entry(CrudAction Action, Model? Entity, JournalSettings Settings);
-
-        public List<Entry> Entries { get; } = [];
-
-        public void Log(CrudAction action, IEnumerable<Model>? entity, JournalSettings settings)
+        public void Log(CrudAction action, IEnumerable<ChangeTrackerItem>? changeSet, JournalSettings settings)
         {
-            if (entity is not null) Entries.AddRange(entity.Select(p => new Entry(action, p, settings)));
-        }
-    }
-
-    private class BrokenJournal : IJournalMiddleware
-    {
-        public void Log(CrudAction action, IEnumerable<Model>? entity, JournalSettings settings)
-        {
-            throw new Exception("Test");
         }
     }
 
     [Test]
-    public void UseJournal_registers_middleware_as_last_epilog()
+    public void UseJournal_registers_middleware_as_last_Epilogue()
     {
         var configMock = new Mock<IMiddlewareConfigurator>();
         var r = configMock.Object.UseJournal<TestJournal>();
-        configMock.Verify(x => x.AddLastEpilog(It.IsAny<MiddlewareAction>()), Times.Once());
+        configMock.Verify(x => x.AddLateEpilogue(It.IsAny<MiddlewareAction>()), Times.Once());
     }
 
     [Test]
@@ -45,37 +33,42 @@ public class JournalMiddlewareTests : MiddlewareTestsBase
     {
         var configMock = new Mock<IMiddlewareConfigurator>();
         var r = configMock.Object.UseJournal<TestJournal>(new JournalSettings());
-        configMock.Verify(x => x.AddLastEpilog(It.IsAny<MiddlewareAction>()), Times.Once());
+        configMock.Verify(x => x.AddLateEpilogue(It.IsAny<MiddlewareAction>()), Times.Once());
     }
 
     [Test]
-    public void UseJournal_with_singleton_registers_journal()
+    public void UseJournal_with_singleton_registers_middleware_as_last_Epilogue()
+    {
+        var configMock = new Mock<IMiddlewareConfigurator>();        
+        var r = configMock.Object.UseJournal(Mock.Of<IJournalMiddleware>(MockBehavior.Loose));
+        configMock.Verify(x => x.AddLateEpilogue(It.IsAny<MiddlewareAction>()), Times.Once());
+    }
+
+    [Test]
+    public void UseJournal_with_singleton_and_settings_registers_new_journal()
     {
         var configMock = new Mock<IMiddlewareConfigurator>();
-        var journal = new TestJournal();
-        var r = configMock.Object.UseJournal(journal);
-        configMock.Verify(x => x.AddLastEpilog(It.IsAny<MiddlewareAction>()), Times.Once());
+        var r = configMock.Object.UseJournal(Mock.Of<IJournalMiddleware>(MockBehavior.Loose), new JournalSettings());
+        configMock.Verify(x => x.AddLateEpilogue(It.IsAny<MiddlewareAction>()), Times.Once());
     }
 
     [Test]
-    public async Task Journal_write_test()
+    public void Journal_write_test()
     {
-        var j = new TestJournal();
-        var r = new TransactionConfiguration().UseJournal(j);
-        var u = new User("1", "Test");
-        await Run(r, CrudAction.Read, [u]);
-        Assert.That(1, Is.EqualTo(j.Entries.Count));
-        Assert.That(u, Is.SameAs(j.Entries[0].Entity));
-        Assert.That(CrudAction.Read, Is.EqualTo(j.Entries[0].Action));
+        var journalMock = new Mock<IJournalMiddleware>();
+        journalMock.Setup(p => p.Log(It.IsAny<CrudAction>(), It.IsAny<IEnumerable<ChangeTrackerItem>?>(), It.IsAny<JournalSettings>())).Verifiable(Times.Once);
+        var r = new TransactionConfiguration().UseJournal(journalMock.Object);
+        _ = r.GetRunner().RunEpilogue(default, null);
+        journalMock.Verify();
     }
 
     [Test]
-    public async Task Journal_exception_test()
+    public void Journal_exception_still_succeeds_operation()
     {
-        var r = new TransactionConfiguration().UseJournal<BrokenJournal>();
-        var u = new User("1", "Test");
-        var result = await Run(r, CrudAction.Read, [u]);
-        Assert.That(result,Is.Not.Null);
+        var journalMock = new Mock<IJournalMiddleware>();
+        journalMock.Setup(p => p.Log(It.IsAny<CrudAction>(), It.IsAny<IEnumerable<ChangeTrackerItem>?>(), It.IsAny<JournalSettings>())).Throws<InvalidProgramException>();
+        var r = new TransactionConfiguration().UseJournal(journalMock.Object);
+        var result = r.GetRunner().RunEpilogue(default, null);
         Assert.That(result!.Success);
     }
 }

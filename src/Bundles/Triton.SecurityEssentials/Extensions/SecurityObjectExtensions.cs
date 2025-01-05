@@ -3,20 +3,20 @@
 namespace TheXDS.Triton.Extensions;
 
 /// <summary>
-/// Contiene métodos de extension para objetos de tipo
-/// <see cref="SecurityObject"/>.
+/// Provides extension methods for working with security objects.
 /// </summary>
 public static class SecurityObjectExtensions
 {
     /// <summary>
-    /// Agrega al objeto de seguridad a un grupo de usuarios.
+    /// Adds a security object to one or more user groups.
     /// </summary>
-    /// <param name="obj">Objeto a agregar.</param>
+    /// <param name="obj">The security object to add.</param>
     /// <param name="groups">
-    /// Grupos a los cuales el objeto de seguridad pertenece.
+    /// The user groups to which the security object will be added.
     /// </param>
     public static void AddToGroup(this SecurityObject obj, params UserGroup[] groups)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         foreach (var group in groups)
         {
             obj.Membership.Add(new() { Group = group, SecurityObject = obj });

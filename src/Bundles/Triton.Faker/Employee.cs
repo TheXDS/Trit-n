@@ -1,31 +1,32 @@
 ﻿using TheXDS.MCART.Types.Extensions;
+using TheXDS.Triton.Faker.Resources;
 using static TheXDS.Triton.Faker.Globals;
 
 namespace TheXDS.Triton.Faker;
 
 /// <summary>
-/// Representa a un empleado generado aleatoriamente.
+/// Represents an employee generated randomly.
 /// </summary>
 public class Employee : Person
 {
     /// <summary>
-    /// Obtiene la dirección de correo electrónico del empleado.
+    /// Gets the email address of the employee.
     /// </summary>
     public string Email { get; }
 
     /// <summary>
-    /// Obtiene la posición del empleado dentro de la compañía.
+    /// Gets the position of the employee within the company.
     /// </summary>
     public string Position { get; }
 
     /// <summary>
-    /// Genera un empleado en jefe de forma aleatoria.
+    /// Generates a chief employee randomly.
     /// </summary>
     /// <param name="company">
-    /// Compañía para la cual el empleado a generar labora.
+    /// The company for which the employee is generated to work.
     /// </param>
     /// <returns>
-    /// Una nueva instancia de la clase <see cref="Employee"/>.
+    /// A new instance of the class <see cref="Employee"/>.
     /// </returns>
     public static Employee GetChief(Company company)
     {
@@ -33,13 +34,13 @@ public class Employee : Person
     }
 
     /// <summary>
-    /// Genera un empleado de forma aleatoria.
+    /// Generates an employee randomly.
     /// </summary>
     /// <param name="company">
-    /// Compañía para la cual el empleado a generar labora.
+    /// The company for which the employee is generated to work.
     /// </param>
     /// <returns>
-    /// Una nueva instancia de la clase <see cref="Employee"/>.
+    /// A new instance of the class <see cref="Employee"/>.
     /// </returns>
     public static Employee Get(Company company)
     {
@@ -47,37 +48,37 @@ public class Employee : Person
     }
 
     /// <summary>
-    /// Convierte una instancia de la clase <see cref="Person"/> en una
-    /// instancia de <see cref="Employee"/>, especificando la compañía para la
-    /// cual el empleado generado trabaja.
+    /// Converts an instance of the class <see cref="Person"/> to an instance
+    /// of <see cref="Employee"/>, specifying the company for which the
+    /// employee is generated to work.
     /// </summary>
-    /// <param name="person">Persona a convertir en empleado.</param>
+    /// <param name="person">The person to convert to an employee.</param>
     /// <param name="company">
-    /// Compañía para la cual el empleado generado trabaja.
+    /// The company for which the employee is generated to work.
     /// </param>
     /// <returns>
-    /// Una nueva instancia de la clase <see cref="Employee"/>.
+    /// A new instance of the class <see cref="Employee"/>.
     /// </returns>
     public static Employee FromPerson(Person person, Company company)
     {
-        return new(GetRandomPosition(), person, company);
+        return new(_rnd.CoinFlip() ? StringTables.WorkPositions.Pick() : "Collaborator", person, company);
     }
 
     /// <summary>
-    /// Convierte una instancia de la clase <see cref="Person"/> en una
-    /// instancia de <see cref="Employee"/> con rango de jefe, especificando la
-    /// compañía para la cual el empleado generado trabaja.
+    /// Converts an instance of the class <see cref="Person"/> to an instance
+    /// of <see cref="Employee"/> with chief rank, specifying the company for
+    /// which the employee is generated to work.
     /// </summary>
-    /// <param name="person">Persona a convertir en empleado.</param>
+    /// <param name="person">The person to convert to an employee.</param>
     /// <param name="company">
-    /// Compañía para la cual el empleado generado trabaja.
+    /// The company for which the employee is generated to work.
     /// </param>
     /// <returns>
-    /// Una nueva instancia de la clase <see cref="Employee"/>.
+    /// A new instance of the class <see cref="Employee"/>.
     /// </returns>
     public static Employee ChiefFromPerson(Person person, Company company)
     {
-        return new(GetRandomChiefPosition(), person, company);
+        return new(StringTables.ChiefPositions.Pick(), person, company);
     }
 
     private Employee(string position, Person person, Company company)
@@ -86,31 +87,5 @@ public class Employee : Person
         Email = $"{person.UserName}@{company.DomainName}";
         Position = position;
         SetUserName(person.UserName);
-    }
-
-    private static string GetRandomChiefPosition()
-    {
-        return new[] {
-            "CEO",
-            "COO",
-            "CTO",
-            "CFO",
-            "Director",
-            "Manager",
-            "VP Sales",
-            "VP Marketing",
-        }.Pick();
-    }
-
-    private static string GetRandomPosition()
-    {
-        return _rnd.CoinFlip() ? new[] {
-            "Engineer",
-            "Recepcionist",
-            "Security officer",
-            "Janitor",
-            "Salesman",
-            "HR Officer"
-        }.Pick() : "Collaborator";
     }
 }

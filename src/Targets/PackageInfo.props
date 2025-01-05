@@ -10,7 +10,7 @@
 		<PackageTags>triton entity mcart database dynamic</PackageTags>
 		<RepositoryUrl>https://github.com/TheXDS/Triton/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Description>Tritón Framework es una herramienta de rápido desarrollo de software con conexiones a datos mediante Entity Framework u otros proveedores de datos.</Description>
+		<Description>Tritón Framework is a rapid software development tool with data connections through Entity Framework or other data providers.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
@@ -19,7 +19,7 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(VersionSuffix)'!=''">
 		<ActualPkgVersion>$(VersionPrefix)-$(VersionSuffix)</ActualPkgVersion>
-		<PackageReleaseNotes>Este paquete es una versión Pre-Release de Tritón, por lo que se recomienda que su uso se limite a pruebas y demostraciones de la API, ya que no se puede garantizar la estabilidad de la misma. Para más detalles, vea la documentación que acompaña a Tritón.</PackageReleaseNotes>
+		<PackageReleaseNotes>This is a pre-release version of $(Product). It is recommended that this package is not used on a production environment, and its use should be limited to testing and API demonstrations, due to the impossibility of assuring the quality and reliability of the code. For more information, please read the documentation included with $(Product).</PackageReleaseNotes>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="$(Root)Art\TritonLogo.png" Pack="true" PackagePath="\"/>

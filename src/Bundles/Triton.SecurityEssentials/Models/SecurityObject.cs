@@ -1,31 +1,29 @@
 ﻿namespace TheXDS.Triton.Models;
 
 /// <summary>
-/// Clase base para las entidades que soportan descriptores de seguridad y
-///  pertenencia a grupos.
+/// Base class for entities that support security descriptors and group
+/// membership.
 /// </summary>
-/// <param name="granted">Banderas que describen los permisos otorgados.</param>
-/// <param name="revoked">Banderas que describen los permisos denegados.</param>
+/// <param name="granted">Flags describing the granted permissions.</param>
+/// <param name="revoked">Flags describing the revoked permissions.</param>
 public abstract class SecurityObject(PermissionFlags granted, PermissionFlags revoked) : SecurityBase(granted, revoked)
 {
     /// <summary>
-    /// Obtiene o establece una coleccion que define las pertenencias a grupos
-    /// de usuario para la entidad actual.
+    /// Gets or sets a collection that defines the user group memberships for
+    /// the current entity.
     /// </summary>
     public virtual ICollection<UserGroupMembership> Membership { get; set; } = [];
 
     /// <summary>
-    /// Obtiene o establece una colección que contiene a los descriptores de
-    /// seguridad disponibles para esta entidad.
+    /// Gets or sets a collection containing the available security descriptors
+    /// for this entity.
     /// </summary>
     public virtual ICollection<SecurityDescriptor> Descriptors { get; set; } = [];
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="SecurityObject"/>.
+    /// Initializes a new instance of the <see cref="SecurityObject"/> class.
     /// </summary>
-    protected SecurityObject()
-        : this(default, default)
+    protected SecurityObject() : this(default, default)
     {
     }
 }

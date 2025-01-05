@@ -1,26 +1,24 @@
-﻿using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services;
+﻿using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.CrudNotify;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que envíe
-/// notificaciones de eventos Crud a otros equipos conectados.
+/// Defines a series of members to be implemented by a type that sends CRUD
+/// notifications to other connected peers.
 /// </summary>
 public interface ICrudNotifier
 {
     /// <summary>
-    /// Envía una notificación de un evento Crud a todos los equipos
-    /// conectados.
+    /// Sends a notification of a CRUD event to all connected peers.
     /// </summary>
     /// <param name="action">
-    /// Acción Crud que se ha realizado.
+    /// The CRUD action that was performed.
     /// </param>
     /// <param name="entity">
-    /// Entidad sobre la cual se ha realizado una operación Crud.
+    /// The entity on which the CRUD operation was performed.
     /// </param>
     /// <returns>
-    /// El resultado de una operación de servicio.
+    /// The result of a service operation.
     /// </returns>
-    ServiceResult NotifyPeers(CrudAction action, IEnumerable<Model>? entity);
+    ServiceResult? NotifyPeers(CrudAction action, IEnumerable<ChangeTrackerItem>? entity);
 }

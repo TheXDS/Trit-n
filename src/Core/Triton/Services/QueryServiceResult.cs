@@ -5,11 +5,11 @@ using TheXDS.Triton.Models.Base;
 namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Representa el resultado de una operación de servicio que incluye
-/// una consulta de tipo <see cref="IQueryable{T}"/>.
+/// Represents the result of a service operation that includes an
+/// <see cref="IQueryable{T}"/> query.
 /// </summary>
 /// <typeparam name="T">
-/// Tipo de entidades a devolver.
+/// The type of entities to return.
 /// </typeparam>
 public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Model
 {
@@ -17,7 +17,7 @@ public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Mode
 
     /// <inheritdoc/>
     public Type ElementType => _result?.ElementType ?? throw new InvalidOperationException();
-              
+
     /// <inheritdoc/>
     public Expression Expression => _result?.Expression ?? throw new InvalidOperationException();
 
@@ -31,20 +31,20 @@ public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Mode
     IEnumerator IEnumerable.GetEnumerator() => _result?.GetEnumerator() ?? throw new InvalidOperationException();
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/> sin resultados.
+    /// Initializes a new instance of the <see cref="QueryServiceResult{T}"/>
+    /// class without results.
     /// </summary>
     public QueryServiceResult() : base(FailureReason.NotFound)
     {
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/> exitoso, especificando el Query
-    /// resultante de la operación.
+    /// Initializes a new instance of the <see cref="QueryServiceResult{T}"/>
+    /// class that indicates success, specifying the query result from the
+    /// operation.
     /// </summary>
     /// <param name="query">
-    /// <see cref="IQueryable{T}"/> con el resultado del Query de datos.
+    /// <see cref="IQueryable{T}"/> with the data query result.
     /// </param>
     public QueryServiceResult(IQueryable<T> query)
     {
@@ -52,87 +52,83 @@ public class QueryServiceResult<T> : ServiceResult, IQueryable<T> where T : Mode
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/>, especificando el motivo por el
-    /// cual la operación ha fallado.
+    /// Initializes a new instance of the <see cref="QueryServiceResult{T}"/>
+    /// class, specifying the reason why the operation failed.
     /// </summary>
     /// <param name="reason">
-    /// Motivo por el cual la operación ha fallado.
+    /// The reason why the operation failed.
     /// </param>
     public QueryServiceResult(in FailureReason reason) : base(reason)
     {
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/>, especificando el motivo por el
-    /// cual la operación ha fallado, además de un mensaje descriptivo
-    /// del resultado.
+    /// Initializes a new instance of the <see cref="QueryServiceResult{T}"/>
+    /// class, specifying the reason why the operation failed, as well as a
+    /// descriptive message for the result.
     /// </summary>
     /// <param name="reason">
-    /// Motivo por el cual la operación ha fallado.
+    /// The reason why the operation failed.
     /// </param>
-    /// <param name="message">Mensaje descriptivo del resultado.</param>
+    /// <param name="message">A descriptive message for the result.</param>
     public QueryServiceResult(in FailureReason reason, string message) : base(reason, message)
     {
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/> para una operación fallida,
-    /// extrayendo la información relevante a partir de la excepción
-    /// especificada.
+    /// Initializes a new instance of the <see cref="QueryServiceResult{T}"/>
+    /// class for a failed operation, extracting relevant information from the
+    /// specified exception.
     /// </summary>
     /// <param name="ex">
-    /// Excepción desde la cual obtener el mensaje y un código de error
-    /// asociado.
+    /// The exception from which to obtain the error message and associated
+    /// error code.
     /// </param>
     public QueryServiceResult(Exception ex) : base(ex)
     {
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="QueryServiceResult{T}"/>, indicando un mensaje de estado
-    /// personalizado a mostrar.
+    /// Initializes a new instance of the <see cref="QueryServiceResult{T}"/>
+    /// class, indicating a custom status message to display.
     /// </summary>
-    /// <param name="message">Mensaje descriptivo del resultado.</param>
+    /// <param name="message">A descriptive message for the result.</param>
     public QueryServiceResult(string message) : base(FailureReason.Unknown, message)
     {
     }
 
     /// <summary>
-    /// Convierte implícitamente un <see cref="Exception"/> en un
-    /// <see cref="ServiceResult{T}"/>.
+    /// Implicitly converts an <see cref="Exception"/> to a
+    /// <see cref="QueryServiceResult{T}"/>.
     /// </summary>
     /// <param name="ex">
-    /// Excepción desde la cual obtener el mensaje y un código de error
-    /// asociado.
+    /// The exception from which to obtain the error message and associated
+    /// error code.
     /// </param>
     public static implicit operator QueryServiceResult<T>(Exception ex) => new(ex);
 
     /// <summary>
-    /// Convierte implícitamente un <see cref="string"/> en un
-    /// <see cref="ServiceResult{T}"/>.
+    /// Implicitly converts a <see cref="string"/> to a
+    /// <see cref="QueryServiceResult{T}"/>.
     /// </summary>
-    /// <param name="message">Mensaje descriptivo del resultado.</param>
+    /// <param name="message">A descriptive message for the result.</param>
     public static implicit operator QueryServiceResult<T>(string message) => new(message);
 
     /// <summary>
-    /// Convierte implícitamente un <see cref="FailureReason"/> en un
-    /// <see cref="ServiceResult{T}"/>.
+    /// Implicitly converts a <see cref="FailureReason"/> to a
+    /// <see cref="QueryServiceResult{T}"/>.
     /// </summary>
     /// <param name="reason">
-    /// Motivo por el cual la operación ha fallado.
+    /// The reason why the operation failed.
     /// </param>
     public static implicit operator QueryServiceResult<T>(in FailureReason reason) => new(reason);
 
     /// <summary>
-    /// Convierte implícitamente un <see cref="QueryServiceResult{T}"/> en un
+    /// Implicitly converts a <see cref="QueryServiceResult{T}"/> to a
     /// <see cref="bool"/>.
     /// </summary>
     /// <param name="result">
-    /// Objeto a convertir.
+    /// The object to convert.
     /// </param>
     public static implicit operator bool(in QueryServiceResult<T> result) => result.Success;
 }

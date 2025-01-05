@@ -3,39 +3,32 @@
 namespace TheXDS.Triton.Models;
 
 /// <summary>
-/// Clase base para los modelos que contengan banderas de seguridad.
+/// Base class for models that contain security flags.
 /// </summary>
-public abstract class SecurityBase : Model<Guid>
+/// <param name="granted">
+/// Flags that describe the granted permissions.
+/// </param>
+/// <param name="revoked">
+/// Flags that describe the revoked permissions.
+/// </param>
+public abstract class SecurityBase(PermissionFlags granted, PermissionFlags revoked) : Model<Guid>
 {
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="SecurityBase"/>.
+    /// Initializes a new instance of the <see cref="SecurityBase"/> class.
     /// </summary>
     protected SecurityBase() : this(default, default)
     {
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="SecurityBase"/>.
+    /// Gets or sets the flags that describe the permissions granted to the
+    /// security object that contains this entity.
     /// </summary>
-    /// <param name="granted">Banderas que describen los permisos otorgados.</param>
-    /// <param name="revoked">Banderas que describen los permisos denegados.</param>
-    protected SecurityBase(PermissionFlags granted, PermissionFlags revoked)
-    {
-        Granted = granted;
-        Revoked = revoked;
-    }
+    public PermissionFlags Granted { get; set; } = granted;
 
     /// <summary>
-    /// Obtiene o establece las banderas que describen los permisos otorgados
-    /// al objeto de seguridad que contenga a esta entidad.
+    /// Gets or sets the flags that describe the permissions denied to the
+    /// security object that contains this entity.
     /// </summary>
-    public PermissionFlags Granted { get; set; }
-
-    /// <summary>
-    /// Obtiene o establece las banderas que describen los permisos otorgados
-    /// al objeto de seguridad que contenga a esta entidad.
-    /// </summary>
-    public PermissionFlags Revoked { get; set; }
+    public PermissionFlags Revoked { get; set; } = revoked;
 }

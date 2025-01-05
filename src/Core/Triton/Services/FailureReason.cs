@@ -1,73 +1,60 @@
 ﻿namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Enumera las posibles causas de falla conocidas para una
-/// operación de servicio.
+/// Enumerates known failure causes for a service operation.
 /// </summary>
 public enum FailureReason
 {
     /// <summary>
-    /// Falla desconocida.
+    /// Unknown failure.
     /// </summary>
     Unknown,
-
     /// <summary>
-    /// Llamada malintencionada de API
+    /// Malicious API call attempt
     /// </summary>
     Tamper,
-
     /// <summary>
-    /// Operación no permitida.
+    /// Forbidden operation.
     /// </summary>
     Forbidden,
-
     /// <summary>
-    /// Error general en el servicio.
+    /// General service failure.
     /// </summary>
     ServiceFailure,
-
     /// <summary>
-    /// Error en la red.
+    /// Network failure.
     /// </summary>
     NetworkFailure,
-
     /// <summary>
-    /// Error de la base de datos.
+    /// Database error.
     /// </summary>
     DbFailure,
-
     /// <summary>
-    /// Error de validación de datos.
+    /// Data validation error.
     /// </summary>
     ValidationError,
-
     /// <summary>
-    /// Error de concurrencia de datos.
+    /// Data concurrency error.
     /// </summary>
     ConcurrencyFailure,
-
     /// <summary>
-    /// Entidad no encontrada.
+    /// Entity not found.
     /// </summary>
     NotFound,
-
     /// <summary>
-    /// La acción causaría una duplicación de entidades.
+    /// The action would result in duplicate entities.
     /// </summary>
     EntityDuplication,
-
     /// <summary>
-    /// Query malformado (error de app cliente)
+    /// Malformed query (client-side error)
     /// </summary>
     BadQuery,
-
     /// <summary>
-    /// Query que devolvería demasiados datos.
+    /// Query returns too much data.
     /// </summary>
     QueryOverLimit,
-
     /// <summary>
-    /// La acción ya fue ejecutada en una transacción anterior.
+    /// The action has already been executed in a previous transaction.
     /// </summary>
     Idempotency
 }

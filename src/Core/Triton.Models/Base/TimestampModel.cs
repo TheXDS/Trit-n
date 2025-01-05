@@ -1,25 +1,24 @@
 namespace TheXDS.Triton.Models.Base;
 
 /// <summary>
-/// Modelo base para aquellas entidades que expongan campos de marca de tiempo.
+/// A base model for entities that expose timestamp fields.
 /// </summary>
 /// <typeparam name="T">
-/// Tipo de campo llave a utilizar para este modelo.
+/// The type of key field to use for this model.
 /// </typeparam>
 public abstract class TimestampModel<T> : Model<T> where T : IComparable<T>, IEquatable<T>
 {
     /// <summary>
-    /// Obtiene o establece una marca de tiempo a asociar con esta entidad.
+    /// Gets or sets a timestamp associated with this entity.
     /// </summary>
-    /// <value></value>
     public DateTime Timestamp { get; set; }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
+    /// Initializes a new instance of the class
     /// <see cref="TimestampModel{T}"/>.
     /// </summary>
     /// <param name="timestamp">
-    /// Marca de tiempo a asociar a esta entidad.
+    /// The timestamp to associate with this entity.
     /// </param>
     public TimestampModel(DateTime timestamp)
     {
@@ -27,7 +26,7 @@ public abstract class TimestampModel<T> : Model<T> where T : IComparable<T>, IEq
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
+    /// Initializes a new instance of the class
     /// <see cref="TimestampModel{T}"/>.
     /// </summary>
     public TimestampModel()

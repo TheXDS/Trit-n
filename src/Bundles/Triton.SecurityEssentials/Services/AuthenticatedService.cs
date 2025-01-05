@@ -3,23 +3,23 @@
 namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Clase base para un servicio de tritón con soporte para autenticación.
+/// Base class for a Triton service with authentication support.
 /// </summary>
-public abstract class AuthenticatedService : TritonService, IAuthenticable
+/// <param name="userService">Service to use for authenticating operations that require elevation.</param>
+/// <param name="transactionConfiguration">Transaction configuration to use.</param>
+/// <param name="factory">Transaction factory to use.</param>
+public abstract class AuthenticatedService(IUserService userService, IMiddlewareConfigurator transactionConfiguration, ITransactionFactory factory) : TritonService(transactionConfiguration, factory), IAuthenticable
 {
     /// <inheritdoc/>
-    public IAuthenticationBroker AuthenticationBroker { get; }
+    public IAuthenticationBroker AuthenticationBroker { get; } = new AuthenticationBroker(transactionConfiguration, userService);
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="AuthenticatedService"/>.
+    /// Initializes a new instance of the <see cref="AuthenticatedService"/> class.
     /// </summary>
-    /// <param name="userService">
-    /// Servicio de usuario a utilizar internamente por el proveedor de
-    /// autenticación.
-    /// </param>
-    public AuthenticatedService(IUserService userService)
+    /// <param name="userService">Service to use for authenticating operations that require elevation.</param>
+    /// <param name="factory">Transaction factory to use.</param>
+    public AuthenticatedService(IUserService userService, ITransactionFactory factory) 
+        : this(userService, new TransactionConfiguration(), factory)
     {
-        AuthenticationBroker = new AuthenticationBroker(Configuration, userService);
     }
 }

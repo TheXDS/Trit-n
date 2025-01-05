@@ -1,193 +1,111 @@
-﻿using System.Collections;
-using TheXDS.Triton.Middleware;
-using TheXDS.Triton.Models.Base;
+﻿using TheXDS.Triton.Middleware;
 
 namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Objeto que provee de configuración y otros servicios a las
-/// transacciones Crud.
+/// An object that provides configuration and other services to CRUD transactions.
 /// </summary>
-public class TransactionConfiguration : IMiddlewareConfigurator, IMiddlewareRunner
+public sealed class TransactionConfiguration : IMiddlewareConfigurator
 {
-    private class MiddlewareActionList : IMiddlewareActionList, IEnumerable<MiddlewareAction>
-    {
-        private readonly List<MiddlewareAction> _list = [];
-        private int _tail = 0;
-        
-        /// <inheritdoc/>
-        public void AddFirst(MiddlewareAction item)
-        {
-            _list.Insert(0, item);
-            _tail++;
-        }
-
-        /// <inheritdoc/>
-        public void Add(MiddlewareAction item)
-        {
-            _list.Insert(_tail++, item);
-        }
-
-        /// <inheritdoc/>
-        public void AddLast(MiddlewareAction item)
-        {
-            _list.Add(item);
-        }
-        
-        /// <inheritdoc/>
-        public IEnumerator<MiddlewareAction> GetEnumerator() => _list.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_list).GetEnumerator();
-    }
-
-    private readonly MiddlewareActionList _prologs = new();
-    private readonly MiddlewareActionList _epilogs = new();
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator Attach<T>(T middleware) where T : ITransactionMiddleware
-    {
-        _prologs.Add(middleware.PrologAction);
-        _epilogs.Add(middleware.EpilogAction);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
-    {
-        return Attach(middleware = new T());
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator Attach<T>() where T : ITransactionMiddleware, new()
-    {
-        return Attach<T>(out _);
-    }
+    private readonly ICollection<MiddlewareAction> _earlyPrologs = [];
+    private readonly ICollection<MiddlewareAction> _midPrologs = [];
+    private readonly ICollection<MiddlewareAction> _latePrologs = [];
+    private readonly ICollection<MiddlewareAction> _earlyEpilogs = [];
+    private readonly ICollection<MiddlewareAction> _midEpilogs = [];
+    private readonly ICollection<MiddlewareAction> _lateEpilogs = [];
 
     /// <inheritdoc/>
     public IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition prologPosition, in ActionPosition epilogPosition) where T : ITransactionMiddleware
     {
-        AttachAt(_prologs, middleware.PrologAction, prologPosition);
-        AttachAt(_epilogs, middleware.EpilogAction, epilogPosition);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AttachAt<T>(out T middleware, in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
-    {
-        return AttachAt(middleware = new T(), prologPosition, epilogPosition);
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AttachAt<T>(in ActionPosition prologPosition = ActionPosition.Default, in ActionPosition epilogPosition = ActionPosition.Default) where T : ITransactionMiddleware, new()
-    {
-        return AttachAt<T>(out _, prologPosition, epilogPosition);
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AddProlog(MiddlewareAction func)
-    {
-        _prologs.Add(func);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AddFirstProlog(MiddlewareAction func)
-    {
-        _prologs.AddFirst(func);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AddLastProlog(MiddlewareAction func)
-    {
-        _prologs.AddLast(func);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AddEpilog(MiddlewareAction func)
-    {
-        _epilogs.Add(func);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AddFirstEpilog(MiddlewareAction func)
-    {
-        _epilogs.AddFirst(func);
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IMiddlewareConfigurator AddLastEpilog(MiddlewareAction func)
-    {
-        _epilogs.AddLast(func);
-        return this;
-    }
-
-    /// <summary>
-    /// Realiza comprobaciones adicionales antes de ejecutar una acción
-    /// de crud, devolviendo <see langword="null"/> si la operación 
-    /// puede continuar.
-    /// </summary>
-    /// <param name="action">
-    /// Acción Crud a intentar realizar.
-    /// </param>
-    /// <param name="entities">
-    /// Entidades sobre las cuales se ejecutará la acción.
-    /// </param>
-    /// <returns>
-    /// Un <see cref="ServiceResult"/> con el resultado del prólogo que ha,
-    /// fallado o <see langword="null"/> si la operación puede continuar.
-    /// </returns>
-    public ServiceResult? RunProlog(in CrudAction action, IEnumerable<Model>? entities) => Run(_prologs, action, entities);
-
-    /// <summary>
-    /// Realiza comprobaciones adicionales después de ejecutar una
-    /// acción de Crud, devolviendo <see langword="null"/> si la
-    /// operación puede continuar.
-    /// </summary>
-    /// <param name="action">
-    /// Acción Crud que se ha realizado.
-    /// </param>
-    /// <param name="entities">
-    /// Entidades sobre las cuales se ha ejecutado la acción.
-    /// </param>
-    /// <returns>
-    /// Un <see cref="ServiceResult"/> con el resultado del epílogo que ha,
-    /// fallado o <see langword="null"/> si la operación puede continuar.
-    /// </returns>
-    public ServiceResult? RunEpilog(in CrudAction action, IEnumerable<Model>? entities) => Run(_epilogs, action, entities);
-
-    private static void AttachAt(IMiddlewareActionList list, MiddlewareAction action, in ActionPosition position)
-    {
-        switch (position)
+        switch (prologPosition)
         {
             case ActionPosition.Default:
-                list.Add(action);
+                AddPrologue(middleware.PrologAction);
                 break;
             case ActionPosition.Early:
-                list.AddFirst(action);
+                AddEarlyPrologue(middleware.PrologAction);
                 break;
             case ActionPosition.Late:
-                list.AddLast(action);
+                AddLatePrologue(middleware.PrologAction);
                 break;
         }
-    }
-
-    private static ServiceResult? Run(IEnumerable<MiddlewareAction> collection, in CrudAction action, IEnumerable<Model>? entities)
-    {
-        foreach (var j in collection)
+        switch (epilogPosition)
         {
-            if (j.Invoke(action, entities) is { } r) return r;
+            case ActionPosition.Default:
+                AddEpilogue(middleware.EpilogAction);
+                break;
+            case ActionPosition.Early:
+                AddEarlyEpilogue(middleware.EpilogAction);
+                break;
+            case ActionPosition.Late:
+                AddLateEpilogue(middleware.EpilogAction);
+                break;
         }
-        return null;
+        return this;
     }
 
-    IMiddlewareConfigurator IMiddlewareRunner.Configurator => this;
+    /// <inheritdoc/>
+    public IMiddlewareConfigurator AddPrologue(MiddlewareAction func)
+    {
+        _midPrologs.Add(func);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public IMiddlewareConfigurator AddEarlyPrologue(MiddlewareAction func)
+    {
+        _earlyPrologs.Add(func);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public IMiddlewareConfigurator AddLatePrologue(MiddlewareAction func)
+    {
+        _latePrologs.Add(func);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public IMiddlewareConfigurator AddEpilogue(MiddlewareAction func)
+    {
+        _midEpilogs.Add(func);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public IMiddlewareConfigurator AddEarlyEpilogue(MiddlewareAction func)
+    {
+        _earlyEpilogs.Add(func);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public IMiddlewareConfigurator AddLateEpilogue(MiddlewareAction func)
+    {
+        _lateEpilogs.Add(func);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public bool Detach(ITransactionMiddleware middleware)
+    {
+        return DetachPrologue(middleware.PrologAction) | DetachEpilogue(middleware.EpilogAction);
+    }
+
+    /// <inheritdoc/>
+    public bool DetachPrologue(MiddlewareAction action)
+    {
+        return _earlyPrologs.Remove(action) || _midPrologs.Remove(action) || _latePrologs.Remove(action);
+    }
+
+    /// <inheritdoc/>
+    public bool DetachEpilogue(MiddlewareAction action)
+    {
+        return _earlyEpilogs.Remove(action) || _midEpilogs.Remove(action) || _lateEpilogs.Remove(action);
+    }
 
     IMiddlewareRunner IMiddlewareConfigurator.GetRunner()
     {
-        return this;
+        return new TransactionRunner([.._earlyPrologs, .._midPrologs, .._latePrologs], [.._earlyEpilogs, .._midEpilogs, .._lateEpilogs]);
     }
 }

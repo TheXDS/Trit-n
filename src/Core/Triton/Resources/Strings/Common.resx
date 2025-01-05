@@ -118,54 +118,57 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BadQuery" xml:space="preserve">
-    <value>Consulta de datos malformada.</value>
+    <value>Malformed data query.</value>
   </data>
   <data name="ConcurrencyFailure" xml:space="preserve">
-    <value>Se ha intentado sobreescribir información que otro usuario ya ha editado.</value>
+    <value>An attempt has been made to overwrite data already edited by another user.</value>
   </data>
   <data name="DbFailure" xml:space="preserve">
-    <value>El servidor de datos ha devuelto un error.</value>
+    <value>The data server has returned an error.</value>
   </data>
   <data name="EntityNotFound" xml:space="preserve">
-    <value>No se ha encontrado la entidad.</value>
+    <value>The entity has not been found.</value>
   </data>
   <data name="FailureForbidden" xml:space="preserve">
-    <value>Se ha denegado el acceso a este recurso.</value>
+    <value>Access to the resource has been denied.</value>
   </data>
   <data name="FailureUnknown" xml:space="preserve">
-    <value>Se ha producido un error desconocido en la operación.</value>
+    <value>An unknown error has occurred during the operation.</value>
   </data>
   <data name="Idempotency" xml:space="preserve">
-    <value>La operación ya se ha realizado a cabo.</value>
+    <value>The operation was performed already.</value>
   </data>
   <data name="MissingService" xml:space="preserve">
-    <value>El servicio solicitado no ha sido cargado.</value>
+    <value>The requested service has not been loaded.</value>
   </data>
   <data name="MissingXService" xml:space="preserve">
-    <value>El servicio '{0}' no ha sido cargado.</value>
+    <value>The {0} service has not been loaded.</value>
   </data>
   <data name="NetworkFailure" xml:space="preserve">
-    <value>Se ha producido un error en la red.</value>
+    <value>A network error has occurred.</value>
   </data>
   <data name="OperationCompletedSuccessfully" xml:space="preserve">
-    <value>La operación se ha completado satisfactoriamente.</value>
+    <value>The operation has completed successfully.</value>
   </data>
   <data name="QueryOverLimit" xml:space="preserve">
-    <value>La consulta solicitada devuelve demasiados datos. Filtre o reduzca los resultados antes de ejecutar la consulta.</value>
+    <value>The requested query returns too much data. Please, filter the query or reduce its size before executing it.</value>
   </data>
   <data name="ServiceFailure" xml:space="preserve">
-    <value>El servicio ha encontrado un error.</value>
+    <value>the service has found an error.</value>
   </data>
   <data name="Tamper" xml:space="preserve">
-    <value>Se ha detectado el uso malicioso de la API de Tritón.</value>
+    <value>A malicious use of the Tritón API has been detected.</value>
   </data>
   <data name="UnconfiguredServiceError" xml:space="preserve">
-    <value>Se ha intentado utilizar un servicio sin configurarlo primero.</value>
+    <value>An attempt has been made to use a service before configuring it.</value>
   </data>
   <data name="UnconfiguredValueX" xml:space="preserve">
-    <value>Valor sin configurar: {0}</value>
+    <value>Unconfigured value: {0}</value>
   </data>
   <data name="ValidationError" xml:space="preserve">
-    <value>Error de validación.</value>
+    <value>Validation error.</value>
+  </data>
+  <data name="ModelMismatch" xml:space="preserve">
+    <value>The model for the specified entities does not match.</value>
   </data>
 </root>

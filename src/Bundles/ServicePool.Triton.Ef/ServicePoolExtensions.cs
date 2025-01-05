@@ -1,33 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.ServicePool.Triton;
 
 /// <summary>
-/// Contiene métodos de extensión que permiten configurar Tritón para
-/// utilizarse en conjunto con <see cref="ServicePool"/> y Entity Framework.
+/// Contains extension methods that allow configuring Tritón to be used with 
+/// <see cref="Pool"/> and Entity Framework.
 /// </summary>
 public static class ServicePoolEfExtensions
 {
     /// <summary>
-    /// Resuelve una instancia de un servicio que puede utilizarse para 
-    /// acceder a la base de datos solicitada.
+    /// Resolves an instance of a service that can be used to access the
+    /// requested database context.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de contexto de datos a utilizar.
+    /// Type of data context to use.
     /// </typeparam>
     /// <param name="pool">
-    /// <see cref="ServicePool"/> a configurar.
+    /// The <see cref="Pool"/> to configure.
     /// </param>
     /// <returns>
-    /// Una instancia de <see cref="ITritonService"/> que permite acceder al 
-    /// contexto de datos solicitado.
+    /// An instance of <see cref="ITritonService"/> that allows access to the
+    /// requested database context.
     /// </returns>
     /// <remarks>
-    /// Prefiera resolver directamente un <see cref="ITritonService"/> si
-    /// necesita acceder directamente a la funcionalidad de un servicio
-    /// concreto.
+    /// Prefer resolving a specific service directly if you need to access its
+    /// functionality directly.
     /// </remarks>
     public static ITritonService ResolveTritonService<T>(this Pool pool) where T : DbContext, new()
     {

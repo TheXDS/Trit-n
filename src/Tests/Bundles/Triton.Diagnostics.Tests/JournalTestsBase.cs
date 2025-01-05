@@ -1,32 +1,12 @@
 ﻿#pragma warning disable CS1591
 
-using System.Reflection;
-using TheXDS.MCART.Types.Extensions;
 using TheXDS.Triton.Diagnostics.Middleware;
-using TheXDS.Triton.Models.Base;
 using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Tests.Diagnostics;
 
 public abstract class JournalTestsBase
 {
-    protected class TestActorProvider : IActorProvider
-    {
-        public string? GetCurrentActor() => "Test executor";
-    }
-
-    protected class TestOldValueProvider : IOldValueProvider
-    {
-        public IEnumerable<KeyValuePair<PropertyInfo, object?>>? GetOldValues(Model? entity)
-        {
-            if (entity is null) yield break;
-            foreach (var j in entity.GetType().GetProperties().Where(p => p.CanRead))
-            {
-                yield return new KeyValuePair<PropertyInfo, object?>(j, j.PropertyType.Default());
-            }
-        }
-    }
-
     protected static IEnumerable<object[]?> GetTestCases 
     { 
         get

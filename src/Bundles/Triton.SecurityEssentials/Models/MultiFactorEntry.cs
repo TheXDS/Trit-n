@@ -3,53 +3,39 @@
 namespace TheXDS.Triton.Models;
 
 /// <summary>
-/// Representa una entrada de datos de autenticación en dos factores.
+/// Represents an entry of two-factor authentication data.
 /// </summary>
-public class MultiFactorEntry : Model<Guid>
+/// <param name="mfaProcessorId">
+/// The <see cref="Guid"/> used to identify the MFA processor to use for
+/// verifying this entity.
+/// </param>
+/// <param name="data">
+/// A binary blob of custom data to be used by the two-factor
+/// authentication processor.
+/// </param>
+public class MultiFactorEntry(Guid mfaProcessorId, byte[] data) : Model<Guid>
 {
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="MultiFactorEntry"/>.
+    /// Initializes a new instance of the <see cref="MultiFactorEntry"/> class.
     /// </summary>
-    public MultiFactorEntry()
-        : this(Guid.Empty, null!)
+    public MultiFactorEntry() : this(Guid.Empty, null!)
     {
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="MultiFactorEntry"/>.
-    /// </summary>
-    /// <param name="mfaPreprocessor">
-    /// <see cref="Guid"/> utilizado para identificar el procesador de MFA a
-    /// utilizar para verificar esta entidad.
-    /// </param>
-    /// <param name="data">
-    /// Blob binario de datos personalizados a utilizar por el procesador de
-    /// autenticación en dos factores.
-    /// </param>
-    public MultiFactorEntry(Guid mfaPreprocessor, byte[] data)
-    {
-        MfaProcessor = mfaPreprocessor;
-        Data = data;
-    }
-
-    /// <summary>
-    /// Obtiene o establece al usuario que posee esta entrada de autenticación
-    /// en dos factores.
+    /// Gets or sets the user who owns this two-factor authentication entry.
     /// </summary>
     public LoginCredential Credential { get; set; } = null!;
 
-    ///
     /// <summary>
-    /// Obtiene o establece el <see cref="Guid"/> utilizado para identificar el
-    /// procesador de MFA a utilizar para verificar esta entidad.
+    /// Gets or sets the <see cref="Guid"/> used to identify the MFA processor
+    /// to use for verifying this entity.
     /// </summary>
-    public Guid MfaProcessor { get; set; }
+    public Guid MfaProcessor { get; set; } = mfaProcessorId;
 
     /// <summary>
-    /// Obtiene o establece un blob binario de datos personalizados a utilizar
-    /// por el procesador de autenticación en dos factores.
+    /// Gets or sets a binary blob of custom data to be used by the two-factor
+    /// authentication processor.
     /// </summary>
-    public byte[] Data { get; set; }
+    public byte[] Data { get; set; } = data;
 }

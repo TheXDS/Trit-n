@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Reflection;
+//using System.Reflection;
 using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
@@ -73,7 +73,7 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
         result = default!;
         try
         {
-            if (_configuration.RunProlog(action, args?.Cast<Model>()) is { } r) return r;
+            if (_configuration.RunPrologue(action, args?.Cast<Model>()) is { } r) return r;
             if (op.Method.ReturnType == typeof(void))
             {
                 op.DynamicInvoke(args);
@@ -86,7 +86,7 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
             {
                 throw new InvalidCastException();
             }
-            return _configuration.RunEpilog(action, new[] { GetFromResult(result) }.NotNull());
+            return _configuration.RunEpilogue(action, new[] { GetFromResult(result) }.NotNull());
         }
         catch (InvalidCastException)
         { 
@@ -178,9 +178,9 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
     {
         try
         {
-            if (_configuration.RunProlog(action, entities) is { } r) return r;
+            if (_configuration.RunPrologue(action, entities) is { } r) return r;
             operation.Invoke(entities.Cast<object>().ToArray());
-            return _configuration.RunEpilog(action, entities) ?? ServiceResult.Ok;
+            return _configuration.RunEpilogue(action, entities) ?? ServiceResult.Ok;
         }
         catch (InvalidCastException)
         {
@@ -224,9 +224,9 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
     {
         try
         {
-            if (_configuration.RunProlog(action, new[] { entity }.NotNull()) is { } r) return r.CastUp<ServiceResult<TModel?>>();
+            if (_configuration.RunPrologue(action, new[] { entity }.NotNull()) is { } r) return r.CastUp<ServiceResult<TModel?>>();
             var result = await op;
-            return _configuration.RunEpilog(action, new[] { result as Model ?? entity }.NotNull())?.CastUp<ServiceResult<TModel?>>()
+            return _configuration.RunEpilogue(action, new[] { result as Model ?? entity }.NotNull())?.CastUp<ServiceResult<TModel?>>()
                 ?? new ServiceResult<TModel?>(result ?? entity);
         }
         catch (InvalidCastException)
@@ -271,9 +271,9 @@ public abstract class CrudTransactionBase<T> : AsyncDisposable where T : DbConte
     {
         try
         {
-            if (_configuration.RunProlog(action, new[] { entity }.NotNull()) is { } r) return r.CastUp<ServiceResult<TModel?>>();
+            if (_configuration.RunPrologue(action, new[] { entity }.NotNull()) is { } r) return r.CastUp<ServiceResult<TModel?>>();
             await op;
-            return _configuration.RunEpilog(action, new[] { entity }.NotNull())?.CastUp<ServiceResult<TModel?>>() ?? new ServiceResult<TModel?>(entity);
+            return _configuration.RunEpilogue(action, new[] { entity }.NotNull())?.CastUp<ServiceResult<TModel?>>() ?? new ServiceResult<TModel?>(entity);
         }
         catch (InvalidCastException)
         {

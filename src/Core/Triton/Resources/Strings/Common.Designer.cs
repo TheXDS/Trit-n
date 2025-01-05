@@ -115,7 +115,7 @@ namespace TheXDS.Triton.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a La operación ya se ha realizado a cabo..
+        ///   Busca una cadena traducida similar a La operación ya se ha llevado a cabo..
         /// </summary>
         internal static string Idempotency {
             get {
@@ -138,6 +138,15 @@ namespace TheXDS.Triton.Resources.Strings {
         internal static string MissingXService {
             get {
                 return ResourceManager.GetString("MissingXService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El modelo de las entidades especificadas no coincide..
+        /// </summary>
+        internal static string ModelMismatch {
+            get {
+                return ResourceManager.GetString("ModelMismatch", resourceCulture);
             }
         }
         

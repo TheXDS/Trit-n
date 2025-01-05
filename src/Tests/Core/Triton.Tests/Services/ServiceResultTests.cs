@@ -42,10 +42,10 @@ public class ServiceResultTests
     public void ServiceResult_from_bool_implicit_conversion_test()
     {
         var result = (ServiceResult)false;
-        Assert.That((bool)result, Is.False);
+        Assert.That(result.Success, Is.False);
 
         result = (ServiceResult)true;
-        Assert.That((bool)result);
+        Assert.That(result.Success, Is.True);
     }
 
     [Test]
@@ -56,14 +56,6 @@ public class ServiceResultTests
 
         result = (ServiceResult)true;
         Assert.That(result.Success);
-    }
-
-    [Test]
-    public void ServiceResult_to_string_implicit_conversion_test()
-    {
-        var msg = "Error X";
-        var result = (ServiceResult)msg;
-        Assert.That(msg, Is.EqualTo((string)result));
     }
 
     [Test]
@@ -116,7 +108,7 @@ public class ServiceResultTests
     [Test]
     public void Custom_reason_message_test()
     {
-        var r = ServiceResult.FailWith<ServiceResult>((FailureReason)0x08070605);
+        var r = (ServiceResult)(FailureReason)0x08070605;
         Assert.That(r.Success, Is.False);
         Assert.That("0x08070605", Is.EqualTo(r.Message));
         Assert.That(0x08070605, Is.EqualTo((int)r.Reason!));
@@ -126,7 +118,7 @@ public class ServiceResultTests
     public void Fail_from_Exception_test()
     {
         var ex = new IOException("Test");
-        var r = ServiceResult.FailWith<ServiceResult>(ex);
+        var r = (ServiceResult)ex;
         Assert.That(r.Success, Is.False);
         Assert.That("Test", Is.EqualTo(r.Message));
         Assert.That(ex.HResult, Is.EqualTo((int)r.Reason!));
@@ -135,7 +127,7 @@ public class ServiceResultTests
     [Test]
     public void Fail_with_message_test()
     {
-        var r = ServiceResult.FailWith<ServiceResult>("Test");
+        var r = (ServiceResult)"Test";
         Assert.That(r.Success, Is.False);
         Assert.That("Test", Is.EqualTo(r.Message));
         Assert.That(FailureReason.Unknown, Is.EqualTo(r.Reason));

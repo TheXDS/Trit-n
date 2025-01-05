@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TypeMustImplementDbContext" xml:space="preserve">
-    <value>El tipo especificado debe implementar DbContext para ser válido en este contexto.</value>
+    <value>The specified type must implement DbContext to be valid in this context.</value>
   </data>
 </root>

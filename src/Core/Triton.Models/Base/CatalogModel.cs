@@ -1,15 +1,15 @@
 ﻿namespace TheXDS.Triton.Models.Base;
 
 /// <summary>
-/// Modelo para aquellas entidades que representen un objeto simple de catálogo.
+/// A model for entities that represent a simple catalog object.
 /// </summary>
 /// <typeparam name="T">
-/// Tipo de campo llave a utilizar para este modelo.
+/// The type of key field to use for this model.
 /// </typeparam>
 public abstract class CatalogModel<T> : Model<T> where T : IComparable<T>, IEquatable<T>
 {
     /// <summary>
-    /// Obtiene la descripción del elemento de catálogo.
+    /// Gets the description of the catalog item.
     /// </summary>
     public string? Description { get; set; }
 }

@@ -3,99 +3,96 @@
 namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que permita
-/// configurar una colección de Middlewares.
+/// Defines a set of members that must be implemented by a type that allows
+/// configuring a collection of middlewares.
 /// </summary>
 public interface IMiddlewareConfigurator
 {
     /// <summary>
-    /// Agrega una acción a ejecutar durante el epílogo de una
-    /// operación Crud.
+    /// Adds an action to execute during the epilogue of a Crud operation.
     /// </summary>
     /// <param name="func">
-    /// Función a agregar al epílogo.
+    /// Function to add to the epilogue.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AddEpilog(MiddlewareAction func);
+    IMiddlewareConfigurator AddEpilogue(MiddlewareAction func);
 
     /// <summary>
-    /// Agrega una acción a ejecutar al inicio del epílogo de una
-    /// operación Crud.
+    /// Adds an action to execute at the beginning of the epilogue of a Crud
+    /// operation.
     /// </summary>
     /// <param name="func">
-    /// Función a agregar al epílogo.
+    /// Function to add to the epilogue.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AddFirstEpilog(MiddlewareAction func);
+    IMiddlewareConfigurator AddEarlyEpilogue(MiddlewareAction func);
 
     /// <summary>
-    /// Agrega una acción a ejecutar al inicio del prólogo de una
-    /// operación Crud.
+    /// Adds an action to execute at the beginning of the prologue of a Crud
+    /// operation.
     /// </summary>
     /// <param name="func">
-    /// Función a agregar al prólogo.
+    /// Function to add to the prologue.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AddFirstProlog(MiddlewareAction func);
+    IMiddlewareConfigurator AddEarlyPrologue(MiddlewareAction func);
 
     /// <summary>
-    /// Agrega una acción a ejecutar al final del epílogo de una
-    /// operación Crud.
+    /// Adds an action to execute at the end of the epilogue of a Crud
+    /// operation.
     /// </summary>
     /// <param name="func">
-    /// Función a agregar al epílogo.
+    /// Function to add to the epilogue.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AddLastEpilog(MiddlewareAction func);
+    IMiddlewareConfigurator AddLateEpilogue(MiddlewareAction func);
 
     /// <summary>
-    /// Agrega una acción a ejecutar al final del prólogo de una
-    /// operación Crud.
+    /// Adds an action to execute at the end of the prologue of a Crud
+    /// operation.
     /// </summary>
     /// <param name="func">
-    /// Función a agregar al prólogo.
+    /// Function to add to the prologue.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AddLastProlog(MiddlewareAction func);
+    IMiddlewareConfigurator AddLatePrologue(MiddlewareAction func);
 
     /// <summary>
-    /// Agrega una acción a ejecutar durante el prólogo de una
-    /// operación Crud.
+    /// Adds an action to execute during the prologue of a Crud operation.
     /// </summary>
     /// <param name="func">
-    /// Función a agregar al prólogo.
+    /// Function to add to the prologue.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AddProlog(MiddlewareAction func);
+    IMiddlewareConfigurator AddPrologue(MiddlewareAction func);
 
     /// <summary>
-    /// Agrega las acciones de un Middleware a ejecutar durante una
-    /// operación Crud.
+    /// Adds the actions of a Middleware to execute during a Crud operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator Attach<T>() where T : ITransactionMiddleware, new()
     {
@@ -103,16 +100,15 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega las acciones de un Middleware a ejecutar durante una
-    /// operación Crud.
+    /// Adds the actions of a Middleware to execute during a Crud operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
-    /// <param name="middleware">Middleware que ha sido agregado.</param>
+    /// <param name="middleware">The added Middleware.</param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator Attach<T>(out T middleware) where T : ITransactionMiddleware, new()
     {
@@ -120,16 +116,15 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega las acciones de un Middleware a ejecutar durante una
-    /// operación Crud.
+    /// Adds the actions of a Middleware to execute during a Crud operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
-    /// <param name="middleware">Middleware que será agregado.</param>
+    /// <param name="middleware">The Middleware that will be added.</param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator Attach<T>(T middleware) where T : ITransactionMiddleware
     {
@@ -137,23 +132,23 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega con prioridad las acciones de un Middleware a ejecutar
-    /// durante una operación Crud.
+    /// Adds with priority the actions of a Middleware to execute during a Crud
+    /// operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
     /// <param name="prologPosition">
-    /// Posición en la cual agregar el prólogo del 
+    /// The position at which to add the prologue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <param name="epilogPosition">
-    /// Posición en la cual agregar el epílogo del 
+    /// The position at which to add the epilogue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator AttachAt<T>(in ActionPosition prologPosition,
         in ActionPosition epilogPosition) where T : ITransactionMiddleware, new()
@@ -162,19 +157,19 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega con prioridad las acciones de un Middleware a ejecutar
-    /// durante una operación Crud.
+    /// Adds with priority the actions of a Middleware to execute during a Crud
+    /// operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
     /// <param name="position">
-    /// Posición en la cual agregar el prólogo y epílogo del 
+    /// The position at which to add both the prologue and epilogue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator AttachAt<T>(in ActionPosition position) where T : ITransactionMiddleware, new()
     {
@@ -182,24 +177,24 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega con prioridad las acciones de un Middleware a ejecutar
-    /// durante una operación Crud.
+    /// Adds with priority the actions of a Middleware to execute during a Crud
+    /// operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
-    /// <param name="middleware">Middleware que ha sido agregado.</param>
+    /// <param name="middleware">The added Middleware.</param>
     /// <param name="prologPosition">
-    /// Posición en la cual agregar el prólogo del 
+    /// The position at which to add the prologue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <param name="epilogPosition">
-    /// Posición en la cual agregar el epílogo del 
+    /// The position at which to add the epilogue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator AttachAt<T>(out T middleware, in ActionPosition prologPosition,
         in ActionPosition epilogPosition) where T : ITransactionMiddleware, new()
@@ -209,20 +204,20 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega con prioridad las acciones de un Middleware a ejecutar
-    /// durante una operación Crud.
+    /// Adds with priority the actions of a Middleware to execute during a Crud
+    /// operation.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
-    /// <param name="middleware">Middleware que ha sido agregado.</param>
+    /// <param name="middleware">The added Middleware.</param>
     /// <param name="position">
-    /// Posición en la cual agregar el prólogo y epílogo del 
+    /// The position at which to add both the prologue and epilogue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator AttachAt<T>(out T middleware, in ActionPosition position)
         where T : ITransactionMiddleware, new()
@@ -231,58 +226,93 @@ public interface IMiddlewareConfigurator
     }
 
     /// <summary>
-    /// Agrega las acciones de un Middleware a ejecutar durante una
-    /// operación Crud, especificando la posición en la cual cada acción
-    /// deberá insertarse.
+    /// Adds the actions of a Middleware to execute during a Crud operation,
+    /// specifying the position at which each action should be inserted.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
-    /// <param name="middleware">Middleware que será agregado.</param>
+    /// <param name="middleware">The Middleware that will be added.</param>
     /// <param name="prologPosition">
-    /// Posición en la cual agregar el prólogo del 
+    /// The position at which to add the prologue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <param name="epilogPosition">
-    /// Posición en la cual agregar el epílogo del 
+    /// The position at which to add the epilogue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
     IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition prologPosition, in ActionPosition epilogPosition) where T : ITransactionMiddleware;
 
     /// <summary>
-    /// Agrega las acciones de un Middleware a ejecutar durante una
-    /// operación Crud, especificando la posición en la cual cada acción
-    /// deberá insertarse.
+    /// Adds the actions of a Middleware to execute during a Crud operation,
+    /// specifying the position at which both the prologue and epilogue will be
+    /// inserted.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de Middleware a agregar.
+    /// The type of Middleware to add.
     /// </typeparam>
-    /// <param name="middleware">Middleware que será agregado.</param>
+    /// <param name="middleware">The Middleware that will be added.</param>
     /// <param name="position">
-    /// Posición en la cual agregar el prólogo y epílogo del 
+    /// The position at which to insert both the prologue and epilogue of the
     /// <see cref="ITransactionMiddleware"/>.
     /// </param>
     /// <returns>
-    /// La misma instancia de <see cref="IMiddlewareConfigurator"/>
-    /// para poder utilizar sintaxis Fluent.
+    /// The same instance of <see cref="IMiddlewareConfigurator"/>
+    /// in order to use Fluent syntax.
     /// </returns>
-    IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition position)
-        where T : ITransactionMiddleware
+    IMiddlewareConfigurator AttachAt<T>(T middleware, in ActionPosition position) where T : ITransactionMiddleware
     {
         return AttachAt(middleware, position, position);
     }
-    
+
     /// <summary>
-    /// Obtiene una referencia a un <see cref="IMiddlewareRunner"/> que
-    /// ejecutará una colección de Middlewares.
+    /// Removes a previously registered <see cref="ITransactionMiddleware"/>.
+    /// </summary>
+    /// <param name="middleware">
+    /// The <see cref="ITransactionMiddleware"/> to remove.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="ITransactionMiddleware"/> was
+    /// removed successfully, <see langword="false"/> otherwise.
+    /// </returns>
+    bool Detach(ITransactionMiddleware middleware);
+
+    /// <summary>
+    /// Removes a previously registered <see cref="MiddlewareAction"/> that was
+    /// previously added as a prologue to a transaction.
+    /// </summary>
+    /// <param name="action">
+    /// The previously registered delegate to remove.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the delegate was successfully removed from
+    /// the collection of prologues, <see langword="false"/> otherwise.
+    /// </returns>
+    bool DetachPrologue(MiddlewareAction action);
+
+    /// <summary>
+    /// Removes a previously registered <see cref="MiddlewareAction"/> that was
+    /// previously added as an epilogue to a transaction.
+    /// </summary>
+    /// <param name="action">
+    /// The previously registered delegate to remove.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the delegate was successfully removed from
+    /// the collection of epilogues, <see langword="false"/> otherwise.
+    /// </returns>
+    bool DetachEpilogue(MiddlewareAction action);
+
+    /// <summary>
+    /// Gets a reference to an <see cref="IMiddlewareRunner"/> that will
+    /// execute a collection of Middlewares.
     /// </summary>
     /// <returns>
-    /// El <see cref="IMiddlewareRunner"/> utilizado para ejecutar
-    /// Middlewares.
+    /// The <see cref="IMiddlewareRunner"/> used to execute the Middlewares.
     /// </returns>
     IMiddlewareRunner GetRunner();
 }

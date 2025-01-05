@@ -2,46 +2,58 @@
 using TheXDS.MCART.Helpers;
 using TheXDS.MCART.Security;
 using TheXDS.Triton.Models;
-using TheXDS.Triton.Services.Base;
 
 namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que exponga
-/// servicios de gestión de usuarios y seguridad.
+/// Defines a set of members to be implemented by a type that exposes user management and security services.
 /// </summary>
 public interface IUserService : ITritonService
 {
     /// <summary>
-    /// Permite crear nuevas credenciales de inicio de sesión, ejecutando
-    /// algunos pasos esenciales sobre la misma.
+    /// Creates a new login credential by executing essential steps on it.
     /// </summary>
     /// <param name="username">
-    /// Nombre de inicio de sesión a utilizar para identificar a la nueva
-    /// credencial.
+    /// The username to use for identifying the new credential.
     /// </param>
     /// <param name="password">
-    /// Contraseña a registrar en la nueva credencial.
+    /// The password to register with the new credential.
     /// </param>
-    /// <param name="granted">Banderas de permisos otorgados.</param>
-    /// <param name="revoked">Banderas de permisos denegados.</param>
+    /// <param name="granted">
+    /// Permission flags granted to the new credential.
+    /// </param>
+    /// <param name="revoked">
+    /// Permission flags revoked from the new credential.
+    /// </param>
     /// <param name="enabled">
-    /// Indica si la nueva credencial estará habilitada.
+    /// Indicates whether the new credential will be enabled.
     /// </param>
     /// <param name="passwordChangeScheduled">
-    /// Indica si la nueva credencial está programada para cambiar la
-    /// contraseña al iniciar sesión.
+    /// Indicates whether the new credential is scheduled to change its password upon login.
     /// </param>
     /// <param name="groups">
-    /// Indica los grupos a los cuales la credencial pertenece.
+    /// The groups that the credential belongs to.
     /// </param>
     /// <returns>
-    /// Una tarea que, al finalizar, contiene el resultado reportado de la
-    /// operación ejecutada por el servicio subyacente.
+    /// A task that, when completed, contains the result reported by the underlying service.
     /// </returns>
-    Task<ServiceResult> AddNewLoginCredential(string username, SecureString password, PermissionFlags granted = PermissionFlags.None, PermissionFlags revoked = PermissionFlags.None, bool enabled = true, bool passwordChangeScheduled = false, params UserGroup[] groups)
+    Task<ServiceResult> AddNewLoginCredential(
+        string username,
+        SecureString password,
+        PermissionFlags granted = PermissionFlags.None,
+        PermissionFlags revoked = PermissionFlags.None,
+        bool enabled = true,
+        bool passwordChangeScheduled = false,
+        params UserGroup[] groups)
     {
-        return AddNewLoginCredential<Pbkdf2Storage>(username, password, granted, revoked, enabled, passwordChangeScheduled, groups);
+        return AddNewLoginCredential<Pbkdf2Storage>(
+            username,
+            password,
+            granted,
+            revoked,
+            enabled,
+            passwordChangeScheduled,
+            groups);
     }
 
     /// <summary>
@@ -80,11 +92,7 @@ public interface IUserService : ITritonService
         var r = await j.SearchAsync<LoginCredential>(p => p.Username == username);
         if (!r.Success) return r;
         if (r.Result!.Length != 0) return FailureReason.EntityDuplication;
-        Guid id;
-        do
-        {
-            id = Guid.NewGuid();
-        } while ((await j.ReadAsync<LoginCredential, Guid>(id)).Result is not null);
+        Guid id = await j.GetUniqueIdAsync<LoginCredential, Guid>(Guid.NewGuid);
         var newCred = new LoginCredential(username, await HashPasswordAsync<TAlg>(password))
         {
             Id = id,
@@ -95,7 +103,7 @@ public interface IUserService : ITritonService
         };
         foreach (var group in groups)
         {
-            newCred.Membership.Add(new() { Group = group, SecurityObject = newCred });
+            newCred.Membership.Add(new() { Group = group, Member = newCred });
         }
         j.Create(newCred);
         return await j.CommitAsync();
@@ -209,7 +217,7 @@ public interface IUserService : ITritonService
     /// </returns>
     async Task<ServiceResult> EndSession(Session session)
     {
-        if (session.EndTimestamp.HasValue) return ServiceResult.FailWith<ServiceResult>(FailureReason.Idempotency);
+        if (session.EndTimestamp.HasValue) return FailureReason.Idempotency;
         await using var t = GetWriteTransaction();
         session.EndTimestamp = DateTime.UtcNow;
         t.Update(session);
@@ -238,7 +246,7 @@ public interface IUserService : ITritonService
         {
             return r.Result?.FirstOrDefault() is { } credential
                 ? new ServiceResult<LoginCredential?>(credential)
-                : ServiceResult.FailWith<ServiceResult<LoginCredential?>>(FailureReason.NotFound);
+                : FailureReason.NotFound;
         }
         return r.CastUp<LoginCredential?>(null);
     }

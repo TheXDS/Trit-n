@@ -156,9 +156,9 @@ public class Tests
         Pool testPool = new(PoolConfig.FlexResolve);
         testPool.UseTriton().UseMiddleware<TestMiddleware>(out var m);
         Assert.That(m.PrologRan, Is.False);
-        testPool.Resolve<IMiddlewareRunner>()!.RunProlog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunPrologue(CrudAction.Commit, null);
         Assert.That(m.PrologRan, Is.True);
-        testPool.Resolve<IMiddlewareRunner>()!.RunEpilog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunEpilogue(CrudAction.Commit, null);
         Assert.That(m.EpilogRan, Is.True);
     }
 
@@ -174,16 +174,16 @@ public class Tests
     public void UseTransactionPrologs_registers_actions()
     {
         bool actionRan = false;
-        ServiceResult? TestAction(CrudAction action, IEnumerable<Model>? entity)
+        ServiceResult? TestAction(CrudAction action, IEnumerable<ChangeTrackerItem>? entity)
         {
             actionRan = true;
             return null;
         }
 
         Pool testPool = new(PoolConfig.FlexResolve);
-        testPool.UseTriton().UseTransactionPrologs(TestAction);
+        testPool.UseTriton().UseTransactionPrologues(TestAction);
         Assert.That(actionRan, Is.False);
-        testPool.Resolve<IMiddlewareRunner>()!.RunProlog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunPrologue(CrudAction.Commit, null);
         Assert.That(actionRan, Is.True);
     }
     
@@ -191,16 +191,16 @@ public class Tests
     public void UseTransactionEpilogs_registers_actions()
     {
         bool actionRan = false;
-        ServiceResult? TestAction(CrudAction action, IEnumerable<Model>? entity)
+        ServiceResult? TestAction(CrudAction action, IEnumerable<ChangeTrackerItem>? entity)
         {
             actionRan = true;
             return null;
         }
 
         Pool testPool = new(PoolConfig.FlexResolve);
-        testPool.UseTriton().UseTransactionEpilogs(TestAction);
+        testPool.UseTriton().UseTransactionEpilogues(TestAction);
         Assert.That(actionRan, Is.False);
-        testPool.Resolve<IMiddlewareRunner>()!.RunEpilog(CrudAction.Commit, null);
+        testPool.Resolve<IMiddlewareRunner>()!.RunEpilogue(CrudAction.Commit, null);
         Assert.That(actionRan, Is.True);
     }
 
@@ -261,13 +261,13 @@ public class Tests
         public bool PrologRan { get; set; }
         public bool EpilogRan { get; set; }
 
-        ServiceResult? ITransactionMiddleware.PrologAction(CrudAction action, IEnumerable<Model>? entity)
+        ServiceResult? ITransactionMiddleware.PrologueAction(CrudAction action, IEnumerable<ChangeTrackerItem>? entity)
         {
             PrologRan = true;
             return null;
         }
 
-        ServiceResult? ITransactionMiddleware.EpilogAction(CrudAction action, IEnumerable<Model>? entity)
+        ServiceResult? ITransactionMiddleware.EpilogueAction(CrudAction action, IEnumerable<ChangeTrackerItem>? entity)
         {
             EpilogRan = true;
             return null;

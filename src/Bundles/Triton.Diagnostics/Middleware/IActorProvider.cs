@@ -1,16 +1,16 @@
 ﻿namespace TheXDS.Triton.Diagnostics.Middleware;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que exponga
-/// información sobre un actor que ejecuta una operación.
+/// Defines the contract for types that exposes
+/// information about an actor executing an operation.
 /// </summary>
 public interface IActorProvider
 {
     /// <summary>
-    /// Obtiene el nombre descriptivo del actor que ejecutó la acción.
+    /// Gets the descriptive name of the actor who executed the action.
     /// </summary>
     /// <returns>
-    /// El nombre descriptivo del actor que ejecutó la acción.
+    /// The descriptive name of the actor who executed the action.
     /// </returns>
     string? GetCurrentActor();
 }

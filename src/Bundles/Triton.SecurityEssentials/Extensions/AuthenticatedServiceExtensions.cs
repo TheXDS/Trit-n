@@ -5,36 +5,35 @@ using TheXDS.Triton.Services;
 namespace TheXDS.Triton.Extensions;
 
 /// <summary>
-/// Contiene extensiones para los servicios de tritón que soportan
-/// autenticación.
+/// Provides extensions for authenticated Triton services.
 /// </summary>
 public static class AuthenticatedServiceExtensions
 {
     /// <summary>
-    /// Eejcuta una acción en el servicio de forma elevada.
+    /// Executes an action on the service with elevated privileges.
     /// </summary>
     /// <typeparam name="TService">
-    /// Tipo de servicio a elevar. Debe heredar 
+    /// The type of service to elevate, which must implement
     /// <see cref="AuthenticatedService"/>.
     /// </typeparam>
-    /// <param name="service">Instancia de servicio a elevar.</param>
-    /// <param name="username">Nombre de usuario.</param>
-    /// <param name="password">Contraseña.</param>
+    /// <param name="service">The instance of the service to elevate.</param>
+    /// <param name="username">The username to use for elevation.</param>
+    /// <param name="password">The password to use for elevation.</param>
     /// <param name="elevatedCallback">
-    /// Delegado a ejecutar en un contexto elevado.
+    /// The action to execute in an elevated context.
     /// </param>
     /// <returns>
-    /// <see cref="ServiceResult.Ok"/> si la elevación ha sido exitosa, o un
-    /// <see cref="ServiceResult"/> cuyo motivo de falla es
-    /// <see cref="FailureReason.Forbidden"/> en caso que la elevación haya 
-    /// fracasado.
+    /// A <see cref="ServiceResult"/> indicating the outcome of the elevation
+    /// attempt.
+    /// If successful, returns <see cref="ServiceResult.Ok"/>; otherwise,
+    /// returns a result with a failure reason.
     /// </returns>
     /// <remarks>
-    /// La elevación del servicio finalizará inmediatamente después de ejecutar
-    /// la acción elevada solicitada. Para una elevación persistente, deberá
-    /// elevar el servicio manualmente utilizando el método de instancia
-    /// <see cref="IAuthenticationBroker.Elevate(string, SecureString)"/> de la
-    /// propiedad <see cref="AuthenticatedService.AuthenticationBroker"/>.
+    /// Elevation is automatically revoked after executing the elevated action.
+    /// For persistent elevation, use the
+    /// <see cref="IAuthenticationBroker.ElevateAsync(string, SecureString)"/>
+    /// method on the <see cref="AuthenticatedService.AuthenticationBroker"/>
+    /// property.
     /// </remarks>
     public static async Task<ServiceResult> Sudo<TService>(
         this TService service,
@@ -42,11 +41,17 @@ public static class AuthenticatedServiceExtensions
         SecureString password,
         Func<TService, Task> elevatedCallback) where TService : AuthenticatedService
     {
-        var elevationResult = await service.AuthenticationBroker.Elevate(username, password);
+        var elevationResult = await service.AuthenticationBroker.ElevateAsync(username, password);
         if (elevationResult.Success)
-        { 
-            await elevatedCallback(service);
-            service.AuthenticationBroker.RevokeElevation();
+        {
+            try
+            {
+                await elevatedCallback(service);
+            }
+            finally
+            {
+                service.AuthenticationBroker.RevokeElevation();
+            }
         }
         return elevationResult;
     }

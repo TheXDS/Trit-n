@@ -5,7 +5,7 @@ using NUnit.Framework;
 using System.Linq.Expressions;
 using TheXDS.Triton.Models;
 using TheXDS.Triton.Services;
-using TheXDS.Triton.Services.Base;
+using TheXDS.Triton.Services.Models;
 
 namespace TheXDS.Triton.Tests.SecurityEssentials.IUserServiceTests;
 

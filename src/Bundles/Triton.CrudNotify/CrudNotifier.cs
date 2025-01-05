@@ -4,26 +4,25 @@ using TheXDS.Triton.Services;
 namespace TheXDS.Triton.CrudNotify;
 
 /// <summary>
-/// Middleware que permite enviar notificaciones de acciones crud por
-/// medio de la red a otros clientes conectados a través de un
-/// protocolo TCP personalizado.
+/// Middleware that allows sending CRUD notifications over the network to other
+/// clients connected through a custom TCP protocol.
 /// </summary>
 public static class CrudNotifier
 {
-    private static readonly List<ICrudNotifier> _notifiers = new();
+    private static readonly List<ICrudNotifier> _notifiers = [];
 
     /// <summary>
-    /// Agrega una nueva instancia de un servicio de notificación de
-    /// eventos Crud a todas las transacciones de datos.
+    /// Adds a new instance of a CRUD notification service to all data
+    /// transactions.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de servicio de notificación a instanciar.
+    /// The type of notification service to instantiate.
     /// </typeparam>
     /// <param name="config">
-    /// Objeto de configuración de transacciones a configurar.
+    /// Transaction configuration object to configure.
     /// </param>
     /// <returns>
-    /// La misma instancia que <paramref name="config"/>.
+    /// The same instance as <paramref name="config"/>.
     /// </returns>
     public static IMiddlewareConfigurator AddNotifyService<T>(this IMiddlewareConfigurator config) where T : ICrudNotifier, new()
     {
@@ -31,24 +30,23 @@ public static class CrudNotifier
     }
 
     /// <summary>
-    /// Agrega un servicio de notificación de eventos Crud a todas las
-    /// transacciones de datos.
+    /// Adds a CRUD notification service to all data transactions.
     /// </summary>
     /// <typeparam name="T">
-    /// Tipo de servicio de notificación a agregar.
+    /// The type of notification service to add.
     /// </typeparam>
     /// <param name="config">
-    /// Objeto de configuración de transacciones a configurar.
+    /// Transaction configuration object to configure.
     /// </param>
     /// <param name="crudNotifier">
-    /// Instancia de un servicio de notificaciones de eventos Crud a
-    /// agregar a las transacciones de datos.
+    /// Instance of a CRUD notification service to add to the data
+    /// transactions.
     /// </param>
     /// <returns>
-    /// La misma instancia que <paramref name="config"/>.
+    /// The same instance as <paramref name="config"/>.
     /// </returns>
     public static IMiddlewareConfigurator AddNotifyService<T>(this IMiddlewareConfigurator config, T crudNotifier) where T : ICrudNotifier
     {
-        return config.AddEpilog(crudNotifier.PushInto(_notifiers).NotifyPeers);
+        return config.AddLateEpilogue(crudNotifier.PushInto(_notifiers).NotifyPeers);
     }
 }

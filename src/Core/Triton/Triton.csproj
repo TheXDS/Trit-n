@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+	  <IsAotCompatible>true</IsAotCompatible>
+	  <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheXDS.MCART" Version="0.17.3" />
+    <PackageReference Include="TheXDS.MCART" Version="0.18.0-alpha.1" />
     <ProjectReference Include="..\Triton.Models\Triton.Models.csproj" />
     <Compile Update="Resources\Strings\Common.Designer.cs">
       <DesignTime>True</DesignTime>

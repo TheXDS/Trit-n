@@ -1,25 +1,23 @@
-﻿using TheXDS.Triton.Models.Base;
-using TheXDS.Triton.Services;
+﻿using TheXDS.Triton.Services;
 
 namespace TheXDS.Triton.Middleware;
 
 /// <summary>
-/// Describe un método definido dentro de un <see cref="CrudAction"/> y un
-/// <see cref="ITransactionMiddleware"/> que acepta un
-/// conjunto de objetos de tipo <see cref="Model"/> como entrada, realiza una
-/// operación de servicio y devuelve un <see cref="ServiceResult"/> a la hora
-/// de ejecutar acciones Crud.
+/// Describes a method defined within a <see cref="CrudAction"/> and an
+/// <see cref="ITransactionMiddleware"/> that accepts an input of type 
+/// <see cref="ChangeTrackerItem"/> set, performs a service operation, and
+/// returns a <see cref="ServiceResult"/> at the time of executing Crud
+/// actions.
 /// </summary>
 /// <param name="crudAction">
-/// Acción Crud ejecutada sobre las entidades.
+/// The Crud action executed on the entities.
 /// </param>
 /// <param name="entities">
-/// Entidades sobre las cuales se ha ejecutado una acción Crud.
+/// The entities over which a Crud action has been executed.
 /// </param>
 /// <returns>
-/// <see langword="null"/> si la acción ha sido satisfactoria y la
-/// operación Crud puede continuar normalmente, o un
-/// <see cref="ServiceResult"/> que describe el error que ha ocurrido en la
-/// acción.
+/// <see langword="null"/> if the action was successful and the Crud operation
+/// can continue normally, or a <see cref="ServiceResult"/> that describes the
+/// error that occurred in the action.
 /// </returns>
-public delegate ServiceResult? MiddlewareAction(CrudAction crudAction, IEnumerable<Model>? entities);
+public delegate ServiceResult? MiddlewareAction(CrudAction crudAction, IEnumerable<ChangeTrackerItem>? entities);

@@ -190,7 +190,7 @@ public class CrudTransactionBaseTests
             return 1;
         }
 
-        test.Configurator.AddProlog(Stop);
+        test.Configurator.AddPrologue(Stop);
         var result = test.Test_TryCall<int>(CrudAction.Create, TestDelegate, true);
 
         Assert.That(result, Is.Not.Null);

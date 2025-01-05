@@ -6,8 +6,8 @@ using TheXDS.Triton.Services;
 namespace TheXDS.Triton.Component;
 
 /// <summary>
-/// Implementa un proveedor de autenticación que se ejecuta en el prólogo de
-/// una transacción para cualquier servicio de Tritón.
+/// Implements an authentication provider that runs at the beginning of a
+/// transaction for any Triton service.
 /// </summary>
 public class AuthenticationBroker : IAuthenticationBroker
 {
@@ -16,16 +16,16 @@ public class AuthenticationBroker : IAuthenticationBroker
     private SecurityObject? _elevation;
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase
-    /// <see cref="AuthenticationBroker"/>.
+    /// Initializes a new instance of the <see cref="AuthenticationBroker"/>
+    /// class.
     /// </summary>
     /// <param name="middlewareConfigurator">
-    /// Instancia de configuración de Middleware en la cual registrar este
-    /// proveedor de autenticación.
+    /// Instance of middleware configurator where this authentication provider
+    /// will be registered.
     /// </param>
     /// <param name="userService">
-    /// Instancia de servicio de usuario a utilizar para autenticar y verificar
-    /// los permisos de acceso de un <see cref="SecurityObject"/>.
+    /// Instance of user service to use for authenticating and verifying access
+    /// permissions of a <see cref="SecurityObject"/>.
     /// </param>
     public AuthenticationBroker(IMiddlewareConfigurator middlewareConfigurator, IUserService userService)
     {
@@ -37,7 +37,7 @@ public class AuthenticationBroker : IAuthenticationBroker
     SecurityObject? IAuthenticationBroker.Credential => _credential;
 
     /// <inheritdoc/>
-    bool IAuthenticationBroker.Elevated => _elevation != null;
+    bool IAuthenticationBroker.IsElevated => _elevation != null;
 
     void IAuthenticationBroker.Authenticate(SecurityObject? credential)
     {
@@ -48,7 +48,7 @@ public class AuthenticationBroker : IAuthenticationBroker
     bool IAuthenticationBroker.CanElevate(SecurityObject? actor) => actor is not null && (_userService.CheckAccess(actor, GetType().Name, PermissionFlags.Elevate).Result ?? false);
 
     /// <inheritdoc/>
-    async Task<ServiceResult<Session?>> IAuthenticationBroker.Elevate(string username, SecureString password)
+    async Task<ServiceResult<Session?>> IAuthenticationBroker.ElevateAsync(string username, SecureString password)
     {
         if (((IAuthenticationBroker)this).CanElevate())
         {
@@ -59,14 +59,16 @@ public class AuthenticationBroker : IAuthenticationBroker
             }
             return cred;
         }
-        else return ServiceResult.FailWith<ServiceResult<Session?>>(FailureReason.Forbidden);
+        else return FailureReason.Forbidden;
     }
 
     /// <summary>
-    /// Obtiene al objeto de seguridad que ejecuta las operaciones de este
-    /// servicio.
+    /// Retrieves the security principal that executes operations using this
+    /// service.
     /// </summary>
-    /// <returns>El actor que ejecuta operaciones en este servicio.</returns>
+    /// <returns>
+    /// The security actor responsible for executing operations on this service.
+    /// </returns>
     SecurityObject? ISecurityActorProvider.GetActor() => _elevation ?? _credential;
 
     /// <inheritdoc/>

@@ -1,15 +1,13 @@
 ﻿namespace TheXDS.Triton.Component;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que exponga
-/// funcionalidad de gestión de seguridad por medio de un proveedor de
-/// autenticación.
+/// Defines the contract for types that provide security management
+/// functionality using an authentication provider.
 /// </summary>
 public interface IAuthenticable
 {
     /// <summary>
-    /// Obtiene una referencia al proveedor de auttenticación registrado
-    /// para esta instancia.
+    /// Gets the authentication broker associated with this instance.
     /// </summary>
     IAuthenticationBroker AuthenticationBroker { get; }
 }

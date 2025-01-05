@@ -5,73 +5,66 @@ using TheXDS.Triton.Services;
 namespace TheXDS.Triton.Component;
 
 /// <summary>
-/// Define una serie de miembros a implementar por un tipo que actúe como 
-/// un proveedor de autenticación para un servicio de Tritón.
+/// Defines the contract for types that provide authentication services for a
+/// Triton service.
 /// </summary>
 public interface IAuthenticationBroker : ISecurityActorProvider
 {
     /// <summary>
-    /// Obtiene un valor que indica si el proveedor de autenticación actual
-    /// está elevado.
+    /// Gets a value indicating whether the current authentication provider is
+    /// elevated.
     /// </summary>
-    bool Elevated { get; }
+    bool IsElevated { get; }
 
     /// <summary>
-    /// Obtiene una referencia a la credencial utilizada en este proveedor de
-    /// autenticación.
+    /// Gets the credential used for authentication.
     /// </summary>
     SecurityObject? Credential { get; }
 
     /// <summary>
-    /// Comprueba si la credencial especificada puede ser elevada para usarse
-    /// en un servicio (suplantar a la credencial actualmente asociada).
+    /// Checks if a credential can be elevated for use in a service.
     /// </summary>
-    /// <param name="actor">Objeto de seguridad a comprobar.</param>
+    /// <param name="credential">The credential to check.</param>
     /// <returns>
-    /// <see langword="true"/> si la credencial especificada contiene el
-    /// permiso  <see cref="PermissionFlags.Elevate"/> para el contexto de
-    /// datos actual, <see langword="false"/> en caso contrario.
+    /// <see langword="true"/> if the credential can be elevated,
+    /// <see langword="false"/> otherwise.
     /// </returns>
-    bool CanElevate(SecurityObject? actor);
+    bool CanElevate(SecurityObject? credential);
 
     /// <summary>
-    /// Comprueba si la credencial actualmente asociada a un servicio puede
-    /// ser elevada (suplantada por una con permisos distintos).
+    /// Checks if the currently associated credential can be elevated.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> si la credencial activa contiene el permiso 
-    /// <see cref="PermissionFlags.Elevate"/> para el contexto de datos actual,
-    /// <see langword="false"/> en caso contrario.
+    /// <see langword="true"/> if the credential can be elevated,
+    /// <see langword="false"/> otherwise.
     /// </returns>
     bool CanElevate()
     {
-        var actor = GetActor();
+        var actor = GetCurrentActor();
         return actor is not null && CanElevate(actor);
     }
 
     /// <summary>
-    /// Autentica a una entidad de seguridad como la que ejecuta operaciones
-    /// utilizando este proveedor de autenticación.
+    /// Authenticates a security entity using the provided credential.
     /// </summary>
-    /// <param name="credential">Credencial a utilizar.</param>
+    /// <param name="credential">
+    /// The credential to use for authentication.
+    /// </param>
     void Authenticate(SecurityObject? credential);
 
     /// <summary>
-    /// Suplanta la credencial asociada a este proveedor de autenticación
-    /// de manera temporal por una con permisos distintos.
+    /// Temporarily elevates the credential associated with this authentication
+    /// provider.
     /// </summary>
-    /// <param name="username">Nombre de usuario.</param>
-    /// <param name="password">Contraseña.</param>
+    /// <param name="username">The username to use for elevation.</param>
+    /// <param name="password">The password to use for elevation.</param>
     /// <returns>
-    /// <see cref="ServiceResult.Ok"/> si la elevación ha sido exitosa, o un
-    /// <see cref="ServiceResult"/> cuyo motivo de falla es
-    /// <see cref="FailureReason.Forbidden"/> en caso que la elevación haya 
-    /// fracasado.
+    /// A service result indicating whether elevation was successful.
     /// </returns>
-    Task<ServiceResult<Session?>> Elevate(string username, SecureString password);
+    Task<ServiceResult<Session?>> ElevateAsync(string username, SecureString password);
 
     /// <summary>
-    /// Revoca la elevación activa del servicio.
+    /// Revokes the active elevation of the service.
     /// </summary>
     void RevokeElevation();
 }

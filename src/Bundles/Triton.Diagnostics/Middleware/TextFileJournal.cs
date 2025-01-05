@@ -3,23 +3,23 @@
 namespace TheXDS.Triton.Diagnostics.Middleware;
 
 /// <summary>
-/// Implementa un <see cref="TextJournal"/> que permite escribir las
-/// entradas de bitácora en un archivo en el sistema de archivos.
+/// Implements a <see cref="TextJournal"/> that allows writing log entries to a
+/// file in the file system.
 /// </summary>
 public class TextFileJournal : TextJournal
 {
     private string? _path;
 
     /// <summary>
-    /// Ruta del archivo a escribir.
+    /// Path of the file to write to.
     /// </summary>
     /// <value>
-    /// Una ruta de archivo válida, o <see langword="null"/> para
-    /// deshabilitar este escritor de bitácora.
+    /// A valid file path, or <see langword="null"/> to disable this log
+    /// writer.
     /// </value>
     /// <remarks>
-    /// Esta propiedad se establecerá en <see langword="null"/> si ocurre
-    /// un error al intentar escribir en el archivo especificado.
+    /// This property will be set to <see langword="null"/> if an error occurs
+    /// while trying to write to the specified file.
     /// </remarks>
     public string? Path
     {
@@ -28,10 +28,7 @@ public class TextFileJournal : TextJournal
         {
             if (value is not null)
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException(nameof(value));
-                }
+                // HACK: Simple path validation.
                 _ = new FileInfo(value);
             }
             _path = value;

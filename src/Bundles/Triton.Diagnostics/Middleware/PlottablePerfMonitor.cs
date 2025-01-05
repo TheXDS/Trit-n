@@ -1,8 +1,8 @@
 ﻿namespace TheXDS.Triton.Diagnostics.Middleware;
 
 /// <summary>
-/// Contador de rendimiento que contiene una colección de muestras que
-/// puede utilizarse para generar gráficos.
+/// A performance counter that contains a collection of samples that can be
+/// used to generate graphs.
 /// </summary>
 public class PlottablePerfMonitor : PerformanceMonitorBase
 {
@@ -10,7 +10,7 @@ public class PlottablePerfMonitor : PerformanceMonitorBase
     private int _maxSamples = 1000;
 
     /// <summary>
-    /// Obtiene la colección de eventos registrados.
+    /// Gets the collection of registered events.
     /// </summary>
     public IEnumerable<double> Events => _events;
 
@@ -27,8 +27,8 @@ public class PlottablePerfMonitor : PerformanceMonitorBase
     public override double MaxMs => Get(Enumerable.Max);
 
     /// <summary>
-    /// Obtiene o establece la cantidad máxima de muestras a contener en
-    /// este monitor de rendimiento.
+    /// Gets or sets the maximum number of samples to contain in this
+    /// performance monitor.
     /// </summary>
     public int MaxSamples
     {
@@ -62,6 +62,6 @@ public class PlottablePerfMonitor : PerformanceMonitorBase
 
     private double Get(Func<IEnumerable<double>, double> func)
     {
-        return _events.Any() ? func(_events) : double.NaN;
+        return _events.Count != 0 ? func(_events) : double.NaN;
     }
 }

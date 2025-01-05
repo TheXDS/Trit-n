@@ -1,21 +1,21 @@
 ﻿namespace TheXDS.Triton.Services;
 
 /// <summary>
-/// Enumeración que describe la posición en la cual se agregará una
-/// acción de Middleware de Crud.
+/// Enumeration that describes the position in which a Crud Middleware action
+/// will be added.
 /// </summary>
 public enum ActionPosition : byte
 {
     /// <summary>
-    /// Posición predeterminada.
+    /// Default position.
     /// </summary>
     Default,
     /// <summary>
-    /// Asegurar primera acción.
+    /// Ensure first action.
     /// </summary>
     Early,
     /// <summary>
-    /// Asegurar última acción.
+    /// Ensure last action.
     /// </summary>
     Late
 }
